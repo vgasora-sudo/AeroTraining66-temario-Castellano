@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 5 · Técnicas Digitales - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-header .top-btns button.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc .toc-group {
+            margin-bottom: 0.5rem;
+        }
+        #toc .toc-group-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 0.4rem 0.4rem 0.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            user-select: none;
+        }
+        #toc .toc-group-title:hover {
+            color: var(--text-secondary);
+        }
+        #toc .toc-group-items {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        #toc .toc-group-items.collapsed {
+            max-height: 0 !important;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            filter: blur(0.3px);
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        #toc li.bookmarked:hover .bookmark-star {
+            opacity: 1;
+        }
+        #toc li .stats-mini {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            margin-left: 0.3rem;
+        }
+        #toc li.completed .stats-mini {
+            color: var(--success);
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .lang-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .lang-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content .ejemplo strong {
+            color: var(--accent-light);
+        }
+        .tema .content .test-self {
+            background: var(--bg-test);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .test-self h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+        }
+        .tema .content .test-self ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .tema .content .test-self li {
+            margin-bottom: 0.4rem;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+        .tema .content .test-self li::before {
+            content: "▹";
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+        }
+        .keyword {
+            color: var(--accent-light);
+            cursor: help;
+            border-bottom: 1px dashed var(--accent-light);
+            position: relative;
+        }
+        .keyword .tooltip {
+            display: none;
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            z-index: 100;
+            box-shadow: 0 4px 12px var(--shadow);
+            font-style: normal;
+            font-weight: 400;
+        }
+        .keyword:hover .tooltip {
+            display: block;
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 17</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="lang-btn" id="langToggle">🇬🇧 EN</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <div id="temaContainer"></div>
+
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado el Módulo 5 de Técnicas Digitales y Sistemas Electrónicos de Instrumentos</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en sistemas de numeración, buses de datos, circuitos lógicos, fibra óptica, pantallas electrónicas, sistemas de instrumentos electrónicos y sistemas digitales aeronáuticos.</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: 17 TEMAS DE TÉCNICAS DIGITALES (MÓDULO 05)
+        //  Contenido extraído del PDF, con explicaciones, ejemplos y fórmulas
+        // ============================================================
+        const temasBase = [{
+            id: '5.1',
+            parte: 'Sistemas de Instrumentos Electrónicos',
+            titulo: { es: 'Sistemas de instrumentos electrónicos y disposición de cabina',
+                en: 'Electronic instrument systems and cockpit layout' },
+            contenido: {
+                es: `<p>Los instrumentos de aeronave se clasifican según su propósito: monitorizar el progreso del vuelo (instrumentos de vuelo y navegación), apoyar a la tripulación en la toma de decisiones y monitorizar el correcto funcionamiento de todos los sistemas de la aeronave.</p>
+                      <p>Los instrumentos de vuelo y navegación incluyen: altímetro, indicador de velocidad (ASI/MSI), indicador de velocidad vertical (VSI), indicador de actitud, indicador de velocidad de giro, indicador direccional giroscópico y brújula magnética.</p>
+                      <p>Los instrumentos de motor incluyen: tacómetro, indicador de temperatura de aceite, indicador de temperatura de cabeza de cilindro, indicador de temperatura de gases de escape, indicador de empuje, indicador de presión de combustible, indicador de presión de aceite, indicador de cantidad de combustible, indicador de flujo de combustible y indicador de par.</p>
+                      <p>El diseño de la cabina de vuelo debe cumplir con: instrumentos montados para ser fácilmente leídos, iluminación suficiente y que no deslumbre, fácil visibilidad y visión natural desde el interior hacia el exterior.</p>
+                      <p>La disposición estándar "T básica" coloca: indicador de velocidad (arriba izquierda), indicador de actitud (centro), altímetro (arriba derecha) y giro direccional (debajo del indicador de actitud).</p>
+                      <p>La cabina de cristal (glass cockpit) ha reemplazado los instrumentos analógicos con pantallas digitales: EFIS (Electronic Flight Instrument System) para información de vuelo y navegación, y EICAS/ECAM para información de motores y alertas.</p>`,
+                en: `<p>Aircraft instruments are classified according to their purpose: monitoring flight progress (flight and navigation instruments), supporting crew decision-making, and monitoring the correct functioning of all aircraft systems.</p>
+                      <p>Flight and navigation instruments include: altimeter, airspeed indicator (ASI/MSI), vertical speed indicator (VSI), attitude indicator, rate of turn indicator, gyroscopic directional indicator and magnetic compass.</p>
+                      <p>Engine instruments include: tachometer, oil temperature indicator, cylinder head temperature indicator, exhaust gas temperature indicator, thrust indicator, fuel pressure indicator, oil pressure indicator, fuel quantity indicator, fuel flow indicator and torque indicator.</p>
+                      <p>The flight deck layout must meet: instruments mounted to be easily read, sufficient non-dazzling lighting, easy visibility and natural vision from inside to outside.</p>
+                      <p>The standard "basic T" arrangement places: airspeed indicator (top left), attitude indicator (centre), altimeter (top right) and directional gyro (below the attitude indicator).</p>
+                      <p>The glass cockpit has replaced analogue instruments with digital displays: EFIS (Electronic Flight Instrument System) for flight and navigation information, and EICAS/ECAM for engine and alert information.</p>`
+            }
+        }, {
+            id: '5.2',
+            parte: 'Sistemas de Numeración',
+            titulo: { es: 'Sistemas de numeración: binario, octal y hexadecimal',
+                en: 'Numbering systems: binary, octal and hexadecimal' },
+            contenido: {
+                es: `<p>El <strong>sistema decimal</strong> es posicional, con base 10 y dígitos del 0 al 9. La ecuación general es: \(N = C_n \cdot b^n + C_{n-1} \cdot b^{n-1} + \dots + C_1 \cdot b^1 + C_0 \cdot b^0\).</p>
+                      <p>El <strong>sistema binario</strong> usa solo dos dígitos (0 y 1) con base 2. Cada dígito se llama <strong>bit</strong>. Ejemplo: \(1010_{(2)} = 1·2^3 + 0·2^2 + 1·2^1 + 0·2^0 = 10_{(10)}\).</p>
+                      <p>El <strong>sistema octal</strong> usa dígitos del 0 al 7 con base 8. Cada dígito octal equivale a 3 bits binarios. Ejemplo: \(173_{(8)} = 1·8^2 + 7·8^1 + 3·8^0 = 123_{(10)}\).</p>
+                      <p>El <strong>sistema hexadecimal</strong> usa dígitos 0-9 y letras A-F (10-15) con base 16. Cada dígito hexadecimal equivale a 4 bits binarios. Ejemplo: \(A3_{(16)} = 10·16^1 + 3·16^0 = 163_{(10)}\).</p>
+                      <p>La conversión entre sistemas se realiza mediante divisiones sucesivas (decimal a otra base) o usando la ecuación general (otra base a decimal).</p>`,
+                en: `<p>The <strong>decimal system</strong> is positional, with base 10 and digits 0 to 9. The general equation is: \(N = C_n \cdot b^n + C_{n-1} \cdot b^{n-1} + \dots + C_1 \cdot b^1 + C_0 \cdot b^0\).</p>
+                      <p>The <strong>binary system</strong> uses only two digits (0 and 1) with base 2. Each digit is called a <strong>bit</strong>. Example: \(1010_{(2)} = 1·2^3 + 0·2^2 + 1·2^1 + 0·2^0 = 10_{(10)}\).</p>
+                      <p>The <strong>octal system</strong> uses digits 0 to 7 with base 8. Each octal digit equals 3 binary bits. Example: \(173_{(8)} = 1·8^2 + 7·8^1 + 3·8^0 = 123_{(10)}\).</p>
+                      <p>The <strong>hexadecimal system</strong> uses digits 0-9 and letters A-F (10-15) with base 16. Each hexadecimal digit equals 4 binary bits. Example: \(A3_{(16)} = 10·16^1 + 3·16^0 = 163_{(10)}\).</p>
+                      <p>Conversion between systems is done by successive divisions (decimal to other bases) or using the general equation (other base to decimal).</p>`
+            }
+        }, {
+            id: '5.3',
+            parte: 'Conversión de Datos',
+            titulo: { es: 'Datos analógicos y digitales; conversores ADC/DAC',
+                en: 'Analogue data, digital data; ADC/DAC converters' },
+            contenido: {
+                es: `<p>Una <strong>señal analógica</strong> es una serie continua de valores de una magnitud física (ej. temperatura representada por voltaje).</p>
+                      <p>Una <strong>señal digital</strong> es una serie discreta de valores (ej. voltajes alto/bajo representando 1/0).</p>
+                      <p>La conversión analógico-digital (ADC) tiene tres fases: <strong>muestreo</strong> (lectura en intervalos regulares), <strong>cuantificación</strong> (aproximación a valores discretos) y <strong>codificación</strong> (conversión a binario).</p>
+                      <p>El convertidor <strong>flash</strong> usa comparadores en paralelo para una conversión rápida. La resolución depende del número de bits: \(2^n\) niveles.</p>
+                      <p>El convertidor digital-analógico (DAC) de <strong>resistencias ponderadas</strong> convierte un número binario en una tensión proporcional: \(V_o = -V_r \cdot (R_f/R_p)\).</p>`,
+                en: `<p>An <strong>analogue signal</strong> is a continuous series of values of a physical magnitude (e.g. temperature represented by voltage).</p>
+                      <p>A <strong>digital signal</strong> is a discrete series of values (e.g. high/low voltages representing 1/0).</p>
+                      <p>Analogue-to-digital conversion (ADC) has three phases: <strong>sampling</strong> (reading at regular intervals), <strong>quantisation</strong> (approximation to discrete values) and <strong>coding</strong> (conversion to binary).</p>
+                      <p>The <strong>flash</strong> converter uses parallel comparators for fast conversion. Resolution depends on the number of bits: \(2^n\) levels.</p>
+                      <p>The <strong>weighted resistor</strong> digital-to-analogue converter (DAC) converts a binary number into a proportional voltage: \(V_o = -V_r \cdot (R_f/R_p)\).</p>`
+            }
+        }, {
+            id: '5.4',
+            parte: 'Buses de Datos',
+            titulo: { es: 'Buses de datos: ARINC 429, MIL-STD-1553, AFDX',
+                en: 'Data buses: ARINC 429, MIL-STD-1553, AFDX' },
+            contenido: {
+                es: `<p>Los <strong>buses de datos</strong> son canales que permiten la comunicación entre dispositivos. Pueden ser en <strong>paralelo</strong> (varios bits simultáneamente) o en <strong>serie</strong> (bits secuencialmente).</p>
+                      <p><strong>ARINC 429</strong> es el bus más común en aviación comercial. Es unidireccional (punto a punto), con palabras de 32 bits, transmisión asíncrona, voltaje diferencial de ±10 V y velocidad de 100 kbit/s (alta) o 12-14 kbit/s (baja).</p>
+                      <p><strong>MIL-STD-1553</strong> es un bus lineal con estructura maestro-esclavo. Tiene un Controlador de Bus (BC) que gestiona el tráfico, Terminales Remotos (RT) y un Monitor de Bus (BM). Palabras de 20 bits a 1 Mbit/s.</p>
+                      <p><strong>AFDX (ARINC 664)</strong> es un bus Ethernet con conmutación full-duplex. Utiliza Enlaces Virtuales (VL) para comunicación punto-a-multipunto con determinismo y redundancia (redes A y B).</p>`,
+                en: `<p><strong>Data buses</strong> are channels that allow communication between devices. They can be <strong>parallel</strong> (several bits simultaneously) or <strong>serial</strong> (bits sequentially).</p>
+                      <p><strong>ARINC 429</strong> is the most common bus in commercial aviation. It is unidirectional (point-to-point), with 32-bit words, asynchronous transmission, ±10 V differential voltage and speeds of 100 kbit/s (high) or 12-14 kbit/s (low).</p>
+                      <p><strong>MIL-STD-1553</strong> is a linear bus with master-slave structure. It has a Bus Controller (BC) managing traffic, Remote Terminals (RT) and a Bus Monitor (BM). 20-bit words at 1 Mbit/s.</p>
+                      <p><strong>AFDX (ARINC 664)</strong> is a switched full-duplex Ethernet bus. It uses Virtual Links (VL) for point-to-multipoint communication with determinism and redundancy (A and B networks).</p>`
+            }
+        }, {
+            id: '5.5',
+            parte: 'Circuitos Lógicos',
+            titulo: { es: 'Puertas lógicas: símbolos, tablas y circuitos equivalentes',
+                en: 'Logic gates: symbols, tables and equivalent circuits' },
+            contenido: {
+                es: `<p>Las <strong>puertas lógicas</strong> ejecutan operaciones booleanas elementales. Tienen entradas y salidas con dos estados: <strong>alto (1)</strong> o <strong>bajo (0)</strong>.</p>
+                      <ul>
+                        <li><strong>NOT:</strong> inversor. \(S = \overline{A}\). Tabla: 0→1, 1→0.</li>
+                        <li><strong>AND:</strong> producto lógico. \(S = A \cdot B\). Salida 1 solo si todas las entradas son 1.</li>
+                        <li><strong>OR:</strong> suma lógica. \(S = A + B\). Salida 1 si al menos una entrada es 1.</li>
+                        <li><strong>NAND:</strong> AND negado. \(S = \overline{A \cdot B}\). Salida 0 solo si todas las entradas son 1.</li>
+                        <li><strong>NOR:</strong> OR negado. \(S = \overline{A + B}\). Salida 1 solo si todas las entradas son 0.</li>
+                        <li><strong>EXOR:</strong> OR exclusivo. \(S = A \oplus B\). Salida 1 si las entradas son diferentes.</li>
+                      </ul>
+                      <p>Las <strong>tablas de verdad</strong> muestran todas las combinaciones de entradas y la salida correspondiente.</p>`,
+                en: `<p><strong>Logic gates</strong> perform elementary Boolean operations. They have inputs and outputs with two states: <strong>high (1)</strong> or <strong>low (0)</strong>.</p>
+                      <ul>
+                        <li><strong>NOT:</strong> inverter. \(S = \overline{A}\). Truth table: 0→1, 1→0.</li>
+                        <li><strong>AND:</strong> logic product. \(S = A \cdot B\). Output 1 only if all inputs are 1.</li>
+                        <li><strong>OR:</strong> logic sum. \(S = A + B\). Output 1 if at least one input is 1.</li>
+                        <li><strong>NAND:</strong> inverted AND. \(S = \overline{A \cdot B}\). Output 0 only if all inputs are 1.</li>
+                        <li><strong>NOR:</strong> inverted OR. \(S = \overline{A + B}\). Output 1 only if all inputs are 0.</li>
+                        <li><strong>EXOR:</strong> exclusive OR. \(S = A \oplus B\). Output 1 if inputs are different.</li>
+                      </ul>
+                      <p><strong>Truth tables</strong> show all input combinations and the corresponding output.</p>`
+            }
+        }, {
+            id: '5.6',
+            parte: 'Estructura Básica de Computadores',
+            titulo: { es: 'Terminología informática: BIT, BYTE, CPU, RAM, ROM, PROM',
+                en: 'Computer terminology: BIT, BYTE, CPU, RAM, ROM, PROM' },
+            contenido: {
+                es: `<p><strong>Bit:</strong> unidad básica de información (0 o 1). <strong>Byte:</strong> conjunto de 8 bits, unidad direccionable.</p>
+                      <p><strong>CPU (Unidad Central de Procesamiento):</strong> ejecuta las instrucciones de un programa. Realiza: fetch, decode, execute, write-back.</p>
+                      <p><strong>RAM (Memoria de Acceso Aleatorio):</strong> memoria volátil, se pierde al apagar. Tipos: DRAM (requiere refresco) y SRAM (más rápida, más cara).</p>
+                      <p><strong>ROM (Memoria de Solo Lectura):</strong> memoria no volátil, programada por el fabricante.</p>
+                      <p><strong>PROM:</strong> programable por el usuario una sola vez.</p>
+                      <p><strong>EPROM:</strong> borrable con luz ultravioleta.</p>
+                      <p><strong>EEPROM:</strong> borrable eléctricamente. Las memorias flash son un tipo de EEPROM.</p>
+                      <p><strong>Hardware:</strong> componentes físicos. <strong>Software:</strong> programas y datos.</p>`,
+                en: `<p><strong>Bit:</strong> basic unit of information (0 or 1). <strong>Byte:</strong> set of 8 bits, addressable unit.</p>
+                      <p><strong>CPU (Central Processing Unit):</strong> executes program instructions. Performs: fetch, decode, execute, write-back.</p>
+                      <p><strong>RAM (Random Access Memory):</strong> volatile memory, lost when powered off. Types: DRAM (requires refresh) and SRAM (faster, more expensive).</p>
+                      <p><strong>ROM (Read-Only Memory):</strong> non-volatile memory, programmed by manufacturer.</p>
+                      <p><strong>PROM:</strong> programmable once by the user.</p>
+                      <p><strong>EPROM:</strong> erasable with ultraviolet light.</p>
+                      <p><strong>EEPROM:</strong> electrically erasable. Flash memories are a type of EEPROM.</p>
+                      <p><strong>Hardware:</strong> physical components. <strong>Software:</strong> programs and data.</p>`
+            }
+        }, {
+            id: '5.10',
+            parte: 'Fibra Óptica',
+            titulo: { es: 'Ventajas, desventajas y aplicaciones de la fibra óptica',
+                en: 'Advantages, disadvantages and applications of fiber optics' },
+            contenido: {
+                es: `<p>Una <strong>fibra óptica</strong> consta de <strong>núcleo</strong> (por donde viaja la luz), <strong>revestimiento</strong> (cladding) y <strong>cubierta</strong> (jacket).</p>
+                      <p>Ventajas: alta velocidad de transmisión, bajo peso, inmunidad a interferencias electromagnéticas (EMI), ausencia de diafonía, seguridad, menor atenuación.</p>
+                      <p>Desventajas: componentes más caros, falta de estandarización.</p>
+                      <p>La transmisión se basa en la <strong>reflexión total interna</strong>. El <strong>ángulo de aceptación</strong> y la <strong>apertura numérica (NA)</strong> determinan la cantidad de luz que entra en la fibra.</p>
+                      <p>Tipos de fibras: <strong>monomodo</strong> (un solo modo de propagación) y <strong>multimodo</strong> (varios modos, índice escalonado o gradual).</p>`,
+                en: `<p>An <strong>optical fiber</strong> consists of a <strong>core</strong> (where light travels), <strong>cladding</strong> and <strong>jacket</strong>.</p>
+                      <p>Advantages: high transmission speed, low weight, immunity to electromagnetic interference (EMI), no crosstalk, security, lower attenuation.</p>
+                      <p>Disadvantages: more expensive components, lack of standardisation.</p>
+                      <p>Transmission is based on <strong>total internal reflection</strong>. The <strong>acceptance angle</strong> and <strong>numerical aperture (NA)</strong> determine the amount of light entering the fiber.</p>
+                      <p>Fiber types: <strong>single-mode</strong> (only one propagation mode) and <strong>multi-mode</strong> (several modes, step-index or graded-index).</p>`
+            }
+        }, {
+            id: '5.11',
+            parte: 'Pantallas Electrónicas',
+            titulo: { es: 'Principios de funcionamiento de CRT, LED y LCD',
+                en: 'Operating principles of CRT, LED and LCD displays' },
+            contenido: {
+                es: `<p><strong>CRT (Tubo de Rayos Catódicos):</strong> utiliza cañones de electrones y fósforos para generar imagen. Tecnología madura pero voluminosa.</p>
+                      <p><strong>LCD (Pantalla de Cristal Líquido):</strong> utiliza cristales líquidos que cambian su polarización al aplicar voltaje. Ventajas: bajo consumo, delgadas, alta resolución. Desventajas: menor contraste, ángulo de visión limitado.</p>
+                      <p><strong>LED (Diodo Emisor de Luz):</strong> emite luz por recombinación de electrones y huecos. Alta eficiencia, larga vida útil. Usados en retroiluminación de LCD, indicadores y pantallas.</p>
+                      <p>Las pantallas <strong>PDP</strong> (plasma) utilizan gas que se convierte en plasma al aplicar tensión, generando luz ultravioleta que excita fósforos.</p>`,
+                en: `<p><strong>CRT (Cathode Ray Tube):</strong> uses electron guns and phosphors to generate image. Mature technology but bulky.</p>
+                      <p><strong>LCD (Liquid Crystal Display):</strong> uses liquid crystals that change polarisation when voltage is applied. Advantages: low consumption, thin, high resolution. Disadvantages: lower contrast, limited viewing angle.</p>
+                      <p><strong>LED (Light Emitting Diode):</strong> emits light through electron-hole recombination. High efficiency, long life. Used in LCD backlighting, indicators and displays.</p>
+                      <p><strong>PDP</strong> (plasma) displays use gas that becomes plasma when voltage is applied, generating ultraviolet light that excites phosphors.</p>`
+            }
+        }, {
+            id: '5.12',
+            parte: 'Dispositivos Sensibles a Electrostática',
+            titulo: { es: 'Manejo de componentes sensibles a descargas electrostáticas (ESD)',
+                en: 'Handling of electrostatic discharge (ESD) sensitive components' },
+            contenido: {
+                es: `<p>Las <strong>descargas electrostáticas (ESD)</strong> pueden dañar componentes electrónicos sensibles, como circuitos integrados CMOS y MOSFET.</p>
+                      <p>El <strong>efecto triboeléctrico</strong> genera cargas por fricción o contacto entre materiales. La humedad reduce la generación de cargas estáticas.</p>
+                      <p>Los dispositivos sensibles a ESD se manejan con: <strong>pulseras antiestáticas</strong>, <strong>bolsas antiestáticas</strong>, <strong>alfombras conductoras</strong> y <strong>planchas de trabajo con puesta a tierra</strong>.</p>
+                      <p>Las etiquetas de advertencia ESD tienen fondo amarillo con símbolos negros. Es importante no tocar pines o conductores visibles.</p>`,
+                en: `<p><strong>Electrostatic discharges (ESD)</strong> can damage sensitive electronic components, such as CMOS and MOSFET integrated circuits.</p>
+                      <p>The <strong>triboelectric effect</strong> generates charges by friction or contact between materials. Humidity reduces static charge generation.</p>
+                      <p>ESD-sensitive devices are handled with: <strong>anti-static wrist straps</strong>, <strong>anti-static bags</strong>, <strong>conductive mats</strong> and <strong>grounded workbenches</strong>.</p>
+                      <p>ESD warning labels have yellow background with black symbols. It is important not to touch pins or visible conductors.</p>`
+            }
+        }, {
+            id: '5.13',
+            parte: 'Gestión de Software',
+            titulo: { es: 'Restricciones y requisitos de aeronavegabilidad del software',
+                en: 'Software management control and airworthiness requirements' },
+            contenido: {
+                es: `<p>El <strong>software de aviónica</strong> debe ser certificado según normas como DO-178B (Software Considerations in Airborne Systems).</p>
+                      <p>El ciclo de vida del software incluye: definición de requisitos, diseño, codificación, integración, pruebas, instalación y mantenimiento.</p>
+                      <p>Las pruebas incluyen datos típicos, válidos no usuales e incorrectos para verificar las rutinas de error.</p>
+                      <p>Los cambios no aprobados en el software pueden causar la pérdida catastrófica del sistema o de la aeronave. Todo cambio requiere aprobación del fabricante o autoridad reguladora.</p>
+                      <p>La documentación del software incluye: descripción del sistema, descripción del programa, definición de problemas e instrucciones para el operador.</p>`,
+                en: `<p><strong>Avionics software</strong> must be certified according to standards such as DO-178B (Software Considerations in Airborne Systems).</p>
+                      <p>The software lifecycle includes: requirements definition, design, coding, integration, testing, installation and maintenance.</p>
+                      <p>Testing includes typical, unusual but valid, and incorrect data to verify error routines.</p>
+                      <p>Unapproved software changes can cause catastrophic loss of the system or aircraft. Any change requires approval from the manufacturer or regulatory authority.</p>
+                      <p>Software documentation includes: system description, program description, problem definition and operator instructions.</p>`
+            }
+        }, {
+            id: '5.14',
+            parte: 'Entorno Electromagnético',
+            titulo: { es: 'EMC, EMI, HIRF, rayos y protección contra rayos',
+                en: 'EMC, EMI, HIRF, lightning and lightning protection' },
+            contenido: {
+                es: `<p><strong>EMC (Compatibilidad Electromagnética):</strong> capacidad de un sistema para operar sin generar o ser susceptible a interferencias.</p>
+                      <p><strong>EMI (Interferencia Electromagnética):</strong> perturbación que interrumpe el rendimiento de equipos electrónicos. Puede ser conducida o irradiada.</p>
+                      <p><strong>HIRF (Campos Radiados de Alta Intensidad):</strong> campos electromagnéticos de alta potencia que pueden afectar a la aviónica.</p>
+                      <p>Los <strong>rayos</strong> pueden causar daños estructurales, ignición de combustible e interferencias en sistemas electrónicos. La protección incluye <strong>bonding</strong> (conexión equipotencial) y <strong>apantallamiento</strong>.</p>
+                      <p>Fuentes de EMI: fuentes de amplio espectro (relés, motores, rayos), fuentes de espectro estrecho (redes de potencia) y dispositivos digitales.</p>`,
+                en: `<p><strong>EMC (Electromagnetic Compatibility):</strong> ability of a system to operate without generating or being susceptible to interference.</p>
+                      <p><strong>EMI (Electromagnetic Interference):</strong> disturbance that interrupts the performance of electronic equipment. Can be conducted or radiated.</p>
+                      <p><strong>HIRF (High Intensity Radiated Fields):</strong> high-power electromagnetic fields that can affect avionics.</p>
+                      <p><strong>Lightning</strong> can cause structural damage, fuel ignition and interference in electronic systems. Protection includes <strong>bonding</strong> (equipotential connection) and <strong>shielding</strong>.</p>
+                      <p>EMI sources: broad spectrum (relays, motors, lightning), narrow spectrum (power networks) and digital devices.</p>`
+            }
+        }, {
+            id: '5.15.1',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'ACARS - ARINC', en: 'ACARS - ARINC' },
+            contenido: {
+                es: `<p><strong>ACARS (Aircraft Communication Addressing and Reporting System):</strong> sistema de enlace de datos automático para transmisión entre aeronave y estación en tierra. Utiliza canales VHF o satélite.</p>
+                      <p>Los mensajes se codifican según protocolo ARINC. Incluye: mensajes de texto, ATIS, actualizaciones de plan de vuelo, diagnósticos de sistemas, autorizaciones de control de tráfico e información meteorológica.</p>
+                      <p>El hardware incluye: receptor VHF o satélite, unidad de elaboración de datos (DMU) y CDU (interfaz de usuario del FMS). La comunicación usa bus ARINC 429.</p>`,
+                en: `<p><strong>ACARS (Aircraft Communication Addressing and Reporting System):</strong> automatic data link system for transmission between aircraft and ground station. Uses VHF or satellite channels.</p>
+                      <p>Messages are coded according to ARINC protocol. Includes: text messages, ATIS, flight plan updates, system diagnostics, air traffic control authorisations and weather information.</p>
+                      <p>Hardware includes: VHF or satellite receiver, Data Management Unit (DMU) and CDU (FMS user interface). Communication uses ARINC 429 bus.</p>`
+            }
+        }, {
+            id: '5.15.2',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'ECAM - EICAS', en: 'ECAM - EICAS' },
+            contenido: {
+                es: `<p><strong>EICAS (Engine Indication and Crew Alerting System):</strong> muestra información de motores y sistemas, con alertas de fallos. <strong>ECAM (Electronic Centralized Aircraft Monitoring):</strong> similar, pero además muestra acciones correctivas y limitaciones operativas.</p>
+                      <p>Los parámetros de motor incluyen: ITT, índice de potencia, N1, N2, presión de aceite, temperatura de aceite, flujo de combustible, etc.</p>
+                      <p>Clasificación cromática de prioridades: <strong>rojo</strong> (emergencia, requiere acción inmediata), <strong>ámbar</strong> (precaución), <strong>verde</strong> (normal), <strong>blanco</strong> (información).</p>`,
+                en: `<p><strong>EICAS (Engine Indication and Crew Alerting System):</strong> displays engine and system information with failure alerts. <strong>ECAM (Electronic Centralized Aircraft Monitoring):</strong> similar, but also shows corrective actions and operational limitations.</p>
+                      <p>Engine parameters include: ITT, power index, N1, N2, oil pressure, oil temperature, fuel flow, etc.</p>
+                      <p>Chromatic priority classification: <strong>red</strong> (emergency, immediate action), <strong>amber</strong> (caution), <strong>green</strong> (normal), <strong>white</strong> (information).</p>`
+            }
+        }, {
+            id: '5.15.3',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'EFIS (Electronic Flight Instrument System)', en: 'EFIS (Electronic Flight Instrument System)' },
+            contenido: {
+                es: `<p><strong>EFIS</strong> es el sistema de instrumentos electrónicos de vuelo. Reemplaza los instrumentos mecánicos clásicos. Incluye:</p>
+                      <ul>
+                        <li><strong>EADI/PFD (Electronic Attitude Direction Indicator / Primary Flight Display):</strong> muestra información de actitud, velocidad, altitud y dirección. Horizonte artificial con cielo azul y tierra marrón.</li>
+                        <li><strong>EHSI/ND (Electronic Horizontal Situation Indicator / Navigation Display):</strong> muestra información de navegación y plan de vuelo.</li>
+                      </ul>
+                      <p>Modos del EHSI: ILS, VOR, PLAN, ARC, MAP y weather.</p>`,
+                en: `<p><strong>EFIS</strong> is the Electronic Flight Instrument System. It replaces classic mechanical instruments. Includes:</p>
+                      <ul>
+                        <li><strong>EADI/PFD (Electronic Attitude Direction Indicator / Primary Flight Display):</strong> displays attitude, speed, altitude and direction information. Artificial horizon with blue sky and brown ground.</li>
+                        <li><strong>EHSI/ND (Electronic Horizontal Situation Indicator / Navigation Display):</strong> displays navigation and flight plan information.</li>
+                      </ul>
+                      <p>EHSI modes: ILS, VOR, PLAN, ARC, MAP and weather.</p>`
+            }
+        }, {
+            id: '5.15.4',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'FBW (Fly-By-Wire)', en: 'FBW (Fly-By-Wire)' },
+            contenido: {
+                es: `<p><strong>Fly-By-Wire (FBW):</strong> sistema que controla la aeronave mediante computadores y cables eléctricos, reemplazando los sistemas mecánicos e hidráulicos tradicionales.</p>
+                      <p>Un transductor de posición envía una señal a un computador, que activa una servoválvula para mover la superficie de control hasta la posición comandada.</p>
+                      <p>Ventajas: ahorro de peso, controles de mantenimiento menos frecuentes, respuesta más rápida, sistemas de autoprotección y reconfiguración automatizados.</p>
+                      <p>El sistema es cuadri-redundante para garantizar la supervivencia en caso de fallo.</p>`,
+                en: `<p><strong>Fly-By-Wire (FBW):</strong> system that controls the aircraft using computers and electrical cables, replacing traditional mechanical and hydraulic systems.</p>
+                      <p>A position transducer sends a signal to a computer, which activates a servo valve to move the control surface to the commanded position.</p>
+                      <p>Advantages: weight saving, less frequent maintenance checks, faster response, automated self-protection and reconfiguration systems.</p>
+                      <p>The system is quad-redundant to ensure survival in case of failure.</p>`
+            }
+        }, {
+            id: '5.15.5',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'FMS (Flight Management System)', en: 'FMS (Flight Management System)' },
+            contenido: {
+                es: `<p><strong>FMS (Flight Management System):</strong> sistema aviónico que integra cálculo de posición, planificación de vuelo y monitorización de rendimiento.</p>
+                      <p>Permite seleccionar, activar y modificar parámetros de ruta y plan de vuelo. Se comunica con IRS, GPS y autopiloto mediante bus ARINC 429.</p>
+                      <p>Componentes: <strong>FMC (Flight Management Computer)</strong> (1 o 2), <strong>CDU/MCDU (Control Display Unit)</strong> (interfaz de usuario) y paneles de control.</p>
+                      <p>La base de datos del FMS incluye información de navegación, rutas predefinidas, aeropuertos y ayudas radioeléctricas. Se actualiza mediante data loader.</p>`,
+                en: `<p><strong>FMS (Flight Management System):</strong> avionic system that integrates position calculation, flight planning and performance monitoring.</p>
+                      <p>Allows selection, activation and modification of route and flight plan parameters. Communicates with IRS, GPS and autopilot via ARINC 429 bus.</p>
+                      <p>Components: <strong>FMC (Flight Management Computer)</strong> (1 or 2), <strong>CDU/MCDU (Control Display Unit)</strong> (user interface) and control panels.</p>
+                      <p>The FMS database includes navigation information, predefined routes, airports and radio aids. Updated via data loader.</p>`
+            }
+        }, {
+            id: '5.15.6',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'GPS (Global Positioning System)', en: 'GPS (Global Positioning System)' },
+            contenido: {
+                es: `<p><strong>GPS</strong> es un sistema global de navegación por satélite que determina la posición del usuario mediante una constelación de 31 satélites en 6 órbitas.</p>
+                      <p>Segmentos: <strong>espacial</strong> (satélites), <strong>control</strong> (estaciones en tierra) y <strong>usuario</strong> (receptores GPS).</p>
+                      <p>El principio de funcionamiento es la <strong>trilateración</strong>: midiendo el tiempo de viaje de la señal desde al menos 4 satélites se calcula la posición 3D.</p>
+                      <p>Sistemas de aumento: <strong>D-GPS</strong> (diferencial), <strong>LAAS</strong> (local), <strong>WAAS</strong> (americano), <strong>EGNOS</strong> (europeo).</p>`,
+                en: `<p><strong>GPS</strong> is a global satellite navigation system that determines user position using a constellation of 31 satellites in 6 orbits.</p>
+                      <p>Segments: <strong>space</strong> (satellites), <strong>control</strong> (ground stations) and <strong>user</strong> (GPS receivers).</p>
+                      <p>The operating principle is <strong>trilateration</strong>: measuring signal travel time from at least 4 satellites gives 3D position.</p>
+                      <p>Augmentation systems: <strong>D-GPS</strong> (differential), <strong>LAAS</strong> (local), <strong>WAAS</strong> (American), <strong>EGNOS</strong> (European).</p>`
+            }
+        }, {
+            id: '5.15.7',
+            parte: 'Sistemas Electrónicos/Digitales',
+            titulo: { es: 'IRS (Inertial Reference System)', en: 'IRS (Inertial Reference System)' },
+            contenido: {
+                es: `<p><strong>IRS (Sistema de Referencia Inercial):</strong> sistema de navegación independiente que determina la posición mediante sensores internos (giroscopios y acelerómetros).</p>
+                      <p>Componentes: <strong>plataforma inercial</strong> (giroscopios y acelerómetros), <strong>IRU (Inertial Reference Unit)</strong> (procesador) e <strong>IRMP (Inertial Reference Mode Panel)</strong> (panel de control).</p>
+                      <p>La alineación del sistema dura unos 10 minutos y debe realizarse antes de cada uso. Durante la alineación, los giroscopios detectan la rotación de la Tierra para determinar el norte verdadero.</p>
+                      <p>El sistema compensa la rotación terrestre (15.04°/h) y el transporte rate (curvatura de la Tierra).</p>`,
+                en: `<p><strong>IRS (Inertial Reference System):</strong> independent navigation system that determines position using internal sensors (gyroscopes and accelerometers).</p>
+                      <p>Components: <strong>inertial platform</strong> (gyroscopes and accelerometers), <strong>IRU (Inertial Reference Unit)</strong> (processor) and <strong>IRMP (Inertial Reference Mode Panel)</strong> (control panel).</p>
+                      <p>System alignment takes about 10 minutes and must be performed before each use. During alignment, gyroscopes detect Earth's rotation to determine true north.</p>
+                      <p>The system compensates for Earth's rotation (15.04°/h) and transport rate (Earth's curvature).</p>`
+            }
+        }];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema) - FUNCIÓN COMPACTA
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(es, en, optsEs, optsEn, correcta) {
+                preguntas.push({
+                    es: es,
+                    en: en,
+                    opciones: { es: optsEs, en: optsEn },
+                    correcta: correcta
+                });
+            }
+
+            // Generadores para cada tema (17 temas)
+            const generadores = [
+                // 0: 5.1
+                () => {
+                    add('¿Cuál es la disposición estándar "T básica" en la cabina?', 'What is the standard "basic T" arrangement in the cockpit?',
+                        ['ASI, Attitude, Altimeter, DG', 'Altimeter, ASI, Attitude, DG',
+                            'Attitude, ASI, Altimeter, DG', 'DG, Attitude, ASI, Altimeter'
+                        ],
+                        ['ASI, Attitude, Altimeter, DG', 'Altimeter, ASI, Attitude, DG',
+                            'Attitude, ASI, Altimeter, DG', 'DG, Attitude, ASI, Altimeter'
+                        ], 0);
+                    add('¿Qué sistema reemplaza los instrumentos analógicos en la cabina de cristal?',
+                        'Which system replaces analogue instruments in the glass cockpit?',
+                        ['EFIS', 'EICAS', 'ECAM', 'FMS'], ['EFIS', 'EICAS', 'ECAM', 'FMS'], 0);
+                    add('El EHSI muestra información de:', 'The EHSI displays information about:',
+                        ['Navegación', 'Actitud', 'Motor', 'Presión de combustible'],
+                        ['Navigation', 'Attitude', 'Engine', 'Fuel pressure'], 0);
+                    add('El EADI también se conoce como:', 'The EADI is also known as:',
+                        ['PFD', 'ND', 'MFD', 'EICAS'], ['PFD', 'ND', 'MFD', 'EICAS'], 0);
+                    add('¿Qué instrumento indica la velocidad de la aeronave?', 'Which instrument indicates aircraft speed?',
+                        ['ASI', 'VSI', 'Altímetro', 'Indicador de actitud'],
+                        ['ASI', 'VSI', 'Altimeter', 'Attitude indicator'], 0);
+                    add('El ECAM además de mostrar fallos, muestra:', 'ECAM in addition to showing failures, shows:',
+                        ['Acciones correctivas', 'Solo fallos', 'La velocidad', 'La altitud'],
+                        ['Corrective actions', 'Only failures', 'Speed', 'Altitude'], 0);
+                    add('En la cabina de cristal, el piloto tiene:', 'In the glass cockpit, the pilot has:',
+                        ['Un EADI y un EHSI', 'Solo un EADI', 'Solo un EHSI', 'Instrumentos analógicos'],
+                        ['One EADI and one EHSI', 'Only one EADI', 'Only one EHSI', 'Analogue instruments'], 0);
+                    add('El EICAS muestra información de:', 'EICAS displays information about:',
+                        ['Motores y sistemas', 'Navegación', 'Actitud', 'Comunicaciones'],
+                        ['Engines and systems', 'Navigation', 'Attitude', 'Communications'], 0);
+                    add('El concepto de "dark cockpit" significa:', 'The "dark cockpit" concept means:',
+                        ['Las luces están apagadas cuando todo funciona correctamente',
+                            'La cabina está siempre oscura',
+                            'No hay instrumentos',
+                            'Solo hay pantallas táctiles'
+                        ],
+                        ['Lights are off when everything is working correctly',
+                            'The cockpit is always dark',
+                            'There are no instruments',
+                            'There are only touchscreens'
+                        ], 0);
+                    add('El EFIS se compone de:', 'EFIS consists of:', ['EADI y EHSI', 'EICAS y ECAM', 'FMS y GPS',
+                        'ACARS y TCAS'
+                    ], ['EADI and EHSI', 'EICAS and ECAM', 'FMS and GPS', 'ACARS and TCAS'], 0);
+                },
+                // 1: 5.2
+                () => {
+                    add('La base del sistema binario es:', 'The base of the binary system is:', ['2', '8', '10',
+                        '16'
+                    ], ['2', '8', '10', '16'], 0);
+                    add('El número binario 1010 en decimal es:', 'The binary number 1010 in decimal is:', ['10',
+                        '8', '12', '14'
+                    ], ['10', '8', '12', '14'], 0);
+                    add('El sistema octal usa dígitos del:', 'The octal system uses digits from:', ['0 al 7',
+                        '0 al 9', '0 al 15', '0 al 1'
+                    ], ['0 to 7', '0 to 9', '0 to 15', '0 to 1'], 0);
+                    add('El sistema hexadecimal usa letras:', 'The hexadecimal system uses letters:',
+                        ['A-F (10-15)', 'A-G', 'A-Z', 'Solo números'],
+                        ['A-F (10-15)', 'A-G', 'A-Z', 'Only numbers'], 0);
+                    add('Un dígito hexadecimal equivale a:', 'One hexadecimal digit equals:', ['4 bits', '3 bits',
+                        '8 bits', '16 bits'
+                    ], ['4 bits', '3 bits', '8 bits', '16 bits'], 0);
+                    add('El número 173 en octal a decimal es:', 'The octal number 173 in decimal is:', ['123',
+                        '111', '125', '131'
+                    ], ['123', '111', '125', '131'], 0);
+                    add('El número A3 en hexadecimal a decimal es:', 'The hexadecimal number A3 in decimal is:',
+                        ['163', '163', '160', '166'], ['163', '163', '160', '166'], 0);
+                    add('Para convertir decimal a binario se usan:', 'To convert decimal to binary, use:',
+                        ['Divisiones sucesivas por 2', 'Multiplicaciones por 2', 'Sumas', 'Restas'],
+                        ['Successive divisions by 2', 'Multiplications by 2', 'Additions', 'Subtractions'],
+                        0);
+                    add('El bit menos significativo (LSB) es:', 'The Least Significant Bit (LSB) is:',
+                        ['El bit de la derecha', 'El bit de la izquierda', 'El bit del centro',
+                            'El bit más grande'
+                        ],
+                        ['The rightmost bit', 'The leftmost bit', 'The middle bit', 'The largest bit'], 0);
+                    add('Con 4 bits se pueden representar:', 'With 4 bits you can represent:', ['16 números',
+                        '8 números', '32 números', '10 números'
+                    ],
+                        ['16 numbers', '8 numbers', '32 numbers', '10 numbers'], 0);
+                },
+                // 2: 5.3
+                () => {
+                    add('Una señal analógica es:', 'An analogue signal is:', ['Continua', 'Discreta', 'Binaria',
+                        'Digital'
+                    ],
+                        ['Continuous', 'Discrete', 'Binary', 'Digital'], 0);
+                    add('El proceso de conversión ADC incluye:', 'The ADC conversion process includes:',
+                        ['Muestreo, cuantificación y codificación', 'Solo muestreo', 'Solo codificación',
+                            'Solo cuantificación'
+                        ],
+                        ['Sampling, quantisation and coding', 'Only sampling', 'Only coding',
+                            'Only quantisation'
+                        ], 0);
+                    add('Un convertidor flash usa:', 'A flash converter uses:', ['Comparadores en paralelo',
+                        'Resistencias ponderadas', 'Capacitores', 'Inductores'
+                    ],
+                        ['Parallel comparators', 'Weighted resistors', 'Capacitors', 'Inductors'], 0);
+                    add('La resolución de un ADC depende de:', 'The resolution of an ADC depends on:',
+                        ['El número de bits', 'La tensión de referencia', 'La frecuencia', 'La temperatura'],
+                        ['The number of bits', 'The reference voltage', 'The frequency', 'The temperature'],
+                        0);
+                    add('Un DAC de resistencias ponderadas convierte:', 'A weighted resistor DAC converts:',
+                        ['Digital a analógico', 'Analógico a digital', 'Binario a octal', 'Octal a hexadecimal'],
+                        ['Digital to analogue', 'Analogue to digital', 'Binary to octal', 'Octal to hexadecimal'],
+                        0);
+                    add('La cuantificación produce:', 'Quantisation produces:', ['Pérdida de calidad',
+                        'Aumento de calidad', 'Misma calidad', 'Señal analógica'
+                    ],
+                        ['Loss of quality', 'Increase in quality', 'Same quality', 'Analogue signal'], 0);
+                    add('En un ADC, el muestreo consiste en:', 'In an ADC, sampling consists of:',
+                        ['Leer la señal en intervalos regulares', 'Aproximar valores', 'Codificar en binario',
+                            'Amplificar la señal'
+                        ],
+                        ['Reading the signal at regular intervals', 'Approximating values', 'Coding in binary',
+                            'Amplifying the signal'
+                        ], 0);
+                    add('La codificación en un ADC convierte a:', 'Coding in an ADC converts to:',
+                        ['Binario', 'Octal', 'Hexadecimal', 'Analógico'],
+                        ['Binary', 'Octal', 'Hexadecimal', 'Analogue'], 0);
+                    add('Un DAC produce una salida:', 'A DAC produces an output:', ['Analógica', 'Digital',
+                        'Binaria', 'Discreta'
+                    ],
+                        ['Analogue', 'Digital', 'Binary', 'Discrete'], 0);
+                    add('La precisión de un ADC aumenta con:', 'The precision of an ADC increases with:',
+                        ['Más bits', 'Menos bits', 'Menor tensión', 'Mayor temperatura'],
+                        ['More bits', 'Fewer bits', 'Lower voltage', 'Higher temperature'], 0);
+                },
+                // 3: 5.4
+                () => {
+                    add('ARINC 429 es un bus:', 'ARINC 429 is a bus:', ['Unidireccional', 'Bidireccional',
+                        'Multidireccional', 'En paralelo'
+                    ],
+                        ['Unidirectional', 'Bidirectional', 'Multidirectional', 'Parallel'], 0);
+                    add('Una palabra ARINC 429 tiene:', 'An ARINC 429 word has:', ['32 bits', '20 bits', '16 bits',
+                        '8 bits'
+                    ],
+                        ['32 bits', '20 bits', '16 bits', '8 bits'], 0);
+                    add('La velocidad alta de ARINC 429 es:', 'The high speed of ARINC 429 is:',
+                        ['100 kbit/s', '12 kbit/s', '1 Mbit/s', '10 Mbit/s'],
+                        ['100 kbit/s', '12 kbit/s', '1 Mbit/s', '10 Mbit/s'], 0);
+                    add('El bus MIL-STD-1553 tiene estructura:', 'The MIL-STD-1553 bus has structure:',
+                        ['Maestro-esclavo', 'Punto a punto', 'Estrella', 'Anillo'],
+                        ['Master-slave', 'Point-to-point', 'Star', 'Ring'], 0);
+                    add('En MIL-STD-1553, el BC es:', 'In MIL-STD-1553, the BC is:',
+                        ['Bus Controller', 'Bus Monitor', 'Remote Terminal', 'Bus Cable'],
+                        ['Bus Controller', 'Bus Monitor', 'Remote Terminal', 'Bus Cable'], 0);
+                    add('AFDX se basa en tecnología:', 'AFDX is based on technology:', ['Ethernet', 'ARINC 429',
+                        'MIL-STD-1553', 'USB'
+                    ],
+                        ['Ethernet', 'ARINC 429', 'MIL-STD-1553', 'USB'], 0);
+                    add('AFDX utiliza enlaces:', 'AFDX uses links:', ['Virtuales (VL)', 'Físicos', 'Dedicados',
+                        'Analógicos'
+                    ],
+                        ['Virtual (VL)', 'Physical', 'Dedicated', 'Analogue'], 0);
+                    add('La transmisión paralela usa:', 'Parallel transmission uses:', ['Múltiples hilos',
+                        'Un hilo', 'Fibra óptica', 'Ondas de radio'
+                    ],
+                        ['Multiple wires', 'One wire', 'Fiber optic', 'Radio waves'], 0);
+                    add('La transmisión serie es:', 'Serial transmission is:',
+                        ['Más económica para largas distancias', 'Más rápida', 'Más cara',
+                            'Más susceptible a errores'
+                        ],
+                        ['More economical for long distances', 'Faster', 'More expensive',
+                            'More susceptible to errors'
+                        ], 0);
+                    add('AFDX tiene redundancia de red con:', 'AFDX has network redundancy with:',
+                        ['Redes A y B', 'Redes A, B y C', 'Redundancia simple', 'Sin redundancia'],
+                        ['A and B networks', 'A, B and C networks', 'Simple redundancy', 'No redundancy'], 0);
+                },
+                // 4: 5.5
+                () => {
+                    add('La puerta NOT realiza:', 'The NOT gate performs:', ['Inversión', 'Suma', 'Multiplicación',
+                        'Comparación'
+                    ],
+                        ['Inversion', 'Addition', 'Multiplication', 'Comparison'], 0);
+                    add('La puerta AND da 1 solo si:', 'The AND gate gives 1 only if:',
+                        ['Todas las entradas son 1', 'Al menos una entrada es 1', 'Ninguna entrada es 1',
+                            'Las entradas son diferentes'
+                        ],
+                        ['All inputs are 1', 'At least one input is 1', 'No input is 1',
+                            'Inputs are different'
+                        ], 0);
+                    add('La puerta OR da 0 solo si:', 'The OR gate gives 0 only if:',
+                        ['Todas las entradas son 0', 'Al menos una entrada es 0', 'Todas las entradas son 1',
+                            'Las entradas son diferentes'
+                        ],
+                        ['All inputs are 0', 'At least one input is 0', 'All inputs are 1',
+                            'Inputs are different'
+                        ], 0);
+                    add('La puerta NAND es equivalente a:', 'The NAND gate is equivalent to:',
+                        ['AND negado', 'OR negado', 'AND', 'OR'],
+                        ['Inverted AND', 'Inverted OR', 'AND', 'OR'], 0);
+                    add('La puerta NOR es equivalente a:', 'The NOR gate is equivalent to:',
+                        ['OR negado', 'AND negado', 'OR', 'AND'],
+                        ['Inverted OR', 'Inverted AND', 'OR', 'AND'], 0);
+                    add('La puerta EXOR da 1 cuando:', 'The EXOR gate gives 1 when:',
+                        ['Las entradas son diferentes', 'Las entradas son iguales', 'Ambas son 1',
+                            'Ambas son 0'
+                        ],
+                        ['Inputs are different', 'Inputs are the same', 'Both are 1', 'Both are 0'], 0);
+                    add('Una tabla de verdad muestra:', 'A truth table shows:',
+                        ['Todas las combinaciones entrada-salida', 'Solo la salida', 'Solo la entrada',
+                            'Las combinaciones de resistencias'
+                        ],
+                        ['All input-output combinations', 'Only the output', 'Only the input',
+                            'Resistance combinations'
+                        ], 0);
+                    add('La expresión de NAND con dos entradas es:', 'The NAND expression with two inputs is:',
+                        ['\(S = \overline{A \cdot B}\)', '\(S = A \cdot B\)', '\(S = \overline{A + B}\)',
+                            '\(S = A + B\)'
+                        ],
+                        ['\(S = \overline{A \cdot B}\)', '\(S = A \cdot B\)', '\(S = \overline{A + B}\)',
+                            '\(S = A + B\)'
+                        ], 0);
+                    add('La expresión de NOR con dos entradas es:', 'The NOR expression with two inputs is:',
+                        ['\(S = \overline{A + B}\)', '\(S = \overline{A \cdot B}\)', '\(S = A + B\)',
+                            '\(S = A \cdot B\)'
+                        ],
+                        ['\(S = \overline{A + B}\)', '\(S = \overline{A \cdot B}\)', '\(S = A + B\)',
+                            '\(S = A \cdot B\)'
+                        ], 0);
+                    add('En lógica positiva, el estado alto corresponde a:', 'In positive logic, high state corresponds to:',
+                        ['Presencia de voltaje (1)', 'Ausencia de voltaje (0)', 'Cero voltios',
+                            'Voltaje negativo'
+                        ],
+                        ['Presence of voltage (1)', 'Absence of voltage (0)', 'Zero volts',
+                            'Negative voltage'
+                        ], 0);
+                },
+                // 5: 5.6
+                () => {
+                    add('Un byte son:', 'A byte is:', ['8 bits', '4 bits', '16 bits', '32 bits'],
+                        ['8 bits', '4 bits', '16 bits', '32 bits'], 0);
+                    add('La CPU realiza las operaciones:', 'The CPU performs the operations:',
+                        ['Fetch, decode, execute, write-back', 'Solo fetch', 'Solo execute',
+                            'Solo decode'
+                        ],
+                        ['Fetch, decode, execute, write-back', 'Only fetch', 'Only execute',
+                            'Only decode'
+                        ], 0);
+                    add('La RAM es una memoria:', 'RAM is a memory:', ['Volátil', 'No volátil',
+                        'De solo lectura', 'Programable una vez'
+                    ],
+                        ['Volatile', 'Non-volatile', 'Read-only', 'Programmable once'], 0);
+                    add('La ROM es una memoria:', 'ROM is a memory:', ['No volátil', 'Volátil',
+                        'De acceso aleatorio', 'De solo escritura'
+                    ],
+                        ['Non-volatile', 'Volatile', 'Random access', 'Write-only'], 0);
+                    add('La PROM puede ser programada:', 'PROM can be programmed:',
+                        ['Una vez por el usuario', 'Múltiples veces', 'Solo por el fabricante',
+                            'Con luz ultravioleta'
+                        ],
+                        ['Once by the user', 'Multiple times', 'Only by the manufacturer',
+                            'With ultraviolet light'
+                        ], 0);
+                    add('La EPROM se borra con:', 'EPROM is erased with:', ['Luz ultravioleta',
+                        'Electricidad', 'Calor', 'Láser'
+                    ],
+                        ['Ultraviolet light', 'Electricity', 'Heat', 'Laser'], 0);
+                    add('La EEPROM se borra con:', 'EEPROM is erased with:', ['Electricidad', 'Luz ultravioleta',
+                        'Calor', 'Láser'
+                    ],
+                        ['Electricity', 'Ultraviolet light', 'Heat', 'Laser'], 0);
+                    add('El hardware es:', 'Hardware is:', ['Componentes físicos', 'Programas',
+                        'Datos', 'Documentación'
+                    ],
+                        ['Physical components', 'Programs', 'Data', 'Documentation'], 0);
+                    add('El software es:', 'Software is:', ['Programas y datos', 'Componentes físicos',
+                        'Dispositivos electrónicos', 'Cables'
+                    ],
+                        ['Programs and data', 'Physical components', 'Electronic devices', 'Cables'], 0);
+                    add('Las memorias flash son un tipo de:', 'Flash memories are a type of:',
+                        ['EEPROM', 'RAM', 'ROM', 'PROM'], ['EEPROM', 'RAM', 'ROM', 'PROM'], 0);
+                },
+                // 6: 5.10
+                () => {
+                    add('Una fibra óptica consta de:', 'An optical fiber consists of:',
+                        ['Núcleo, revestimiento y cubierta', 'Solo núcleo', 'Solo revestimiento',
+                            'Cubierta y núcleo'
+                        ],
+                        ['Core, cladding and jacket', 'Only core', 'Only cladding', 'Jacket and core'], 0);
+                    add('La transmisión en fibra óptica se basa en:', 'Transmission in fiber optics is based on:',
+                        ['Reflexión total interna', 'Refracción', 'Difracción', 'Dispersión'],
+                        ['Total internal reflection', 'Refraction', 'Diffraction', 'Dispersion'], 0);
+                    add('Ventaja de la fibra óptica:', 'Advantage of fiber optics:',
+                        ['Inmunidad a EMI', 'Menor velocidad', 'Mayor peso', 'Mayor atenuación'],
+                        ['Immunity to EMI', 'Lower speed', 'Higher weight', 'Higher attenuation'], 0);
+                    add('Desventaja de la fibra óptica:', 'Disadvantage of fiber optics:',
+                        ['Componentes más caros', 'Menor ancho de banda', 'Mayor atenuación',
+                            'Susceptibilidad a EMI'
+                        ],
+                        ['More expensive components', 'Lower bandwidth', 'Higher attenuation',
+                            'Susceptibility to EMI'
+                        ], 0);
+                    add('La fibra monomodo permite:', 'Single-mode fiber allows:',
+                        ['Un solo modo de propagación', 'Varios modos', 'Mayor atenuación',
+                            'Mayor diámetro de núcleo'
+                        ],
+                        ['Only one propagation mode', 'Several modes', 'Higher attenuation',
+                            'Larger core diameter'
+                        ], 0);
+                    add('La apertura numérica (NA) mide:', 'Numerical aperture (NA) measures:',
+                        ['La capacidad de aceptar luz', 'La longitud de onda', 'La velocidad',
+                            'La atenuación'
+                        ],
+                        ['Light acceptance capacity', 'Wavelength', 'Speed', 'Attenuation'], 0);
+                    add('La fibra multimodo tiene:', 'Multi-mode fiber has:',
+                        ['Mayor diámetro de núcleo', 'Menor diámetro de núcleo', 'Un solo modo',
+                            'Menor ancho de banda'
+                        ],
+                        ['Larger core diameter', 'Smaller core diameter', 'Single mode',
+                            'Lower bandwidth'
+                        ], 0);
+                    add('La atenuación en fibra óptica es:', 'Attenuation in fiber optics is:',
+                        ['Baja', 'Alta', 'Media', 'Nula'], ['Low', 'High', 'Medium', 'Zero'], 0);
+                    add('El revestimiento tiene índice de refracción:', 'The cladding has refractive index:',
+                        ['Menor que el núcleo', 'Mayor que el núcleo', 'Igual', 'Cero'],
+                        ['Lower than core', 'Higher than core', 'Equal', 'Zero'], 0);
+                    add('La fibra óptica es inmune a:', 'Fiber optics is immune to:',
+                        ['Interferencias electromagnéticas', 'Rayos', 'Temperaturas extremas',
+                            'Todos los anteriores'
+                        ],
+                        ['Electromagnetic interference', 'Lightning', 'Extreme temperatures',
+                            'All of the above'
+                        ], 3);
+                },
+                // 7: 5.11
+                () => {
+                    add('El CRT utiliza:', 'CRT uses:', ['Cañones de electrones y fósforos', 'Cristales líquidos',
+                        'LEDs', 'Plasma'
+                    ],
+                        ['Electron guns and phosphors', 'Liquid crystals', 'LEDs', 'Plasma'], 0);
+                    add('El LCD utiliza:', 'LCD uses:', ['Cristales líquidos', 'Cañones de electrones',
+                        'LEDs', 'Plasma'
+                    ],
+                        ['Liquid crystals', 'Electron guns', 'LEDs', 'Plasma'], 0);
+                    add('El LED emite luz por:', 'LED emits light by:', ['Recombinación de electrones y huecos',
+                        'Calentamiento', 'Fósforos', 'Gas ionizado'
+                    ],
+                        ['Electron-hole recombination', 'Heating', 'Phosphors', 'Ionised gas'], 0);
+                    add('Ventaja del LCD sobre CRT:', 'Advantage of LCD over CRT:',
+                        ['Menor consumo', 'Mayor tamaño', 'Mayor peso', 'Mayor precio'],
+                        ['Lower consumption', 'Larger size', 'Higher weight', 'Higher price'], 0);
+                    add('El plasma utiliza:', 'Plasma uses:', ['Gas ionizado', 'Cristales líquidos', 'LEDs',
+                        'Cañones de electrones'
+                    ],
+                        ['Ionised gas', 'Liquid crystals', 'LEDs', 'Electron guns'], 0);
+                    add('El LED se usa en:', 'LED is used in:', ['Indicadores y retroiluminación',
+                        'Pantallas de plasma', 'Monitores CRT', 'Proyectores'
+                    ],
+                        ['Indicators and backlighting', 'Plasma displays', 'CRT monitors', 'Projectors'],
+                        0);
+                    add('La resolución de una pantalla se mide en:', 'Display resolution is measured in:',
+                        ['Píxeles', 'Pulgadas', 'Hertz', 'Lúmenes'], ['Pixels', 'Inches', 'Hertz', 'Lumens'],
+                        0);
+                    add('El fenómeno de parpadeo (flicker) ocurre cuando:', 'Flicker occurs when:',
+                        ['La frecuencia de refresco es baja', 'La resolución es alta',
+                            'El contraste es bajo', 'La luminosidad es alta'
+                        ],
+                        ['Refresh rate is low', 'Resolution is high', 'Contrast is low',
+                            'Brightness is high'
+                        ], 0);
+                    add('La síntesis aditiva de colores usa:', 'Additive colour synthesis uses:',
+                        ['Rojo, verde y azul', 'Cian, magenta y amarillo', 'Rojo, amarillo y azul',
+                            'Verde, azul y blanco'
+                        ],
+                        ['Red, green and blue', 'Cyan, magenta and yellow', 'Red, yellow and blue',
+                            'Green, blue and white'
+                        ], 0);
+                    add('El LCD es más delgado que:', 'LCD is thinner than:', ['CRT', 'LED', 'Plasma',
+                        'OLED'
+                    ],
+                        ['CRT', 'LED', 'Plasma', 'OLED'], 0);
+                },
+                // 8: 5.12
+                () => {
+                    add('ESD significa:', 'ESD stands for:', ['Descarga electrostática', 'Electrónica estándar',
+                        'Sistema de energía', 'Dispositivo semiconductor'
+                    ],
+                        ['Electrostatic discharge', 'Standard electronics', 'Energy system',
+                            'Semiconductor device'
+                        ], 0);
+                    add('El efecto triboeléctrico genera cargas por:', 'The triboelectric effect generates charges by:',
+                        ['Fricción o contacto', 'Calor', 'Luz', 'Presión'],
+                        ['Friction or contact', 'Heat', 'Light', 'Pressure'], 0);
+                    add('La humedad reduce:', 'Humidity reduces:',
+                        ['La generación de cargas estáticas', 'La conductividad',
+                            'La resistencia eléctrica', 'El voltaje'
+                        ],
+                        ['Static charge generation', 'Conductivity', 'Electrical resistance',
+                            'Voltage'
+                        ], 0);
+                    add('Los componentes ESD se manejan con:', 'ESD components are handled with:',
+                        ['Pulseras antiestáticas', 'Guantes de goma', 'Gafas de seguridad',
+                            'Máscaras'
+                        ],
+                        ['Anti-static wrist straps', 'Rubber gloves', 'Safety glasses', 'Masks'], 0);
+                    add('Las bolsas antiestáticas son:', 'Anti-static bags are:',
+                        ['Conductoras y resistivas', 'Aislantes', 'Metálicas', 'Plásticas'],
+                        ['Conductive and resistive', 'Insulating', 'Metallic', 'Plastic'], 0);
+                    add('La etiqueta ESD tiene fondo:', 'The ESD label has a background:',
+                        ['Amarillo', 'Rojo', 'Verde', 'Azul'], ['Yellow', 'Red', 'Green', 'Blue'], 0);
+                    add('No tocar pines o conductores visibles para:', 'Do not touch pins or visible conductors to:',
+                        ['Evitar daños por ESD', 'Evitar quemaduras', 'Evitar cortocircuitos',
+                            'Evitar descargas eléctricas'
+                        ],
+                        ['Avoid ESD damage', 'Avoid burns', 'Avoid short circuits', 'Avoid electric shock'],
+                        0);
+                    add('Las alfombras conductoras se usan para:', 'Conductive mats are used for:',
+                        ['Disipar cargas estáticas', 'Aislar eléctricamente', 'Calentar el suelo',
+                            'Decorar'
+                        ],
+                        ['Dissipate static charges', 'Electrically insulate', 'Heat the floor', 'Decorate'],
+                        0);
+                    add('La puesta a tierra (grounding) en ESD sirve para:', 'Grounding in ESD serves to:',
+                        ['Igualar potenciales', 'Aumentar voltaje', 'Generar corriente',
+                            'Aislar dispositivos'
+                        ],
+                        ['Equalise potentials', 'Increase voltage', 'Generate current', 'Isolate devices'],
+                        0);
+                    add('Los dispositivos CMOS son sensibles a:', 'CMOS devices are sensitive to:',
+                        ['ESD', 'Calor', 'Luz', 'Agua'], ['ESD', 'Heat', 'Light', 'Water'], 0);
+                },
+                // 9: 5.13
+                () => {
+                    add('El software de aviónica se certifica según:', 'Avionics software is certified according to:',
+                        ['DO-178B', 'ARINC 429', 'MIL-STD-1553', 'IEEE 802.3'],
+                        ['DO-178B', 'ARINC 429', 'MIL-STD-1553', 'IEEE 802.3'], 0);
+                    add('El ciclo de vida del software incluye:', 'The software lifecycle includes:',
+                        ['Requisitos, diseño, codificación, pruebas', 'Solo codificación',
+                            'Solo pruebas', 'Solo diseño'
+                        ],
+                        ['Requirements, design, coding, testing', 'Only coding', 'Only testing',
+                            'Only design'
+                        ], 0);
+                    add('Los cambios no aprobados en software pueden causar:', 'Unapproved software changes can cause:',
+                        ['Pérdida catastrófica del sistema', 'Mejora del rendimiento',
+                            'Reducción de costes', 'Aumento de velocidad'
+                        ],
+                        ['Catastrophic system loss', 'Performance improvement', 'Cost reduction',
+                            'Speed increase'
+                        ], 0);
+                    add('Las pruebas de software incluyen:', 'Software testing includes:',
+                        ['Datos típicos, válidos no usuales e incorrectos', 'Solo datos típicos',
+                            'Solo datos incorrectos', 'Solo datos válidos'
+                        ],
+                        ['Typical, unusual valid and incorrect data', 'Only typical data',
+                            'Only incorrect data', 'Only valid data'
+                        ], 0);
+                    add('La documentación del software incluye:', 'Software documentation includes:',
+                        ['Descripción del sistema, programa y problemas', 'Solo el código',
+                            'Solo los requisitos', 'Solo las pruebas'
+                        ],
+                        ['System, program and problem description', 'Only the code',
+                            'Only the requirements', 'Only the tests'
+                        ], 0);
+                    add('La aprobación de cambios de software requiere:', 'Approval of software changes requires:',
+                        ['Autorización del fabricante o autoridad reguladora', 'Solo del fabricante',
+                            'Solo del usuario', 'No requiere aprobación'
+                        ],
+                        ['Manufacturer or regulatory authority approval', 'Only manufacturer',
+                            'Only user', 'No approval required'
+                        ], 0);
+                    add('El objetivo de las pruebas de software es:', 'The objective of software testing is:',
+                        ['Verificar que los datos se procesan correctamente', 'Aumentar la velocidad',
+                            'Reducir el tamaño', 'Mejorar la interfaz'
+                        ],
+                        ['Verify that data is processed correctly', 'Increase speed',
+                            'Reduce size', 'Improve interface'
+                        ], 0);
+                    add('Un programa está listo para instalación cuando:', 'A program is ready for installation when:',
+                        ['Ha pasado todas las pruebas', 'No tiene errores', 'Es rápido', 'Es pequeño'],
+                        ['It has passed all tests', 'It has no errors', 'It is fast', 'It is small'], 0);
+                    add('La fase de integración y prueba es:', 'The integration and testing phase is:',
+                        ['La más importante', 'La menos importante', 'Opcional', 'Posterior a la instalación'],
+                        ['The most important', 'The least important', 'Optional', 'After installation'], 0);
+                    add('Las normas de aeronavegabilidad también aplican a:', 'Airworthiness requirements also apply to:',
+                        ['Hardware y software', 'Solo hardware', 'Solo software', 'Ninguno'],
+                        ['Hardware and software', 'Only hardware', 'Only software', 'None'], 0);
+                },
+                // 10: 5.14
+                () => {
+                    add('EMC significa:', 'EMC stands for:', ['Compatibilidad Electromagnética',
+                        'Interferencia Electromagnética', 'Campos Radiados de Alta Intensidad',
+                        'Sistema de Gestión Electrónica'
+                    ],
+                        ['Electromagnetic Compatibility', 'Electromagnetic Interference',
+                            'High Intensity Radiated Fields', 'Electronic Management System'
+                        ], 0);
+                    add('EMI significa:', 'EMI stands for:', ['Interferencia Electromagnética',
+                        'Compatibilidad Electromagnética', 'Campos Radiados de Alta Intensidad',
+                        'Sistema de Gestión Electrónica'
+                    ],
+                        ['Electromagnetic Interference', 'Electromagnetic Compatibility',
+                            'High Intensity Radiated Fields', 'Electronic Management System'
+                        ], 0);
+                    add('HIRF significa:', 'HIRF stands for:', ['Campos Radiados de Alta Intensidad',
+                        'Interferencia Electromagnética', 'Compatibilidad Electromagnética',
+                        'Sistema de Gestión Electrónica'
+                    ],
+                        ['High Intensity Radiated Fields', 'Electromagnetic Interference',
+                            'Electromagnetic Compatibility', 'Electronic Management System'
+                        ], 0);
+                    add('La protección contra rayos incluye:', 'Lightning protection includes:',
+                        ['Bonding y apantallamiento', 'Solo aislamiento', 'Solo puesta a tierra',
+                            'Solo pararrayos'
+                        ],
+                        ['Bonding and shielding', 'Only insulation', 'Only grounding',
+                            'Only lightning rods'
+                        ], 0);
+                    add('Las fuentes de EMI de amplio espectro son:', 'Broad spectrum EMI sources are:',
+                        ['Relés, motores y rayos', 'Redes de potencia', 'Dispositivos digitales',
+                            'Computadores'
+                        ],
+                        ['Relays, motors and lightning', 'Power networks', 'Digital devices', 'Computers'],
+                        0);
+                    add('El bonding en aviación sirve para:', 'Bonding in aviation serves to:',
+                        ['Igualar potenciales eléctricos', 'Aislar componentes', 'Reducir peso',
+                            'Mejorar la aerodinámica'
+                        ],
+                        ['Equalise electrical potentials', 'Isolate components', 'Reduce weight',
+                            'Improve aerodynamics'
+                        ], 0);
+                    add('La conductividad del fuselaje de aluminio:', 'The conductivity of aluminium fuselage:',
+                        ['Permite que la corriente de rayo fluya', 'Bloquea la corriente',
+                            'Aísla el avión', 'No afecta al rayo'
+                        ],
+                        ['Allows lightning current to flow', 'Blocks the current',
+                            'Isolates the aircraft', 'Does not affect lightning'
+                        ], 0);
+                    add('El SAR mide:', 'SAR measures:',
+                        ['Absorción de energía electromagnética por tejidos biológicos',
+                            'La intensidad del campo', 'La frecuencia', 'La potencia'
+                        ],
+                        ['Absorption of electromagnetic energy by biological tissues',
+                            'Field intensity', 'Frequency', 'Power'
+                        ], 0);
+                    add('La radiación ionizante incluye:', 'Ionising radiation includes:',
+                        ['Rayos X y gamma', 'Microondas', 'Radiofrecuencia', 'Luz visible'],
+                        ['X-rays and gamma rays', 'Microwaves', 'Radiofrequency', 'Visible light'], 0);
+                    add('El apantallamiento reduce:', 'Shielding reduces:', ['La EMI irradiada',
+                        'La EMI conducida', 'La resistencia', 'La potencia'
+                    ],
+                        ['Radiated EMI', 'Conducted EMI', 'Resistance', 'Power'], 0);
+                },
+                // 11: 5.15.1 ACARS
+                () => {
+                    add('ACARS utiliza canales:', 'ACARS uses channels:', ['VHF o satélite', 'HF o UHF',
+                        'Solo VHF', 'Solo satélite'
+                    ],
+                        ['VHF or satellite', 'HF or UHF', 'Only VHF', 'Only satellite'], 0);
+                    add('Los mensajes ACARS se codifican según:', 'ACARS messages are coded according to:',
+                        ['ARINC', 'MIL-STD-1553', 'AFDX', 'IEEE 802.3'],
+                        ['ARINC', 'MIL-STD-1553', 'AFDX', 'IEEE 802.3'], 0);
+                    add('ACARS transmite:', 'ACARS transmits:', ['Mensajes de texto, ATIS, diagnósticos',
+                        'Solo mensajes de texto', 'Solo diagnósticos', 'Solo meteorología'
+                    ],
+                        ['Text messages, ATIS, diagnostics', 'Only text messages', 'Only diagnostics',
+                            'Only weather'
+                        ], 0);
+                    add('El hardware ACARS incluye:', 'ACARS hardware includes:',
+                        ['Receptor VHF/satélite, DMU, CDU', 'Solo CDU', 'Solo DMU',
+                            'Solo receptor'
+                        ],
+                        ['VHF/satellite receiver, DMU, CDU', 'Only CDU', 'Only DMU',
+                            'Only receiver'
+                        ], 0);
+                    add('ACARS usa bus ARINC 429 para:', 'ACARS uses ARINC 429 bus for:',
+                        ['Comunicación entre unidades', 'Conexión a tierra', 'Alimentación',
+                            'Control de motores'
+                        ],
+                        ['Communication between units', 'Grounding', 'Power', 'Engine control'], 0);
+                    add('El DMU es la unidad de:', 'DMU is the unit of:', ['Elaboración de datos',
+                        'Control de vuelo', 'Navegación', 'Comunicación'
+                    ],
+                        ['Data management', 'Flight control', 'Navigation', 'Communication'], 0);
+                    add('La CDU es la interfaz de usuario del:', 'The CDU is the user interface of the:',
+                        ['FMS', 'ACARS', 'TCAS', 'IRS'], ['FMS', 'ACARS', 'TCAS', 'IRS'], 0);
+                    add('ACARS también puede usar:', 'ACARS can also use:',
+                        ['Comunicación por satélite', 'Cable coaxial', 'Fibra óptica', 'Infrarrojos'],
+                        ['Satellite communication', 'Coaxial cable', 'Fiber optics', 'Infrared'], 0);
+                    add('El sistema ACARS es:', 'The ACARS system is:', ['Automático', 'Manual',
+                        'Semi-automático', 'Analógico'
+                    ],
+                        ['Automatic', 'Manual', 'Semi-automatic', 'Analogue'], 0);
+                    add('ACARS mejora:', 'ACARS improves:',
+                        ['Comunicaciones automáticas y reduce carga de trabajo',
+                            'Solo la comunicación por voz',
+                            'Solo la navegación',
+                            'Solo el control de motor'
+                        ],
+                        ['Automatic communications and reduces workload',
+                            'Only voice communication',
+                            'Only navigation',
+                            'Only engine control'
+                        ], 0);
+                },
+                // 12: 5.15.2 ECAM-EICAS
+                () => {
+                    add('EICAS muestra:', 'EICAS displays:', ['Parámetros de motor y alertas',
+                        'Solo parámetros de motor', 'Solo alertas', 'Información de navegación'
+                    ],
+                        ['Engine parameters and alerts', 'Only engine parameters', 'Only alerts',
+                            'Navigation information'
+                        ], 0);
+                    add('ECAM además de fallos muestra:', 'ECAM in addition to failures shows:',
+                        ['Acciones correctivas', 'Solo fallos', 'La velocidad', 'La altitud'],
+                        ['Corrective actions', 'Only failures', 'Speed', 'Altitude'], 0);
+                    add('El color rojo en ECAM/EICAS significa:', 'Red colour in ECAM/EICAS means:',
+                        ['Emergencia', 'Precaución', 'Normal', 'Información'],
+                        ['Emergency', 'Caution', 'Normal', 'Information'], 0);
+                    add('El color ámbar en ECAM/EICAS significa:', 'Amber colour in ECAM/EICAS means:',
+                        ['Precaución', 'Emergencia', 'Normal', 'Información'],
+                        ['Caution', 'Emergency', 'Normal', 'Information'], 0);
+                    add('Los parámetros de motor incluyen:', 'Engine parameters include:',
+                        ['ITT, N1, N2, presión de aceite', 'Solo ITT', 'Solo N1', 'Solo velocidad'],
+                        ['ITT, N1, N2, oil pressure', 'Only ITT', 'Only N1', 'Only speed'], 0);
+                    add('EICAS es el sistema de:', 'EICAS is the system of:',
+                        ['Indicación de motores y alerta a la tripulación',
+                            'Indicación de motores solo',
+                            'Alerta a la tripulación solo',
+                            'Navegación'
+                        ],
+                        ['Engine indication and crew alerting',
+                            'Engine indication only',
+                            'Crew alerting only',
+                            'Navigation'
+                        ], 0);
+                    add('ECAM significa:', 'ECAM stands for:',
+                        ['Monitorización Centralizada Electrónica de la Aeronave',
+                            'Sistema de Indicación de Motores',
+                            'Sistema de Vuelo Electrónico',
+                            'Sistema de Control de Motores'
+                        ],
+                        ['Electronic Centralized Aircraft Monitoring',
+                            'Engine Indication System',
+                            'Electronic Flight System',
+                            'Engine Control System'
+                        ], 0);
+                    add('Los mensajes de emergencia van acompañados de:', 'Emergency messages are accompanied by:',
+                        ['Señal acústica y luz WARNING', 'Solo señal acústica',
+                            'Solo luz WARNING', 'Sin señal'
+                        ],
+                        ['Aural tone and WARNING light', 'Only aural tone', 'Only WARNING light',
+                            'No signal'
+                        ], 0);
+                    add('Las luces WARNING y CAUTION se apagan:', 'WARNING and CAUTION lights are turned off:',
+                        ['Pulsando el botón', 'Automáticamente', 'Al solucionar el fallo',
+                            'No se apagan'
+                        ],
+                        ['By pressing the button', 'Automatically', 'When fault is fixed',
+                            'They do not turn off'
+                        ], 0);
+                    add('El color verde en ECAM/EICAS significa:', 'Green colour in ECAM/EICAS means:',
+                        ['Normal', 'Emergencia', 'Precaución', 'Información'],
+                        ['Normal', 'Emergency', 'Caution', 'Information'], 0);
+                },
+                // 13: 5.15.3 EFIS
+                () => {
+                    add('EFIS reemplaza a los instrumentos:', 'EFIS replaces instruments:',
+                        ['Mecánicos clásicos', 'Digitales', 'De motor', 'De navegación'],
+                        ['Classic mechanical', 'Digital', 'Engine', 'Navigation'], 0);
+                    add('El EADI muestra información de:', 'EADI displays information about:',
+                        ['Actitud', 'Navegación', 'Motor', 'Comunicaciones'],
+                        ['Attitude', 'Navigation', 'Engine', 'Communications'], 0);
+                    add('El EHSI muestra información de:', 'EHSI displays information about:',
+                        ['Navegación', 'Actitud', 'Motor', 'Alertas'],
+                        ['Navigation', 'Attitude', 'Engine', 'Alerts'], 0);
+                    add('El horizonte artificial en EADI usa:', 'The artificial horizon in EADI uses:',
+                        ['Azul para cielo y marrón para tierra', 'Verde para cielo y marrón para tierra',
+                            'Azul para tierra y marrón para cielo', 'Blanco y negro'
+                        ],
+                        ['Blue for sky and brown for ground', 'Green for sky and brown for ground',
+                            'Blue for ground and brown for sky', 'Black and white'
+                        ], 0);
+                    add('Los modos del EHSI incluyen:', 'EHSI modes include:',
+                        ['ILS, VOR, PLAN, ARC, MAP', 'Solo MAP', 'Solo ILS', 'Solo VOR'],
+                        ['ILS, VOR, PLAN, ARC, MAP', 'Only MAP', 'Only ILS', 'Only VOR'], 0);
+                    add('EFIS significa:', 'EFIS stands for:',
+                        ['Sistema Electrónico de Instrumentos de Vuelo',
+                            'Sistema de Indicación de Motores',
+                            'Sistema de Control de Vuelo',
+                            'Sistema de Navegación'
+                        ],
+                        ['Electronic Flight Instrument System',
+                            'Engine Indication System',
+                            'Flight Control System',
+                            'Navigation System'
+                        ], 0);
+                    add('El PFD es otro nombre para:', 'PFD is another name for:',
+                        ['EADI', 'EHSI', 'ND', 'MFD'], ['EADI', 'EHSI', 'ND', 'MFD'], 0);
+                    add('El ND es otro nombre para:', 'ND is another name for:',
+                        ['EHSI', 'EADI', 'PFD', 'MFD'], ['EHSI', 'EADI', 'PFD', 'MFD'], 0);
+                    add('El modo MAP del EHSI se usa en:', 'MAP mode of EHSI is used in:',
+                        ['Vuelo de crucero', 'Aproximación', 'Planificación', 'Espera'],
+                        ['Cruise flight', 'Approach', 'Planning', 'Holding'], 0);
+                    add('El modo PLAN del EHSI se usa en:', 'PLAN mode of EHSI is used in:',
+                        ['Pre-vuelo', 'Aproximación', 'Crucero', 'Espera'],
+                        ['Pre-flight', 'Approach', 'Cruise', 'Holding'], 0);
+                },
+                // 14: 5.15.4 FBW
+                () => {
+                    add('FBW significa:', 'FBW stands for:', ['Fly-By-Wire', 'Fly-By-Wireless',
+                        'Fly-By-Wing', 'Fly-By-Weight'
+                    ],
+                        ['Fly-By-Wire', 'Fly-By-Wireless', 'Fly-By-Wing', 'Fly-By-Weight'], 0);
+                    add('FBW reemplaza sistemas:', 'FBW replaces systems:', ['Mecánicos e hidráulicos',
+                        'Solo mecánicos', 'Solo hidráulicos', 'Eléctricos'
+                    ],
+                        ['Mechanical and hydraulic', 'Only mechanical', 'Only hydraulic', 'Electrical'],
+                        0);
+                    add('Ventaja de FBW:', 'Advantage of FBW:', ['Ahorro de peso', 'Mayor peso',
+                        'Mantenimiento más frecuente', 'Respuesta más lenta'
+                    ],
+                        ['Weight saving', 'Higher weight', 'More frequent maintenance', 'Slower response'],
+                        0);
+                    add('FBW es un sistema:', 'FBW is a system:', ['Cuadri-redundante', 'Simple',
+                        'Doble-redundante', 'Sin redundancia'
+                    ],
+                        ['Quad-redundant', 'Simple', 'Double-redundant', 'No redundancy'], 0);
+                    add('En FBW, el joystick genera:', 'In FBW, the joystick generates:',
+                        ['Señales eléctricas', 'Señales hidráulicas', 'Señales mecánicas',
+                            'Señales neumáticas'
+                        ],
+                        ['Electrical signals', 'Hydraulic signals', 'Mechanical signals',
+                            'Pneumatic signals'
+                        ], 0);
+                    add('FBW contribuye a:', 'FBW contributes to:',
+                        ['Aumentar la seguridad del vuelo', 'Reducir la seguridad',
+                            'Aumentar el peso', 'Reducir la velocidad'
+                        ],
+                        ['Increasing flight safety', 'Reducing safety', 'Increasing weight',
+                            'Reducing speed'
+                        ], 0);
+                    add('En FBW, un transductor de posición envía señal a:', 'In FBW, a position transducer sends signal to:',
+                        ['Un computador', 'Un actuador hidráulico', 'Un motor', 'Un joystick'],
+                        ['A computer', 'A hydraulic actuator', 'A motor', 'A joystick'], 0);
+                    add('La reconfiguración en FBW es:', 'Reconfiguration in FBW is:',
+                        ['Automática', 'Manual', 'Semi-automática', 'No existe'],
+                        ['Automatic', 'Manual', 'Semi-automatic', 'Does not exist'], 0);
+                    add('FBW permite:', 'FBW allows:',
+                        ['Control de superficies mediante cables eléctricos',
+                            'Control mecánico directo',
+                            'Control hidráulico exclusivo',
+                            'Control neumático'
+                        ],
+                        ['Surface control via electrical cables',
+                            'Direct mechanical control',
+                            'Exclusive hydraulic control',
+                            'Pneumatic control'
+                        ], 0);
+                    add('El sistema FBW es más:', 'The FBW system is more:',
+                        ['Rápido y preciso', 'Lento', 'Pesado', 'Complejo de mantener'],
+                        ['Faster and more precise', 'Slower', 'Heavier', 'More complex to maintain'], 0);
+                },
+                // 15: 5.15.5 FMS
+                () => {
+                    add('FMS integra:', 'FMS integrates:',
+                        ['Cálculo de posición, planificación de vuelo y monitorización',
+                            'Solo cálculo de posición',
+                            'Solo planificación de vuelo',
+                            'Solo monitorización'
+                        ],
+                        ['Position calculation, flight planning and monitoring',
+                            'Only position calculation',
+                            'Only flight planning',
+                            'Only monitoring'
+                        ], 0);
+                    add('El FMC es el:', 'The FMC is the:',
+                        ['Computador de gestión de vuelo', 'Unidad de control de vuelo',
+                            'Pantalla de vuelo', 'Sistema de navegación'
+                        ],
+                        ['Flight management computer', 'Flight control unit', 'Flight display',
+                            'Navigation system'
+                        ], 0);
+                    add('La CDU es la interfaz de usuario del:', 'The CDU is the user interface of the:',
+                        ['FMS', 'ACARS', 'TCAS', 'IRS'], ['FMS', 'ACARS', 'TCAS', 'IRS'], 0);
+                    add('El FMS se comunica con IRS y GPS mediante:', 'FMS communicates with IRS and GPS via:',
+                        ['Bus ARINC 429', 'Bus MIL-STD-1553', 'AFDX', 'Ethernet'],
+                        ['ARINC 429 bus', 'MIL-STD-1553 bus', 'AFDX', 'Ethernet'], 0);
+                    add('La base de datos del FMS incluye:', 'The FMS database includes:',
+                        ['Información de navegación, rutas y aeropuertos', 'Solo aeropuertos',
+                            'Solo rutas', 'Solo ayudas radioeléctricas'
+                        ],
+                        ['Navigation information, routes and airports', 'Only airports',
+                            'Only routes', 'Only radio aids'
+                        ], 0);
+                    add('El MCDU es la versión:', 'The MCDU is the version:',
+                        ['Multifuncional de la CDU', 'Simplificada de la CDU',
+                            'Antigua de la CDU', 'Portátil de la CDU'
+                        ],
+                        ['Multifunctional of the CDU', 'Simplified of the CDU',
+                            'Old of the CDU', 'Portable of the CDU'
+                        ], 0);
+                    add('La base de datos del FMS se actualiza con:', 'The FMS database is updated with:',
+                        ['Data loader', 'Conexión Wi-Fi', 'Bluetooth', 'USB'],
+                        ['Data loader', 'Wi-Fi connection', 'Bluetooth', 'USB'], 0);
+                    add('El FMS permite:', 'FMS allows:',
+                        ['Seleccionar y modificar rutas y planes de vuelo', 'Solo ver rutas',
+                            'Solo modificar planes', 'Solo seleccionar aeropuertos'
+                        ],
+                        ['Select and modify routes and flight plans', 'Only view routes',
+                            'Only modify plans', 'Only select airports'
+                        ], 0);
+                    add('El autopiloto recibe datos del:', 'The autopilot receives data from:',
+                        ['FMS', 'ACARS', 'TCAS', 'ECAM'], ['FMS', 'ACARS', 'TCAS', 'ECAM'], 0);
+                    add('El FMS mejora:', 'FMS improves:',
+                        ['La eficiencia del vuelo y reduce la carga de trabajo',
+                            'Solo la navegación',
+                            'Solo el consumo de combustible',
+                            'Solo la comunicación'
+                        ],
+                        ['Flight efficiency and reduces workload',
+                            'Only navigation',
+                            'Only fuel consumption',
+                            'Only communication'
+                        ], 0);
+                },
+                // 16: 5.15.6 GPS
+                () => {
+                    add('GPS significa:', 'GPS stands for:',
+                        ['Sistema de Posicionamiento Global', 'Sistema de Posicionamiento por Satélite',
+                            'Sistema de Navegación Global', 'Sistema de Posicionamiento por Radio'
+                        ],
+                        ['Global Positioning System', 'Satellite Positioning System',
+                            'Global Navigation System', 'Radio Positioning System'
+                        ], 0);
+                    add('El segmento espacial del GPS tiene:', 'The GPS space segment has:',
+                        ['31 satélites', '24 satélites', '48 satélites', '16 satélites'],
+                        ['31 satellites', '24 satellites', '48 satellites', '16 satellites'], 0);
+                    add('La trilateración requiere al menos:', 'Trilateration requires at least:',
+                        ['4 satélites', '3 satélites', '2 satélites', '1 satélite'],
+                        ['4 satellites', '3 satellites', '2 satellites', '1 satellite'], 0);
+                    add('D-GPS significa:', 'D-GPS stands for:', ['GPS Diferencial', 'GPS Digital',
+                        'GPS Dinámico', 'GPS Dual'
+                    ],
+                        ['Differential GPS', 'Digital GPS', 'Dynamic GPS', 'Dual GPS'], 0);
+                    add('WAAS es el sistema de aumento:', 'WAAS is the augmentation system:',
+                        ['Americano', 'Europeo', 'Japonés', 'Chino'],
+                        ['American', 'European', 'Japanese', 'Chinese'], 0);
+                    add('EGNOS es el sistema de aumento:', 'EGNOS is the augmentation system:',
+                        ['Europeo', 'Americano', 'Japonés', 'Chino'],
+                        ['European', 'American', 'Japanese', 'Chinese'], 0);
+                    add('La precisión del GPS civil es de:', 'Civil GPS precision is:',
+                        ['15 metros', '1 metro', '100 metros', '5 metros'],
+                        ['15 metres', '1 metre', '100 metres', '5 metres'], 0);
+                    add('El GPS usa satélites en:', 'GPS uses satellites in:',
+                        ['6 órbitas', '3 órbitas', '4 órbitas', '8 órbitas'],
+                        ['6 orbits', '3 orbits', '4 orbits', '8 orbits'], 0);
+                    add('Los satélites GPS transmiten en frecuencia:', 'GPS satellites transmit on frequency:',
+                        ['1.2 y 1.5 GHz', '2.4 y 5 GHz', '900 MHz', '400 MHz'],
+                        ['1.2 and 1.5 GHz', '2.4 and 5 GHz', '900 MHz', '400 MHz'], 0);
+                    add('Los satélites GPS tienen relojes:', 'GPS satellites have clocks:',
+                        ['Atómicos', 'De cuarzo', 'Digitales', 'Analógicos'],
+                        ['Atomic', 'Quartz', 'Digital', 'Analogue'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', 'Additional question', ['A', 'B', 'C', 'D'],
+                    ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => {
+                return {
+                    ...t,
+                    preguntas: generarPreguntas(idx)
+                };
+            })
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA (localStorage) - IGUAL QUE MÓDULOS ANTERIORES
+        // ============================================================
+        let state = {
+            currentLang: 'es',
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        // Cargar estado
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_digital_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_digital_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  FUNCIONES DE RENDER Y UTILIDADES (IDÉNTICAS A MÓDULOS ANTERIORES)
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getLang() { return state.currentLang; }
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo[getLang()].substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            const grupos = {};
+            data.temas.forEach((t, i) => {
+                if (!grupos[t.parte]) grupos[t.parte] = [];
+                grupos[t.parte].push({ ...t, index: i });
+            });
+            let html = '';
+            for (const [grupo, items] of Object.entries(grupos)) {
+                const groupId = 'group-' + grupo.replace(/\s/g, '');
+                html += `<div class="toc-group">
+                            <div class="toc-group-title" data-group="${groupId}">
+                                <span>${grupo}</span>
+                                <span>${items.length}</span>
+                            </div>
+                            <div class="toc-group-items" id="${groupId}">`;
+                items.forEach(item => {
+                    const idx = item.index;
+                    const bloqueado = !state.temasDesbloqueados[idx];
+                    const completado = state.temasCompletados[idx];
+                    const activo = idx === state.currentTema;
+                    const bookmarked = state.bookmarks[idx];
+                    let cls = '';
+                    if (bloqueado) cls += ' locked';
+                    if (completado) cls += ' completed';
+                    if (activo) cls += ' active';
+                    if (bookmarked) cls += ' bookmarked';
+                    const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                    const titulo = item.titulo[getLang()];
+                    const stats = completado ? `${state.aciertos[idx]||0}✓` : '';
+                    html += `<li class="${cls}" data-index="${idx}">
+                                <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                                <span>${idx+1}. ${titulo}</span>
+                                <span class="stats-mini">${stats}</span>
+                                <span class="badge">${badge}</span>
+                            </li>`;
+                });
+                html += `</div></div>`;
+            }
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            document.querySelectorAll('.toc-group-title').forEach(title => {
+                title.addEventListener('click', function() {
+                    const groupId = this.dataset.group;
+                    const items = document.getElementById(groupId);
+                    items.classList.toggle('collapsed');
+                });
+            });
+            const activeLi = document.querySelector('#toc li.active');
+            if (activeLi) {
+                const parent = activeLi.closest('.toc-group-items');
+                if (parent) parent.classList.remove('collapsed');
+            }
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const lang = getLang();
+            const titulo = tema.titulo[lang];
+            const parte = tema.parte;
+            const contenido = tema.contenido[lang];
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${parte}</div>
+                            <h1>${titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} ${lang === 'es' ? 'Marcador' : 'Bookmark'}</button>
+                                <button id="resetTemaBtn">🔄 ${lang === 'es' ? 'Reiniciar test' : 'Reset test'}</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            ${lang === 'es' ? '📝 Modo Examen: contenido oculto' : '📝 Exam mode: content hidden'}
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>${lang === 'es' ? '📝 Notas personales' : '📝 Personal notes'}</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="${lang === 'es' ? 'Escribe aquí tus notas...' : 'Write your notes here...'}">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 ${lang === 'es' ? 'Test de evaluación' : 'Assessment test'}</h3>
+                            <div class="test-stats">
+                                ${lang === 'es' ? 'Intentos' : 'Attempts'}: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                const texto = p[lang];
+                const opts = p.opciones[lang];
+                const correcta = p.correcta;
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${correcta}">
+                            <p>${i+1}. ${texto}</p>`;
+                opts.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">${lang === 'es' ? '✅ Corregir test' : '✅ Check test'}</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">${lang === 'es' ? '👁️ Mostrar respuestas' : '👁️ Show answers'}</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">${lang === 'es' ? '➡️ Siguiente tema' : '➡️ Next topic'}</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm(lang === 'es' ? '¿Reiniciar el test de este tema? Se perderán los aciertos y fallos.' :
+                        'Reset this topic\'s test? Scores will be lost.')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = lang === 'es' ? '✅ Test superado' : '✅ Test passed';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ' + (getLang() === 'es' ? '¡Correcto!' : 'Correct!');
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[getLang()][correcta];
+                    expl.textContent = '❌ ' + (getLang() === 'es' ? `Respuesta correcta: ${correctaText}` :
+                        `Correct answer: ${correctaText}`);
+                } else {
+                    expl.textContent = '⚠️ ' + (getLang() === 'es' ? 'Selecciona una opción' :
+                        'Select an option');
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            const lang = getLang();
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = lang === 'es' ? `✅ ¡Excelente! Has acertado ${aciertos}/${total}` :
+                    `✅ Excellent! You got ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent = lang === 'es' ?
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).` :
+                    `❌ You got ${aciertos}/${total}. Review your mistakes (${faltan} error${faltan>1?'s':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+            document.getElementById('intentosCount').textContent = state.intentos[idx];
+            document.querySelector('.test-stats .ok').textContent = state.aciertos[idx];
+            document.querySelector('.test-stats .fail').textContent = state.fallos[idx];
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            const lang = getLang();
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[lang][correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = '💡 ' + (lang === 'es' ? `Respuesta: ${correctaText}` :
+                    `Answer: ${correctaText}`);
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        let searchTerm = '';
+
+        function aplicarBusqueda(term) {
+            searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido[getLang()];
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const titulo = t.titulo[getLang()];
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_digital_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(getLang() === 'es' ? '📥 CSV exportado correctamente' : '📥 CSV exported successfully');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            const lang = getLang();
+            if (!confirm(lang === 'es' ? '⚠️ ¿Estás seguro de reiniciar todo el progreso? Se perderán todos los datos.' :
+                    '⚠️ Are you sure you want to reset all progress? All data will be lost.')) return;
+            localStorage.removeItem('aerotraining_digital_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD SHORTCUTS, THEME, MODES, etc.
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    const num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        document.getElementById('langToggle').addEventListener('click', function() {
+            state.currentLang = (state.currentLang === 'es') ? 'en' : 'es';
+            this.textContent = (state.currentLang === 'es') ? '🇬🇧 EN' : '🇪🇸 ES';
+            saveState();
+            renderToc();
+            renderTema(state.currentTema);
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        // Truco oculto: doble clic en el avión
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast(getLang() === 'es' ? '🚀 Temario desbloqueado' : '🚀 Syllabus unlocked');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ Módulo 5 Técnicas Digitales cargado correctamente.');
+        console.log('📊 17 temas con explicaciones detalladas y todas las funcionalidades.');
+        console.log('🔑 Doble clic en el avión para desbloquear todo.');
+        console.log('⌨️ Atajos: ← → (navegar), T (test), B (marcador), S (buscar), 1-9 (ir a tema), Esc (salir)');
+    </script>
+</body>
+</html>
