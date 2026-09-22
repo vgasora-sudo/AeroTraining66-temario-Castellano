@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 15 · Motores de Turbina de Gas - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content .ejemplo strong {
+            color: var(--accent-light);
+        }
+        .tema .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+        }
+        .tema .content table td,
+        .tema .content table th {
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.6rem;
+            text-align: left;
+        }
+        .tema .content table th {
+            background: var(--bg-body);
+            color: var(--accent-light);
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 0</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <!-- Temas -->
+        <div id="temaContainer"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <!-- Certificado -->
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado el Módulo 15: Motores de Turbina de Gas (B1)</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en fundamentos, rendimiento, componentes y sistemas de motores de turbina de gas.</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <!-- Shortcuts hint -->
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: MÓDULO 15 - MOTORES DE TURBINA DE GAS (B1)
+        //  Basado en el manual M15_manual.pdf
+        // ============================================================
+        const temasBase = [{
+            id: '15.1.1',
+            titulo: 'Fundamentos: Introducción, Leyes de Newton, Energía y Generación de Empuje',
+            contenido: `<h3>Fundamentos de los Motores de Turbina de Gas</h3>
+                      <p>Una turbina de gas es una máquina térmica que convierte la energía contenida en un flujo de gases de combustión en energía mecánica. La alta temperatura del flujo de gas se utiliza para producir trabajo mecánico.</p>
+                      <p>A diferencia de un motor de pistón, una turbina no incluye partes en movimiento recíproco, sino solo partes rotativas. Esto permite altas potencias con un peso relativamente reducido.</p>
+                      <h4>Historia</h4>
+                      <ul>
+                        <li><strong>Eolípila de Herón (150 a.C.):</strong> primera turbina rudimentaria.</li>
+                        <li><strong>Chimney jack de Leonardo da Vinci (1500):</strong> utilizaba el calor para girar un asador.</li>
+                        <li><strong>Molino de estampación de Giovanni Branca (1629):</strong> usaba vapor para mover una turbina.</li>
+                        <li><strong>Proyecto de John Barber (1791):</strong> primer diseño con compresor, cámara de combustión y turbina.</li>
+                        <li><strong>Frank Whittle (1930):</strong> patentó la turbina de gas para propulsión a chorro.</li>
+                        <li><strong>Hans von Ohain (1936):</strong> desarrolló el primer motor que voló en 1939 (Heinkel HE-178).</li>
+                      </ul>
+                      <h4>Leyes de Newton</h4>
+                      <p><strong>Primera ley:</strong> un objeto permanece en reposo a menos que sea perturbado por una fuerza externa.</p>
+                      <p><strong>Segunda ley:</strong> la aceleración de un cuerpo es directamente proporcional a la fuerza e inversamente proporcional a la masa. $$F = ma$$</p>
+                      <p><strong>Tercera ley:</strong> para cada acción hay una reacción igual y opuesta.</p>
+                      <h4>Energía</h4>
+                      <p>La energía es una magnitud escalar que describe el trabajo que una fuerza puede realizar. Formas de energía:</p>
+                      <ul>
+                        <li><strong>Energía cinética:</strong> relacionada con el movimiento. $$E_k = \\frac{1}{2}mv^2$$</li>
+                        <li><strong>Energía potencial:</strong> relacionada con la posición en un campo de fuerzas.</li>
+                        <li><strong>Energía térmica:</strong> relacionada con la temperatura.</li>
+                        <li><strong>Energía química:</strong> relacionada con la estructura molecular.</li>
+                      </ul>
+                      <p>En las turbinas de gas, la energía química del combustible se transforma en energía térmica, luego en energía cinética y finalmente en trabajo mecánico.</p>
+                      <h4>Generación de empuje</h4>
+                      <p>El principio de operación se basa en la tercera ley de Newton. Un recipiente con aire comprimido que tiene una abertura genera una fuerza de reacción en dirección opuesta al flujo de salida.</p>
+                      <p>El empuje se calcula multiplicando el flujo másico de aire por la diferencia de velocidades. Los motores de turbina pueden acelerar el aire a velocidades mucho mayores que las hélices, generando más empuje.</p>`
+        }, {
+            id: '15.1.1.4',
+            titulo: 'Ciclo de Brayton',
+            contenido: `<h3>Ciclo de Brayton</h3>
+                      <p>El motor de turbina de gas opera según el ciclo termodinámico Joule-Brayton. Este ciclo describe las transformaciones que sufre el flujo de aire y los intercambios de energía.</p>
+                      <h4>Fases del ciclo ideal:</h4>
+                      <ul>
+                        <li><strong>Compresión (1-2):</strong> adiabática, aumenta la presión y la temperatura.</li>
+                        <li><strong>Adición de calor (2-3):</strong> isobárica, se añade calor en la cámara de combustión.</li>
+                        <li><strong>Expansión (3-4):</strong> adiabática, se extrae trabajo en la turbina.</li>
+                        <li><strong>Rechazo de calor (4-1):</strong> isobárica, se enfría el gas.</li>
+                      </ul>
+                      <p>El trabajo neto del ciclo es la diferencia entre el calor añadido y el calor rechazado. La eficiencia termodinámica del ciclo ideal es de aproximadamente el 60%.</p>
+                      <h4>Aplicación del ciclo en el motor:</h4>
+                      <ul>
+                        <li>Punto 1: entrada de aire.</li>
+                        <li>Punto 2: salida del compresor.</li>
+                        <li>Punto 3: salida de la cámara de combustión (máxima temperatura).</li>
+                        <li>Punto 4: salida de la tobera.</li>
+                      </ul>
+                      <p>En un ciclo real, las eficiencias son menores: compresor 83-88%, turbina 85-90%, cámara de combustión 97%. La eficiencia termodinámica real es del 30-40%.</p>`
+        }, {
+            id: '15.1.2',
+            titulo: 'Disposición y operación de motores: Turbojet, Turbofan, Turboshaft, Turboprop',
+            contenido: `<h3>Tipos de Motores de Turbina de Gas</h3>
+                      <p>Los motores de turbina se dividen en dos categorías: los que generan empuje y los que generan torque.</p>
+                      <h4>Turbojet</h4>
+                      <p>El aire entra y sale como un solo flujo. Genera empuje por la aceleración de los gases. Es el tipo más antiguo y hoy en día está obsoleto.</p>
+                      <h4>Turbofan</h4>
+                      <p>Utiliza dos flujos: primario (caliente) y secundario (frío o by-pass). Mayor eficiencia y menor consumo. Configuraciones: single-shaft, twin-spool y triple-spool.</p>
+                      <h4>Turboprop</h4>
+                      <p>La turbina mueve una hélice a través de una caja reductora. Menor velocidad de crucero que el turbofan, pero mayor eficiencia en rutas cortas y menor ruido.</p>
+                      <h4>Turboshaft</h4>
+                      <p>Similar al turboprop, pero la potencia se usa para mover rotores de helicóptero. La turbina de potencia no está conectada al compresor.</p>`
+        }, {
+            id: '15.2.1-2',
+            titulo: 'Rendimiento del motor: Empuje, Eficiencias y SFC',
+            contenido: `<h3>Rendimiento del Motor</h3>
+                      <h4>Empuje bruto (Gross Thrust)</h4>
+                      <p>$$T_G = (P - P_0)A + \\frac{W\\nu_j}{g}$$</p>
+                      <p>Donde P es la presión en la tobera, P0 es la presión atmosférica, A es el área de la tobera, W es el flujo másico, νj es la velocidad del chorro y g es la constante gravitacional.</p>
+                      <h4>Empuje neto (Net Thrust)</h4>
+                      <p>Es la diferencia entre el empuje bruto y el arrastre por momento (momentum drag).</p>
+                      <h4>Eficiencias</h4>
+                      <ul>
+                        <li><strong>Eficiencia térmica (ηt):</strong> conversión de energía química a energía cinética.</li>
+                        <li><strong>Eficiencia propulsiva (ηp):</strong> conversión de energía cinética a trabajo propulsivo. $$\\eta_p = \\frac{2v}{v + v_j}$$</li>
+                        <li><strong>Eficiencia total (η):</strong> producto de la eficiencia térmica y propulsiva. $$\\eta = \\eta_t \\cdot \\eta_p$$</li>
+                      </ul>
+                      <h4>Consumo específico de combustible (SFC)</h4>
+                      <p>Es la cantidad de combustible consumido por unidad de empuje o potencia. Se ve afectado por la altitud, la temperatura y la velocidad.</p>`
+        }, {
+            id: '15.2.3-5',
+            titulo: 'BPR, EPR, Presión/Temperatura/Velocidad, Ratings',
+            contenido: `<h3>Parámetros de Rendimiento</h3>
+                      <h4>By-Pass Ratio (BPR)</h4>
+                      <p>Es la relación entre el flujo de aire secundario y el flujo primario. Los turbofan de alto BPR (5:1 o más) tienen menor consumo y ruido.</p>
+                      <h4>Engine Pressure Ratio (EPR)</h4>
+                      <p>Es la relación entre la presión de descarga y la presión de entrada. Es un parámetro certificado para el ajuste de empuje. En tierra, con motor apagado, el EPR es 1.0.</p>
+                      <h4>Presión, Temperatura y Velocidad</h4>
+                      <p>El flujo de aire pasa por cambios de presión, temperatura y velocidad a lo largo del motor. Los conductos divergentes convierten velocidad en presión; los convergentes convierten presión en velocidad.</p>
+                      <h4>Ratings del motor</h4>
+                      <ul>
+                        <li><strong>MTO (Maximum Take-Off):</strong> empuje máximo por 5 minutos.</li>
+                        <li><strong>MCT (Maximum Continuous Thrust):</strong> empuje máximo sin límite de tiempo.</li>
+                        <li><strong>MCL (Maximum Climb):</strong> empuje recomendado para el ascenso.</li>
+                        <li><strong>Flight Idle:</strong> empuje mínimo en vuelo.</li>
+                        <li><strong>Ground Idle:</strong> empuje mínimo en tierra.</li>
+                      </ul>
+                      <h4>Flat Rating</h4>
+                      <p>Es una limitación del empuje máximo para mantener el rendimiento constante en condiciones de alta temperatura.</p>`
+        }, {
+            id: '15.3-4',
+            titulo: 'Entrada de Aire y Compresores',
+            contenido: `<h3>Entrada de Aire</h3>
+                      <p>La entrada de aire (air intake) tiene funciones esenciales: conducir el flujo, reducir su velocidad, minimizar pérdidas de presión y lograr una pre-compresión.</p>
+                      <ul>
+                        <li><strong>Entradas subsónicas:</strong> divergentes, convierten velocidad en presión.</li>
+                        <li><strong>Entradas supersónicas:</strong> convergentes-divergentes, con rampa o cono.</li>
+                      </ul>
+                      <h3>Compresores</h3>
+                      <p>El compresor aumenta la presión del aire antes de la combustión.</p>
+                      <ul>
+                        <li><strong>Centrífugo:</strong> alta relación de compresión por etapa (hasta 10:1), pero gran área frontal.</li>
+                        <li><strong>Axial:</strong> baja relación por etapa (1.25:1), pero muchas etapas, alta eficiencia.</li>
+                        <li><strong>Axi-centrífugo:</strong> combinación de ambos.</li>
+                      </ul>
+                      <h4>Pérdidas de rendimiento</h4>
+                      <ul>
+                        <li><strong>Stall:</strong> separación del flujo en los álabes.</li>
+                        <li><strong>Surge:</strong> inversión instantánea del flujo, con fuerte pérdida de empuje.</li>
+                      </ul>
+                      <h4>Control del flujo</h4>
+                      <ul>
+                        <li><strong>Válvulas de sangrado (bleed valves):</strong> liberan aire para evitar el stall.</li>
+                        <li><strong>Álabes guía de entrada variables (VIGV):</strong> mejoran el ángulo de incidencia.</li>
+                        <li><strong>Álabes de estator variables:</strong> ajustan el flujo en diferentes regímenes.</li>
+                      </ul>`
+        }, {
+            id: '15.5-6',
+            titulo: 'Cámara de Combustión y Sección de Turbina',
+            contenido: `<h3>Cámara de Combustión</h3>
+                      <p>La cámara de combustión es donde se quema la mezcla de aire y combustible. Los gases alcanzan temperaturas de 1800-2000°C.</p>
+                      <h4>Flujos en la cámara</h4>
+                      <ul>
+                        <li><strong>Primario (20%):</strong> para la combustión.</li>
+                        <li><strong>Secundario (10%):</strong> para estabilizar la llama.</li>
+                        <li><strong>Terciario (70%):</strong> para enfriar los gases.</li>
+                      </ul>
+                      <h4>Tipos de cámaras</h4>
+                      <ul>
+                        <li><strong>Tubular:</strong> múltiples tubos de llama.</li>
+                        <li><strong>Can-annular:</strong> tubos de llama dentro de una carcasa común.</li>
+                        <li><strong>Anular:</strong> un único tubo toroidal.</li>
+                      </ul>
+                      <h3>Sección de Turbina</h3>
+                      <p>La turbina extrae energía de los gases calientes para accionar el compresor y los accesorios. Los álabes pueden ser de acción o de reacción.</p>
+                      <h4>Estrés y Creep</h4>
+                      <ul>
+                        <li><strong>Estrés:</strong> tensión, flexión, cortadura y torsión.</li>
+                        <li><strong>Creep:</strong> deformación plástica de los álabes a alta temperatura.</li>
+                      </ul>
+                      <p>Los materiales modernos (superaleaciones de níquel, renio) y el enfriamiento con aire permiten operar a altas temperaturas.</p>`
+        }, {
+            id: '15.7-8',
+            titulo: 'Escape, Cojinetes y Sellos',
+            contenido: `<h3>Sistema de Escape</h3>
+                      <p>El sistema de escape completa la expansión de los gases y los libera a la atmósfera.</p>
+                      <ul>
+                        <li><strong>Tobera convergente:</strong> para flujo subsónico.</li>
+                        <li><strong>Tobera convergente-divergente:</strong> para flujo supersónico.</li>
+                      </ul>
+                      <p>Los inversores de empuje desvían el flujo hacia adelante para frenar el avión.</p>
+                      <h3>Cojinetes y Sellos</h3>
+                      <p>Los cojinetes soportan cargas radiales y axiales. Tipos:</p>
+                      <ul>
+                        <li><strong>De bolas:</strong> soportan cargas radiales y axiales.</li>
+                        <li><strong>De rodillos:</strong> soportan cargas radiales.</li>
+                        <li><strong>De empuje:</strong> soportan cargas axiales.</li>
+                        <li><strong>Fluidos y magnéticos:</strong> sin contacto mecánico.</li>
+                      </ul>
+                      <p>Los sellos evitan fugas de aceite y controlan los flujos de aire. Tipos: laberinto, carbón, hidráulico, de anillo, de cepillo y de fuelle.</p>`
+        }, {
+            id: '15.9-10',
+            titulo: 'Lubricantes, Combustibles y Sistemas de Lubricación',
+            contenido: `<h3>Combustibles y Lubricantes</h3>
+                      <h4>Combustibles para motores de turbina</h4>
+                      <ul>
+                        <li><strong>JET A-1:</strong> queroseno, punto de congelación -47°C.</li>
+                        <li><strong>JET A:</strong> similar, punto de congelación -40°C.</li>
+                        <li><strong>JET B:</strong> mezcla con gasolina, para climas fríos.</li>
+                      </ul>
+                      <h4>Lubricantes</h4>
+                      <ul>
+                        <li><strong>Minerales:</strong> derivados del petróleo, se degradan a alta temperatura.</li>
+                        <li><strong>Sintéticos:</strong> más resistentes al calor y la oxidación.</li>
+                      </ul>
+                      <h3>Sistemas de Lubricación</h3>
+                      <ul>
+                        <li><strong>De válvula de alivio de presión:</strong> controla la presión de aceite.</li>
+                        <li><strong>De flujo total:</strong> sin válvula de alivio, el caudal se diseña para el régimen máximo.</li>
+                        <li><strong>De pérdida total:</strong> el aceite se expulsa después de la lubricación.</li>
+                      </ul>
+                      <p>Componentes: depósito, bombas (engranajes, paletas, gerotor), filtros, intercambiadores de calor, detectores de partículas (chip detectors).</p>
+                      <h4>SOAP (Spectrometric Oil Analysis Program)</h4>
+                      <p>Análisis periódico del aceite para detectar desgaste anormal.</p>`
+        }, {
+            id: '15.11-12',
+            titulo: 'Sistemas de Combustible y Sistemas de Aire',
+            contenido: `<h3>Sistemas de Combustible</h3>
+                      <p>El sistema de combustible alimenta el motor con la cantidad adecuada de combustible para la combustión.</p>
+                      <ul>
+                        <li><strong>Control mecánico:</strong> puro o hidromecánico.</li>
+                        <li><strong>Control electrónico (FADEC):</strong> control total del motor.</li>
+                      </ul>
+                      <h4>Componentes del sistema de combustible</h4>
+                      <ul>
+                        <li><strong>Tanques:</strong> almacenan el combustible.</li>
+                        <li><strong>Bombas:</strong> de engranajes o de plato oscilante.</li>
+                        <li><strong>Filtros:</strong> eliminan impurezas.</li>
+                        <li><strong>Inyectores:</strong> simplex, duplex, vaporizadores.</li>
+                      </ul>
+                      <h3>Sistemas de Aire</h3>
+                      <p>El sistema de aire utiliza aire de sangrado del compresor para:</p>
+                      <ul>
+                        <li><strong>Enfriamiento:</strong> de la cámara de combustión y la turbina.</li>
+                        <li><strong>Sellado:</strong> de los cojinetes.</li>
+                        <li><strong>Control de cargas axiales:</strong> en los cojinetes.</li>
+                        <li><strong>Control de holguras:</strong> en la turbina (ACC).</li>
+                        <li><strong>Servicios de la aeronave:</strong> aire acondicionado, presurización.</li>
+                        <li><strong>Anti-hielo:</strong> en la entrada de aire.</li>
+                      </ul>`
+        }, {
+            id: '15.13-14',
+            titulo: 'Sistemas de Arranque, Ignición e Indicación',
+            contenido: `<h3>Sistemas de Arranque</h3>
+                      <p>El arranque de un motor de turbina requiere un sistema de arranque y un sistema de ignición.</p>
+                      <h4>Arrancadores</h4>
+                      <ul>
+                        <li><strong>Eléctricos:</strong> starter-generator (reversible) o motor de arranque directo.</li>
+                        <li><strong>Neumáticos:</strong> usan aire a presión.</li>
+                        <li><strong>Hidráulicos:</strong> usan fluido hidráulico.</li>
+                        <li><strong>De cartucho:</strong> usan una carga explosiva (obsoletos).</li>
+                      </ul>
+                      <h3>Sistemas de Ignición</h3>
+                      <ul>
+                        <li><strong>Baja tensión:</strong> 28V DC.</li>
+                        <li><strong>Alta tensión:</strong> 115V AC.</li>
+                      </ul>
+                      <p>Componentes: caja de excitación (exciter box), bujías (igniter plugs) y cables blindados.</p>
+                      <h3>Sistemas de Indicación</h3>
+                      <p>Instrumentos analógicos (bobina móvil, AC, DC) y digitales (EICAS, ECAM).</p>
+                      <h4>Parámetros indicados</h4>
+                      <ul>
+                        <li><strong>Temperatura:</strong> EGT, ITT, TIT, TOT, JPT.</li>
+                        <li><strong>Presión:</strong> aceite, combustible.</li>
+                        <li><strong>RPM:</strong> N1, N2, N3.</li>
+                        <li><strong>Torque:</strong> en turboprop y turboshaft.</li>
+                      </ul>`
+        }, {
+            id: '15.15-16',
+            titulo: 'Sistemas de Aumento de Potencia y Motores Turboprop',
+            contenido: `<h3>Sistemas de Aumento de Potencia</h3>
+                      <h4>Postcombustión (Afterburner)</h4>
+                      <p>Inyecta combustible adicional entre la turbina y la tobera, utilizando el oxígeno no quemado. Aumenta el empuje pero con un alto consumo de combustible.</p>
+                      <h4>Inyección de agua o agua-methanol</h4>
+                      <p>Enfría el aire de entrada, aumentando su densidad y el empuje. Se usa en condiciones de alta temperatura o baja densidad.</p>
+                      <h3>Motores Turboprop</h3>
+                      <p>La turbina de gas mueve una hélice. Tipos:</p>
+                      <ul>
+                        <li><strong>Eje fijo:</strong> el mismo eje mueve el compresor y la hélice.</li>
+                        <li><strong>Turbina libre:</strong> la turbina de potencia está separada del compresor.</li>
+                      </ul>
+                      <h4>Engranajes reductores</h4>
+                      <p>Reducen las RPM de la turbina a las RPM adecuadas para la hélice.</p>
+                      <h4>Dispositivos de seguridad</h4>
+                      <ul>
+                        <li><strong>Freno de hélice:</strong> evita el windmilling.</li>
+                        <li><strong>NTS (Negative Torque System):</strong> limita el arrastre de la hélice.</li>
+                        <li><strong>Acoplamiento de seguridad:</strong> desconecta la caja de engranajes.</li>
+                      </ul>`
+        }, {
+            id: '15.17-18',
+            titulo: 'Motores Turboshaft y APUs',
+            contenido: `<h3>Motores Turboshaft</h3>
+                      <p>Son motores de turbina de gas diseñados para helicópteros. Convierten la energía del gas en potencia mecánica a través de un eje.</p>
+                      <h4>Configuraciones</h4>
+                      <ul>
+                        <li><strong>Eje directo:</strong> el mismo eje mueve el compresor y el rotor.</li>
+                        <li><strong>Turbina libre:</strong> la turbina de potencia está separada del compresor.</li>
+                      </ul>
+                      <p>Las cajas de engranajes reductores reducen las RPM de la turbina a las RPM del rotor (200-400 RPM).</p>
+                      <h3>APU (Auxiliary Power Unit)</h3>
+                      <p>Es una pequeña turbina de gas que proporciona energía eléctrica y aire a presión en tierra y en vuelo.</p>
+                      <h4>Componentes</h4>
+                      <ul>
+                        <li><strong>Compresor centrífugo:</strong> proporciona aire de sangrado.</li>
+                        <li><strong>Generador eléctrico:</strong> suministra 115V AC.</li>
+                        <li><strong>ECB (Electronic Control Box):</strong> controla el arranque, la velocidad y la temperatura.</li>
+                      </ul>
+                      <p>La APU se instala generalmente en el cono de cola del avión.</p>`
+        }, {
+            id: '15.19-20',
+            titulo: 'Instalación del Motor y Sistemas de Protección contra Incendios',
+            contenido: `<h3>Instalación del Motor</h3>
+                      <h4>Tipos de instalación</h4>
+                      <ul>
+                        <li><strong>Pod:</strong> montado en el ala o en el fuselaje.</li>
+                        <li><strong>Empotrado:</strong> dentro del fuselaje o las alas.</li>
+                      </ul>
+                      <h4>Componentes</h4>
+                      <ul>
+                        <li><strong>Cortafuegos (Firewalls):</strong> aíslan el compartimento del motor.</li>
+                        <li><strong>Carenados (Cowlings):</strong> proporcionan forma aerodinámica y acceso.</li>
+                        <li><strong>Paneles acústicos:</strong> reducen el ruido.</li>
+                        <li><strong>Soportes (Mounts):</strong> fijan el motor y transmiten cargas.</li>
+                      </ul>
+                      <h3>Sistemas de Protección contra Incendios</h3>
+                      <h4>Detección</h4>
+                      <ul>
+                        <li><strong>Sistemas de bucle continuo (Fenwal, Kiddle):</strong> detectan sobrecalentamiento.</li>
+                        <li><strong>Detectores de gas:</strong> usan la expansión de un gas.</li>
+                        <li><strong>Interruptores térmicos:</strong> cierran un circuito al calentarse.</li>
+                      </ul>
+                      <h4>Extinción</h4>
+                      <ul>
+                        <li><strong>Agentes extintores:</strong> Halon 1301 (actualmente en desuso), HFC-125.</li>
+                        <li><strong>Botellas HRD (High Rate of Discharge):</strong> descarga rápida.</li>
+                      </ul>`
+        }, {
+            id: '15.21-22',
+            titulo: 'Monitoreo, Operación en Tierra, Almacenamiento y Preservación',
+            contenido: `<h3>Monitoreo del Motor</h3>
+                      <h4>Interpretación de parámetros</h4>
+                      <ul>
+                        <li><strong>EPR:</strong> indica el empuje.</li>
+                        <li><strong>N1/N2:</strong> RPM de los rotores.</li>
+                        <li><strong>EGT:</strong> temperatura de los gases de escape.</li>
+                        <li><strong>Presión y temperatura de aceite:</strong> estado del sistema de lubricación.</li>
+                      </ul>
+                      <h4>Análisis de vibraciones y boroscopio</h4>
+                      <ul>
+                        <li><strong>Vibraciones:</strong> detectan desequilibrios en las partes rotativas.</li>
+                        <li><strong>Boroscopio:</strong> inspección visual interna del motor.</li>
+                      </ul>
+                      <h4>Limpieza del compresor</h4>
+                      <p>Elimina contaminantes (sal, polvo, etc.) que reducen la eficiencia.</p>
+                      <h4>FOD (Foreign Object Damage)</h4>
+                      <p>Daño causado por objetos extraños (herramientas, escombros, etc.).</p>
+                      <h3>Almacenamiento y Preservación</h3>
+                      <ul>
+                        <li><strong>Preservación a corto plazo:</strong> hasta 30 días.</li>
+                        <li><strong>Preservación a largo plazo:</strong> más de 30 días.</li>
+                      </ul>
+                      <p>Se utilizan agentes anticorrosión, desecantes (silica gel) y contenedores metálicos o de cartón. La despreservación se realiza siguiendo el manual del motor.</p>`
+        }];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema)
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(pregunta, opciones, correcta) {
+                preguntas.push({ pregunta, opciones, correcta });
+            }
+
+            const generadores = [
+                // 15.1.1
+                () => {
+                    add('¿Qué ley de Newton establece que para cada acción hay una reacción igual y opuesta?',
+                        ['Tercera ley', 'Primera ley', 'Segunda ley', 'Ninguna'], 0);
+                    add('¿Qué fórmula representa la energía cinética?',
+                        ['$$E_k = \\frac{1}{2}mv^2$$', '$$E = mc^2$$', '$$F = ma$$', '$$E = mgh$$'], 0);
+                    add('¿Quién patentó el primer diseño de turbina de gas en 1791?',
+                        ['John Barber', 'Frank Whittle', 'Hans von Ohain', 'Giovanni Branca'], 0);
+                    add('¿Qué invento de Leonardo da Vinci utilizaba el calor para girar un asador?',
+                        ['Chimney jack', 'Eolípila', 'Molino de estampación', 'Carro de vapor'], 0);
+                    add('¿Qué tipo de energía está relacionada con la temperatura?',
+                        ['Energía térmica', 'Energía cinética', 'Energía potencial', 'Energía química'], 0);
+                    add('¿Qué principio físico explica la generación de empuje en un motor a reacción?',
+                        ['Tercera ley de Newton', 'Primera ley de Newton', 'Segunda ley de Newton', 'Principio de Bernoulli'],
+                        0);
+                    add('¿Qué tipo de motor tiene solo partes rotativas?',
+                        ['Motor de turbina de gas', 'Motor de pistón', 'Motor rotativo', 'Ninguno'], 0);
+                    add('¿Qué elemento es necesario para que ocurra la combustión en un motor de turbina?',
+                        ['Aire (oxígeno)', 'Agua', 'Aceite', 'Nitrógeno'], 0);
+                    add('¿Qué tipo de energía se transforma en energía térmica en las turbinas de gas?',
+                        ['Energía química', 'Energía cinética', 'Energía potencial', 'Energía nuclear'], 0);
+                    add('¿Qué establece la primera ley de Newton?',
+                        ['Un objeto permanece en reposo a menos que sea perturbado por una fuerza externa',
+                            'La aceleración es proporcional a la fuerza',
+                            'Para cada acción hay una reacción igual y opuesta', 'Ninguna'], 0);
+                },
+                // 15.1.1.4
+                () => {
+                    add('¿Qué tipo de compresión ocurre en el ciclo de Brayton?',
+                        ['Adiabática', 'Isotérmica', 'Isobárica', 'Isocórica'], 0);
+                    add('¿Qué fase del ciclo de Brayton añade calor al flujo de aire?',
+                        ['Adición de calor (2-3)', 'Compresión (1-2)', 'Expansión (3-4)', 'Rechazo de calor (4-1)'], 0);
+                    add('¿Qué componente del motor realiza la expansión en el ciclo de Brayton?',
+                        ['Turbina', 'Compresor', 'Cámara de combustión', 'Tobera'], 0);
+                    add('¿Qué fase del ciclo de Brayton genera trabajo?',
+                        ['Expansión (3-4)', 'Compresión (1-2)', 'Adición de calor (2-3)', 'Rechazo de calor (4-1)'], 0);
+                    add('¿Cuál es la eficiencia termodinámica aproximada de un ciclo de Brayton ideal?',
+                        ['60%', '30%', '40%', '90%'], 0);
+                    add('¿Qué fase del ciclo de Brayton corresponde a la cámara de combustión?',
+                        ['Adición de calor (2-3)', 'Compresión (1-2)', 'Expansión (3-4)', 'Rechazo de calor (4-1)'], 0);
+                    add('¿Qué tipo de transformación ocurre en la tobera en el ciclo de Brayton?',
+                        ['Expansión', 'Compresión', 'Adición de calor', 'Rechazo de calor'], 0);
+                    add('¿Qué factor reduce la eficiencia de un ciclo de Brayton real?',
+                        ['Pérdidas por fricción', 'Aumento de temperatura', 'Aumento de presión', 'Ninguno'], 0);
+                    add('¿Cuál es la eficiencia típica de la cámara de combustión en un motor real?',
+                        ['97%', '85%', '88%', '60%'], 0);
+                    add('¿Qué fase del ciclo de Brayton rechaza calor al ambiente?',
+                        ['Rechazo de calor (4-1)', 'Compresión (1-2)', 'Adición de calor (2-3)', 'Expansión (3-4)'], 0);
+                },
+                // 15.1.2
+                () => {
+                    add('¿Qué tipo de motor utiliza dos flujos de aire (primario y secundario)?',
+                        ['Turbofan', 'Turbojet', 'Turboprop', 'Turboshaft'], 0);
+                    add('¿Qué motor utiliza una turbina de potencia para mover una hélice?',
+                        ['Turboprop', 'Turbofan', 'Turbojet', 'Turboshaft'], 0);
+                    add('¿Qué motor se utiliza principalmente en helicópteros?',
+                        ['Turboshaft', 'Turboprop', 'Turbofan', 'Turbojet'], 0);
+                    add('¿Qué configuración de turbofan tiene un compresor de presión intermedia?',
+                        ['Triple-spool', 'Single-shaft', 'Twin-spool', 'Ninguna'], 0);
+                    add('¿Qué motor genera empuje por la aceleración de los gases de escape?',
+                        ['Turbojet', 'Turboprop', 'Turboshaft', 'Turbofan'], 0);
+                    add('¿Qué motor tiene una mayor eficiencia a altas altitudes?',
+                        ['Turbina de gas', 'Motor de pistón', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué ventaja ofrece un turbofan sobre un turbojet?',
+                        ['Menor consumo de combustible', 'Mayor velocidad', 'Menor peso', 'Mayor simplicidad'], 0);
+                    add('¿Qué tipo de motor utiliza una caja reductora para conectar la turbina a la hélice?',
+                        ['Turboprop', 'Turbofan', 'Turbojet', 'Turboshaft'], 0);
+                    add('¿Qué característica principal tienen los motores de turbina en comparación con los de pistón?',
+                        ['Solo partes rotativas', 'Mayor vibración', 'Menor potencia', 'Mayor peso'], 0);
+                    add('¿Qué tipo de motor fue el primero en volar en un avión en 1939?',
+                        ['Heinkel HES-36', 'Whittle W1', 'General Electric I-A', 'Campini-Caproni CC-2'], 0);
+                },
+                // 15.2.1-2
+                () => {
+                    add('¿Qué fórmula representa el empuje bruto?',
+                        ['$$T_G = (P - P_0)A + \\frac{W\\nu_j}{g}$$', '$$T_G = \\frac{W\\nu}{g}$$',
+                            '$$T_G = \\frac{2v}{v+v_j}$$', '$$T_G = \\frac{Tv}{cf}$$'
+                        ], 0);
+                    add('¿Qué es el arrastre por momento (momentum drag)?',
+                        ['El arrastre debido al momento del aire que entra', 'El arrastre debido a la fricción',
+                            'El arrastre debido a la resistencia aerodinámica', 'Ninguno'
+                        ], 0);
+                    add('¿Qué eficiencia convierte la energía química en energía cinética?',
+                        ['Eficiencia térmica', 'Eficiencia propulsiva', 'Eficiencia total', 'Eficiencia mecánica'], 0);
+                    add('¿Qué fórmula representa la eficiencia propulsiva?',
+                        ['$$\\eta_p = \\frac{2v}{v + v_j}$$', '$$\\eta_p = \\frac{v}{v_j}$$', '$$\\eta_p = \\frac{v_j}{v}$$',
+                            '$$\\eta_p = \\frac{2v_j}{v + v_j}$$'
+                        ], 0);
+                    add('¿Qué es el SFC (Specific Fuel Consumption)?',
+                        ['Combustible consumido por unidad de empuje o potencia', 'Combustible consumido por hora',
+                            'Combustible consumido por kilómetro', 'Ninguno'
+                        ], 0);
+                    add('¿Qué efecto tiene la altitud sobre el SFC?',
+                        ['Aumenta la eficiencia', 'Disminuye la eficiencia', 'No tiene efecto', 'Depende de la temperatura'],
+                        0);
+                    add('¿Qué eficiencia es el producto de la eficiencia térmica y la propulsiva?',
+                        ['Eficiencia total', 'Eficiencia térmica', 'Eficiencia propulsiva', 'Eficiencia mecánica'], 0);
+                    add('¿Qué parámetro se usa para medir la eficiencia de un motor de turbina?',
+                        ['SFC', 'EPR', 'BPR', 'Todos'], 0);
+                    add('¿Qué ocurre con el SFC a altas velocidades?',
+                        ['Se acerca al del motor de pistón', 'Aumenta', 'Disminuye', 'No cambia'], 0);
+                    add('¿Qué eficiencia es mayor en los motores turbofan?',
+                        ['Eficiencia propulsiva', 'Eficiencia térmica', 'Eficiencia total', 'Ninguna'], 0);
+                },
+                // 15.2.3-5
+                () => {
+                    add('¿Qué es el By-Pass Ratio (BPR)?',
+                        ['Relación entre flujo secundario y primario', 'Relación entre presión de descarga y entrada',
+                            'Relación entre flujo de combustible y aire', 'Ninguno'
+                        ], 0);
+                    add('¿Qué BPR tienen los turbofan de alto rendimiento?',
+                        ['5:1 o superior', '1:1', '3:1', '10:1'], 0);
+                    add('¿Qué es el Engine Pressure Ratio (EPR)?',
+                        ['Relación entre presión de descarga y entrada', 'Relación entre flujo secundario y primario',
+                            'Relación entre temperatura de entrada y salida', 'Ninguno'
+                        ], 0);
+                    add('¿Cuál es el valor de EPR en tierra con motor apagado?',
+                        ['1.0', '0.0', '0.5', '2.0'], 0);
+                    add('¿Qué rating permite el máximo empuje por 5 minutos?',
+                        ['MTO', 'MCT', 'MCL', 'Flight Idle'], 0);
+                    add('¿Qué rating define el empuje máximo sin límite de tiempo?',
+                        ['MCT', 'MTO', 'MCL', 'Ground Idle'], 0);
+                    add('¿Qué es el flat rating?',
+                        ['Limitación del empuje para mantener el rendimiento en condiciones de alta temperatura',
+                            'Aumento del empuje en condiciones de baja temperatura', 'Ninguno', 'Todo'], 0);
+                    add('¿Qué componente mide la presión para calcular el EPR?',
+                        ['Sondas de presión', 'Termopares', 'Tacómetros', 'Acelerómetros'], 0);
+                    add('¿Qué efecto tiene la altitud sobre el EPR?',
+                        ['Disminuye', 'Aumenta', 'No cambia', 'Depende de la temperatura'], 0);
+                    add('¿Qué rating se usa durante el ascenso normal?',
+                        ['MCL', 'MTO', 'MCT', 'Flight Idle'], 0);
+                },
+                // 15.3-4
+                () => {
+                    add('¿Qué tipo de entrada de aire se usa para flujo subsónico?',
+                        ['Divergente', 'Convergente', 'Convergente-divergente', 'De cono'], 0);
+                    add('¿Qué tipo de compresor tiene una alta relación de compresión por etapa?',
+                        ['Centrífugo', 'Axial', 'Axi-centrífugo', 'Ninguno'], 0);
+                    add('¿Qué es el surge en un compresor?',
+                        ['Inversión instantánea del flujo', 'Separación del flujo en los álabes', 'Aumento de la presión',
+                            'Disminución de la velocidad'
+                        ], 0);
+                    add('¿Qué dispositivo se usa para controlar el flujo en el compresor?',
+                        ['VIGV', 'Tobera', 'Cámara de combustión', 'Turbina'], 0);
+                    add('¿Qué tipo de compresor tiene un rotor de doble cara?',
+                        ['Centrífugo', 'Axial', 'Axi-centrífugo', 'Ninguno'], 0);
+                    add('¿Qué es el stall en un compresor?',
+                        ['Separación del flujo en los álabes', 'Inversión instantánea del flujo', 'Aumento de la presión',
+                            'Disminución de la velocidad'
+                        ], 0);
+                    add('¿Qué tipo de entrada de aire se usa para flujo supersónico?',
+                        ['Convergente-divergente', 'Divergente', 'Convergente', 'De Pitot'], 0);
+                    add('¿Qué función tienen las válvulas de sangrado (bleed valves)?',
+                        ['Evitar el stall', 'Aumentar el empuje', 'Reducir el ruido', 'Enfriar la turbina'], 0);
+                    add('¿Qué tipo de compresor se usa en APUs?',
+                        ['Centrífugo', 'Axial', 'Axi-centrífugo', 'Ninguno'], 0);
+                    add('¿Qué es el balanceo del ventilador?',
+                        ['Proceso para equilibrar el ventilador', 'Proceso para enfriar el ventilador', 'Ninguno', 'Todo'],
+                        0);
+                },
+                // 15.5-6
+                () => {
+                    add('¿Qué tipo de cámara de combustión tiene un único tubo toroidal?',
+                        ['Anular', 'Tubular', 'Can-annular', 'De flujo inverso'], 0);
+                    add('¿Qué flujo de aire se usa para la combustión?',
+                        ['Primario (20%)', 'Secundario (10%)', 'Terciario (70%)', 'Todos'], 0);
+                    add('¿Qué tipo de álabe de turbina opera por acción y reacción?',
+                        ['Impulso-reacción', 'De acción', 'De reacción', 'Ninguno'], 0);
+                    add('¿Qué es el creep en los álabes de turbina?',
+                        ['Deformación plástica a alta temperatura', 'Rotura por fatiga', 'Corrosión', 'Erosión'], 0);
+                    add('¿Qué flujo de aire enfría los gases de escape?',
+                        ['Terciario (70%)', 'Primario (20%)', 'Secundario (10%)', 'Ninguno'], 0);
+                    add('¿Qué tipo de cámara de combustión se usa en motores modernos?',
+                        ['Anular', 'Tubular', 'Can-annular', 'De flujo inverso'], 0);
+                    add('¿Qué material se usa en los álabes de turbina modernos?',
+                        ['Superaleaciones de níquel', 'Acero', 'Aluminio', 'Titanio'], 0);
+                    add('¿Qué es el grado de reacción en una turbina?',
+                        ['Relación de caída de presión en el rotor', 'Relación de caída de presión en el estator',
+                            'Eficiencia de la turbina', 'Ninguno'
+                        ], 0);
+                    add('¿Qué sistema enfría los álabes de turbina?',
+                        ['Aire de sangrado del compresor', 'Aceite', 'Agua', 'Combustible'], 0);
+                    add('¿Qué tipo de conexión se usa para fijar los álabes al disco?',
+                        ['Fir-tree', 'Bulbo', 'Rosca', 'Pegamento'], 0);
+                },
+                // 15.7-8
+                () => {
+                    add('¿Qué tipo de tobera se usa para flujo supersónico?',
+                        ['Convergente-divergente', 'Convergente', 'Divergente', 'De Pitot'], 0);
+                    add('¿Qué sistema desvía el flujo de gases hacia adelante?',
+                        ['Inversor de empuje', 'Postcombustión', 'Tobera variable', 'Daisy mixer'], 0);
+                    add('¿Qué tipo de cojinete soporta cargas radiales y axiales?',
+                        ['De bolas', 'De rodillos', 'De empuje', 'Fluido'], 0);
+                    add('¿Qué tipo de sello usa un anillo de carbón?',
+                        ['Sello de carbón', 'Sello de laberinto', 'Sello hidráulico', 'Sello de cepillo'], 0);
+                    add('¿Qué tipo de cojinete no tiene contacto mecánico?',
+                        ['Magnético', 'De bolas', 'De rodillos', 'De empuje'], 0);
+                    add('¿Qué tipo de sello tiene un rotor con cuchillas?',
+                        ['Sello de laberinto', 'Sello de carbón', 'Sello hidráulico', 'Sello de cepillo'], 0);
+                    add('¿Qué tipo de sello se usa para sellar ejes giratorios?',
+                        ['Sello de laberinto', 'Sello de carbón', 'Sello hidráulico', 'Todos'], 0);
+                    add('¿Qué tipo de cojinete usa rodillos cónicos?',
+                        ['De rodillos cónicos', 'De bolas', 'De rodillos cilíndricos', 'De agujas'], 0);
+                    add('¿Qué tipo de sello usa cerdas metálicas?',
+                        ['Sello de cepillo', 'Sello de laberinto', 'Sello de carbón', 'Sello hidráulico'], 0);
+                    add('¿Qué función tienen los sellos en un motor de turbina?',
+                        ['Evitar fugas y controlar flujos de aire', 'Aumentar el empuje', 'Reducir el ruido', 'Ninguna'],
+                        0);
+                },
+                // 15.9-10
+                () => {
+                    add('¿Qué tipo de combustible tiene un punto de congelación de -47°C?',
+                        ['JET A-1', 'JET A', 'JET B', 'AVGAS'], 0);
+                    add('¿Qué tipo de lubricante es más resistente al calor?',
+                        ['Sintético', 'Mineral', 'Vegetal', 'Ninguno'], 0);
+                    add('¿Qué sistema de lubricación no tiene válvula de alivio de presión?',
+                        ['De flujo total', 'De válvula de alivio', 'De pérdida total', 'Ninguno'], 0);
+                    add('¿Qué programa analiza el aceite para detectar desgaste?',
+                        ['SOAP', 'FADEC', 'EICAS', 'ECAM'], 0);
+                    add('¿Qué tipo de bomba de aceite usa engranajes?',
+                        ['Bomba de engranajes', 'Bomba de paletas', 'Gerotor', 'Todas'], 0);
+                    add('¿Qué componente elimina las partículas metálicas del aceite?',
+                        ['Detector de partículas (chip detector)', 'Intercambiador de calor', 'Válvula de alivio', 'Filtro'],
+                        0);
+                    add('¿Qué tipo de combustible se usa en climas fríos?',
+                        ['JET B', 'JET A-1', 'JET A', 'AVGAS'], 0);
+                    add('¿Qué función tiene el intercambiador de calor en el sistema de lubricación?',
+                        ['Enfriar el aceite', 'Calentar el aceite', 'Filtrar el aceite', 'Bombear el aceite'], 0);
+                    add('¿Qué tipo de aditivo se usa para prevenir la congelación del agua en el combustible?',
+                        ['Anti-hielo', 'Antioxidante', 'Disipador estático', 'Inhibidor de corrosión'], 0);
+                    add('¿Qué tipo de sistema de lubricación se usa en motores de corta duración?',
+                        ['De pérdida total', 'De flujo total', 'De válvula de alivio', 'Ninguno'], 0);
+                },
+                // 15.11-12
+                () => {
+                    add('¿Qué sistema de control de combustible tiene autoridad total sobre el motor?',
+                        ['FADEC', 'Mecánico', 'Hidromecánico', 'Ninguno'], 0);
+                    add('¿Qué tipo de bomba de combustible usa un plato oscilante?',
+                        ['Bomba de plato oscilante', 'Bomba de engranajes', 'Bomba de paletas', 'Gerotor'], 0);
+                    add('¿Qué tipo de inyector de combustible tiene un solo orificio?',
+                        ['Simplex', 'Duplex', 'Vaporizador', 'Inyector'], 0);
+                    add('¿Qué función tiene el aire de sangrado del compresor?',
+                        ['Enfriar la turbina', 'Aumentar el empuje', 'Reducir el ruido', 'Ninguna'], 0);
+                    add('¿Qué sistema controla el flujo de aire para el enfriamiento de la turbina?',
+                        ['ACC', 'FADEC', 'EICAS', 'ECAM'], 0);
+                    add('¿Qué tipo de inyector de combustible usa un tubo en forma de J?',
+                        ['Vaporizador', 'Simplex', 'Duplex', 'Inyector'], 0);
+                    add('¿Qué componente convierte señales eléctricas en presión hidráulica en el FADEC?',
+                        ['HMU', 'ECU', 'PMA', 'TRU'], 0);
+                    add('¿Qué función tiene la válvula de sangrado del compresor?',
+                        ['Controlar el flujo de aire', 'Aumentar la presión', 'Reducir la temperatura', 'Ninguna'], 0);
+                    add('¿Qué tipo de cámara de combustión se usa en los motores turboshaft?',
+                        ['Anular de flujo inverso', 'Tubular', 'Can-annular', 'De flujo directo'], 0);
+                    add('¿Qué sistema de aire se usa para evitar la formación de hielo?',
+                        ['Anti-icing', 'ACC', 'SOAP', 'FADEC'], 0);
+                },
+                // 15.13-14
+                () => {
+                    add('¿Qué tipo de arrancador es reversible (motor/generador)?',
+                        ['Starter-generator', 'Neumático', 'Hidráulico', 'De cartucho'], 0);
+                    add('¿Qué tipo de sistema de ignición usa 28V DC?',
+                        ['Baja tensión', 'Alta tensión', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué componente genera el alto voltaje para la ignición?',
+                        ['Exciter box', 'ECU', 'HMU', 'PMA'], 0);
+                    add('¿Qué parámetro indica la temperatura de los gases de escape?',
+                        ['EGT', 'ITT', 'TIT', 'TOT'], 0);
+                    add('¿Qué tipo de instrumento de indicación usa bobina móvil?',
+                        ['Analógico', 'Digital', 'AC', 'DC'], 0);
+                    add('¿Qué sistema de indicación se usa en cabinas de cristal?',
+                        ['EICAS/ECAM', 'Bobina móvil', 'AC', 'DC'], 0);
+                    add('¿Qué tipo de arrancador usa aire a presión?',
+                        ['Neumático', 'Eléctrico', 'Hidráulico', 'De cartucho'], 0);
+                    add('¿Qué parámetro indica las RPM del compresor de baja presión?',
+                        ['N1', 'N2', 'N3', 'EPR'], 0);
+                    add('¿Qué tipo de termopar se usa para medir EGT?',
+                        ['De estancamiento', 'De respuesta rápida', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué parámetro indica la relación de presión del motor?',
+                        ['EPR', 'BPR', 'SFC', 'EGT'], 0);
+                },
+                // 15.15-16
+                () => {
+                    add('¿Qué sistema de aumento de potencia inyecta combustible adicional entre la turbina y la tobera?',
+                        ['Postcombustión (Afterburner)', 'Inyección de agua', 'Inyección de methanol', 'Ninguno'], 0);
+                    add('¿Qué sistema de aumento de potencia enfría el aire de entrada?',
+                        ['Inyección de agua o agua-methanol', 'Postcombustión', 'Ninguno', 'Todos'], 0);
+                    add('¿Qué tipo de motor turboprop tiene una turbina de potencia separada del compresor?',
+                        ['Turbina libre', 'Eje fijo', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué componente reduce las RPM de la turbina para la hélice?',
+                        ['Caja reductora', 'Turbina de potencia', 'Compresor', 'Tobera'], 0);
+                    add('¿Qué sistema evita el windmilling de la hélice?',
+                        ['Freno de hélice', 'NTS', 'Acoplamiento de seguridad', 'Todos'], 0);
+                    add('¿Qué sistema limita el arrastre de la hélice?',
+                        ['NTS', 'Freno de hélice', 'Acoplamiento de seguridad', 'Ninguno'], 0);
+                    add('¿Qué tipo de motor turboprop tiene un solo eje?',
+                        ['Eje fijo', 'Turbina libre', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué sistema de aumento de potencia se usa en aviones militares?',
+                        ['Postcombustión', 'Inyección de agua', 'Inyección de methanol', 'Ninguno'], 0);
+                    add('¿Qué tipo de hélice se usa en motores turboprop?',
+                        ['De paso variable', 'De paso fijo', 'De velocidad constante', 'Todas'], 0);
+                    add('¿Qué componente desconecta la caja de engranajes en caso de arrastre extremo?',
+                        ['Acoplamiento de seguridad', 'NTS', 'Freno de hélice', 'Ninguno'], 0);
+                },
+                // 15.17-18
+                () => {
+                    add('¿Qué tipo de motor se usa en helicópteros?',
+                        ['Turboshaft', 'Turboprop', 'Turbofan', 'Turbojet'], 0);
+                    add('¿Qué configuración de turboshaft tiene una turbina de potencia separada?',
+                        ['Turbina libre', 'Eje directo', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué unidad proporciona energía eléctrica en tierra con los motores apagados?',
+                        ['APU', 'Batería', 'Generador', 'Alternador'], 0);
+                    add('¿Qué componente controla la APU?',
+                        ['ECB', 'ECU', 'FADEC', 'EICAS'], 0);
+                    add('¿Qué tipo de compresor tiene la APU?',
+                        ['Centrífugo', 'Axial', 'Axi-centrífugo', 'Ninguno'], 0);
+                    add('¿Qué velocidad típica tiene el rotor de un helicóptero?',
+                        ['200-400 RPM', '2000 RPM', '33000 RPM', '10000 RPM'], 0);
+                    add('¿Qué configuración de turboshaft tiene un solo eje?',
+                        ['Eje directo', 'Turbina libre', 'Ambos', 'Ninguno'], 0);
+                    add('¿Qué tipo de engranaje se usa en las cajas reductoras de turboshaft?',
+                        ['Epicicloidal', 'Cónico', 'Helicoidal', 'Todos'], 0);
+                    add('¿Qué función tiene el generador en la APU?',
+                        ['Suministrar 115V AC', 'Suministrar 28V DC', 'Suministrar aire', 'Ninguna'], 0);
+                    add('¿Dónde se instala normalmente la APU en un avión?',
+                        ['En el cono de cola', 'En el ala', 'En el morro', 'En la cabina'], 0);
+                },
+                // 15.19-20
+                () => {
+                    add('¿Qué componente aísla el compartimento del motor para prevenir la propagación del fuego?',
+                        ['Cortafuegos (Firewall)', 'Carenado', 'Panel acústico', 'Soporte'], 0);
+                    add('¿Qué tipo de sistema de detección de incendios usa un tubo de Inconel?',
+                        ['De bucle continuo', 'De gas', 'De interruptor térmico', 'De radiación'], 0);
+                    add('¿Qué agente extintor se usa en los motores de avión?',
+                        ['Halon 1301', 'Agua', 'Espuma', 'CO2'], 0);
+                    add('¿Qué tipo de instalación de motor tiene el motor montado en el ala?',
+                        ['Pod', 'Empotrado', 'Fuselaje', 'Cola'], 0);
+                    add('¿Qué tipo de panel reduce el ruido del motor?',
+                        ['Panel acústico', 'Cortafuegos', 'Carenado', 'Soporte'], 0);
+                    add('¿Qué tipo de sistema de detección de incendios usa un gas inerte?',
+                        ['De gas', 'De bucle continuo', 'De interruptor térmico', 'De radiación'], 0);
+                    add('¿Qué tipo de botella extintora tiene descarga rápida?',
+                        ['HRD', 'Halon', 'HFC', 'Ninguna'], 0);
+                    add('¿Qué función tienen los soportes del motor (mounts)?',
+                        ['Fijar el motor y transmitir cargas', 'Aislar el motor', 'Reducir el ruido', 'Ninguna'], 0);
+                    add('¿Qué tipo de sistema de detección de incendios usa un material de núcleo de cerámica?',
+                        ['Fenwal/Kiddle', 'De gas', 'De interruptor térmico', 'De radiación'], 0);
+                    add('¿Qué tipo de instalación de motor tiene el motor dentro del fuselaje?',
+                        ['Empotrado', 'Pod', 'Ala', 'Cola'], 0);
+                },
+                // 15.21-22
+                () => {
+                    add('¿Qué parámetro indica el empuje del motor?',
+                        ['EPR', 'N1', 'N2', 'EGT'], 0);
+                    add('¿Qué herramienta se usa para inspeccionar el interior del motor?',
+                        ['Boroscopio', 'Chip detector', 'SOAP', 'Vibrador'], 0);
+                    add('¿Qué tipo de daño es causado por objetos extraños?',
+                        ['FOD', 'Stall', 'Surge', 'Creep'], 0);
+                    add('¿Qué tipo de preservación se usa para periodos de más de 30 días?',
+                        ['Largo plazo', 'Corto plazo', 'Ninguno', 'Todos'], 0);
+                    add('¿Qué desecante se usa para absorber la humedad?',
+                        ['Silica gel', 'Carbón', 'Sal', 'Arena'], 0);
+                    add('¿Qué parámetro indica la temperatura de los gases de escape?',
+                        ['EGT', 'EPR', 'N1', 'N2'], 0);
+                    add('¿Qué tipo de limpieza del compresor elimina la sal?',
+                        ['Desalinización', 'Industrial', 'Ambas', 'Ninguna'], 0);
+                    add('¿Qué tipo de contenedor se usa para el almacenamiento a largo plazo?',
+                        ['Metálico', 'De cartón', 'Plástico', 'Madera'], 0);
+                    add('¿Qué color indica que el silica gel está seco?',
+                        ['Azul brillante', 'Rosa', 'Blanco', 'Lavanda'], 0);
+                    add('¿Qué parámetro indica las RPM del compresor de alta presión?',
+                        ['N2', 'N1', 'N3', 'EPR'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => ({ ...t, preguntas: generarPreguntas(idx) }))
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA
+        // ============================================================
+        let state = {
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_modulo15_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_modulo15_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  DOM REFERENCES Y FUNCIONES PRINCIPALES
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo.substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            let html = '';
+            data.temas.forEach((item, idx) => {
+                const bloqueado = !state.temasDesbloqueados[idx];
+                const completado = state.temasCompletados[idx];
+                const activo = idx === state.currentTema;
+                const bookmarked = state.bookmarks[idx];
+                let cls = '';
+                if (bloqueado) cls += ' locked';
+                if (completado) cls += ' completed';
+                if (activo) cls += ' active';
+                if (bookmarked) cls += ' bookmarked';
+                const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                html += `<li class="${cls}" data-index="${idx}">
+                            <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                            <span>${item.id}. ${item.titulo}</span>
+                            <span class="badge">${badge}</span>
+                        </li>`;
+            });
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const contenido = tema.contenido;
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${tema.id}</div>
+                            <h1>${tema.titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} Marcador</button>
+                                <button id="resetTemaBtn">🔄 Reiniciar test</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            📝 Modo Examen: contenido oculto
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>📝 Notas personales</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="Escribe aquí tus notas...">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 Test de evaluación</h3>
+                            <div class="test-stats">
+                                Intentos: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${p.correcta}">
+                            <p>${i+1}. ${p.pregunta}</p>`;
+                p.opciones.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">✅ Corregir test</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">👁️ Mostrar respuestas</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">➡️ Siguiente tema</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm('¿Reiniciar el test de este tema?')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = '✅ Test superado';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ¡Correcto!';
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[correcta];
+                    expl.textContent = `❌ Respuesta correcta: ${correctaText}`;
+                } else {
+                    expl.textContent = '⚠️ Selecciona una opción';
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = `✅ ¡Excelente! Has acertado ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent =
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = `💡 Respuesta: ${correctaText}`;
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function aplicarBusqueda(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido;
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${t.id} - ${t.titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_modulo15_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 CSV exportado');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ ¿Reiniciar todo el progreso?')) return;
+            localStorage.removeItem('aerotraining_modulo15_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD, THEME, MODES
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '0':
+                    let num;
+                    if (e.key === '0') num = 9;
+                    else num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast('🚀 Temario desbloqueado');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ AeroTraining 66 - Módulo 15 (Motores de Turbina de Gas - B1) cargado');
+        console.log('📊 16 temas basados en el manual M15_manual.pdf');
+    </script>
+
+</body>
+</html>
