@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 9 · Factores Humanos - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content .ejemplo strong {
+            color: var(--accent-light);
+        }
+        .tema .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+        }
+        .tema .content table td,
+        .tema .content table th {
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.6rem;
+            text-align: left;
+        }
+        .tema .content table th {
+            background: var(--bg-body);
+            color: var(--accent-light);
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 10</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <!-- Temas -->
+        <div id="temaContainer"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <!-- Certificado -->
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado el Módulo 9: Factores Humanos</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en la gestión de los factores humanos, la psicología social, el rendimiento humano y la seguridad en el lugar de trabajo.</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <!-- Shortcuts hint -->
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: 10 TEMAS - MÓDULO 9 (BASADO EN EL PDF)
+        // ============================================================
+        const temasBase = [
+            // === 9.1.1 ===
+            {
+                id: '9.1.1',
+                titulo: 'General y Necesidad de los Factores Humanos',
+                contenido: `<h3>General y Necesidad de los Factores Humanos</h3>
+                      <h4>Definición de Factor Humano</h4>
+                      <p>El Factor Humano es el estudio del comportamiento humano en sistemas tecnológicos complejos, cuyo objetivo es mantener el riesgo bajo control. Es multidisciplinar e involucra la psicología, la fisiología, la ergonomía, la antropometría y la ingeniería.</p>
+                      <h4>Evolución de los Factores Humanos</h4>
+                      <ul>
+                        <li>Primeros estudios sobre anoxia en globos aerostáticos (1910).</li>
+                        <li>Durante la Primera Guerra Mundial, se empezaron a considerar las aptitudes mentales de los pilotos.</li>
+                        <li>En la Segunda Guerra Mundial, el enfoque pasó a los aspectos psicológicos y al diseño de instrumentos.</li>
+                        <li>En los años 70, con la llegada del Boeing 747, la aviación comercial se masificó.</li>
+                        <li>El accidente de Tenerife en 1977 impulsó los cursos de CRM (Crew Resource Management).</li>
+                        <li>En los 90, los cursos de MRM (Maintenance Resource Management) llevaron los factores humanos al mantenimiento.</li>
+                        <li>En 2003, la formación en factores humanos se hizo obligatoria en Europa.</li>
+                      </ul>
+                      <h4>Modelo SHELL</h4>
+                      <p>El modelo SHELL (Edwards, 1972; Hopkins, 1979) describe las interacciones del "Liveware" (el hombre) con:</p>
+                      <ul>
+                        <li><strong>S (Software):</strong> Procedimientos, reglas, manuales.</li>
+                        <li><strong>H (Hardware):</strong> Instrumentos, aeronaves, equipos.</li>
+                        <li><strong>E (Environment):</strong> Entorno físico y organizacional.</li>
+                        <li><strong>L (Liveware):</strong> Otras personas (colegas, supervisores).</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Un error en la comunicación entre un técnico y un almacenista puede llevar a usar piezas incorrectas, como en el accidente del BAC 1-11.</div>`
+            },
+            // === 9.1.2 ===
+            {
+                id: '9.1.2',
+                titulo: 'Incidentes por Factores Humanos',
+                contenido: `<h3>Incidentes por Factores Humanos</h3>
+                      <p>Según la OACI, un accidente es un suceso que ocurre durante la operación de una aeronave y que causa lesiones graves o daños estructurales. Un incidente es un suceso que pone en peligro la seguridad.</p>
+                      <p>El 70-90% de los accidentes aéreos se deben a errores humanos. El 12-15% de estos errores se atribuyen al mantenimiento.</p>
+                      <h4>Accidentes Destacados</h4>
+                      <ul>
+                        <li><strong>Tenerife 1977:</strong> Colisión de dos Boeing 747 debido a errores de comunicación y presión.</li>
+                        <li><strong>Maui 1988 (Aloha Airlines):</strong> Desprendimiento del fuselaje por fatiga de materiales y fallos en la inspección visual nocturna.</li>
+                        <li><strong>Didcot 1990 (BAC 1-11):</strong> Desprendimiento de la ventanilla de la cabina debido a pernos incorrectos.</li>
+                        <li><strong>Palermo 2005 (ATR72):</strong> Amerizaje por agotamiento de combustible debido a un indicador de combustible incorrecto (ATR42).</li>
+                        <li><strong>Marathon 2005 (Boeing 737):</strong> Pérdida de presurización porque el sistema se dejó en manual después de una prueba.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En el accidente de Marathon, el técnico olvidó cambiar el sistema de presurización de manual a automático, lo que provocó que la tripulación sufriera hipoxia.</div>`
+            },
+            // === 9.2.1 ===
+            {
+                id: '9.2.1',
+                titulo: 'Procesamiento de la Información',
+                contenido: `<h3>Procesamiento de la Información</h3>
+                      <p>El procesamiento de la información describe cómo el cerebro analiza, da significado, recuerda y actúa sobre la información. Se puede comparar con un sistema informático:</p>
+                      <ul>
+                        <li><strong>Órganos sensoriales:</strong> Ojo, oído (recepción de información).</li>
+                        <li><strong>Nervios:</strong> Sistema de transmisión de datos.</li>
+                        <li><strong>Cerebro:</strong> Procesador de datos.</li>
+                      </ul>
+                      <h4>Límites del Sistema</h4>
+                      <ul>
+                        <li>La memoria sensorial retiene información por muy poco tiempo.</li>
+                        <li>La atención es un filtro que selecciona solo una parte de la información.</li>
+                        <li>La percepción ensambla la información para darle un significado completo.</li>
+                      </ul>
+                      <h4>Modelos Mentales</h4>
+                      <p>Son representaciones internas de la realidad que influyen en cómo interpretamos la información. Un modelo mental erróneo puede llevar a errores, como en el accidente del BAC 1-11.</p>
+                      <h4>Conciencia Situacional (Situation Awareness)</h4>
+                      <ul>
+                        <li><strong>Percepción:</strong> Detectar un problema.</li>
+                        <li><strong>Comprensión:</strong> Entender el significado.</li>
+                        <li><strong>Proyección:</strong> Prever el desarrollo de los acontecimientos.</li>
+                      </ul>
+                      <h4>Toma de Decisiones</h4>
+                      <p>Proceso complejo influenciado por factores cognitivos, emocionales y de personalidad. La tendencia a la confirmación (buscar pruebas que apoyen una hipótesis inicial) puede ser peligrosa.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Un técnico con experiencia puede perder la conciencia situacional por no percibir un problema, mientras que un novato puede percibirlo pero no entenderlo.</div>`
+            },
+            // === 9.2.2 ===
+            {
+                id: '9.2.2',
+                titulo: 'Visión y Audición',
+                contenido: `<h3>Visión y Audición</h3>
+                      <h4>Estructura del Ojo</h4>
+                      <ul>
+                        <li><strong>Córnea:</strong> Lente natural que enfoca la luz.</li>
+                        <li><strong>Pupila:</strong> Regula la cantidad de luz que entra.</li>
+                        <li><strong>Cristalino:</strong> Enfoca objetos a diferentes distancias.</li>
+                        <li><strong>Retina:</strong> Contiene fotorreceptores (conos y bastones).</li>
+                      </ul>
+                      <h4>Conos y Bastones</h4>
+                      <ul>
+                        <li><strong>Conos:</strong> Visión de colores, visión detallada, visón fotópica (diurna). Se ubican en la fóvea.</li>
+                        <li><strong>Bastones:</strong> Visión nocturna (escotópica), visión periférica. Se ubican en la periferia de la retina.</li>
+                      </ul>
+                      <h4>Agudeza Visual</h4>
+                      <p>Factores que la afectan: miopía (visión lejana borrosa), hipermetropía (visión cercana borrosa), astigmatismo (visión distorsionada).</p>
+                      <h4>Audición</h4>
+                      <ul>
+                        <li><strong>Oído externo:</strong> Pabellón auricular, conducto auditivo, tímpano.</li>
+                        <li><strong>Oído medio:</strong> Martillo, yunque, estribo (huesecillos).</li>
+                        <li><strong>Oído interno:</strong> Cóclea (transforma vibraciones en impulsos nerviosos) y conductos semicirculares (equilibrio).</li>
+                      </ul>
+                      <h4>Pérdida Auditiva</h4>
+                      <p>La exposición a ruidos superiores a 85 dB puede causar daños. El uso de protectores auditivos (tapones u orejeras) es esencial. La presbiacusia es la pérdida auditiva por envejecimiento.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Los bastones tardan 30 minutos en adaptarse a la oscuridad, por lo que al entrar en un hangar oscuro, hay que esperar para realizar inspecciones visuales.</div>`
+            },
+            // === 9.3.1 ===
+            {
+                id: '9.3.1',
+                titulo: 'Psicología Social (Responsabilidad, Motivación)',
+                contenido: `<h3>Psicología Social</h3>
+                      <h4>Responsabilidad Individual y de Grupo</h4>
+                      <p>La responsabilidad en mantenimiento es tanto individual como grupal. La responsabilidad individual asegura que cada técnico sepa su tarea, pero la responsabilidad grupal fomenta la cohesión y el apoyo mutuo. El riesgo de la responsabilidad grupal es la "difusión de la responsabilidad", donde nadie se siente personalmente responsable.</p>
+                      <h4>Motivación y Desmotivación</h4>
+                      <p>La motivación es la fuerza interna que impulsa a una persona a lograr un objetivo. La pirámide de Maslow clasifica las necesidades humanas:</p>
+                      <ul>
+                        <li>Fisiológicas (comer, dormir).</li>
+                        <li>Seguridad (estabilidad, salud).</li>
+                        <li>Sociales (amistad, pertenencia).</li>
+                        <li>Reconocimiento (estima, logros).</li>
+                        <li>Autorrealización (creatividad, potencial).</li>
+                      </ul>
+                      <p>La falta de motivación reduce la atención y la calidad del trabajo, aumentando el riesgo de errores.</p>
+                      <h4>Cultura de Seguridad</h4>
+                      <p>La cultura de una organización influye en el comportamiento de las personas. Una cultura de seguridad positiva fomenta la comunicación abierta, el aprendizaje de los errores y la inversión en formación.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Un técnico desmotivado por condiciones laborales precarias puede tener menos atención durante una inspección visual, aumentando el riesgo de no detectar un defecto.</div>`
+            },
+            // === 9.4.1 ===
+            {
+                id: '9.4.1',
+                titulo: 'Factores que Afectan el Rendimiento (Estrés, Fatiga, Alcohol)',
+                contenido: `<h3>Factores que Afectan el Rendimiento</h3>
+                      <h4>Salud y Forma Física</h4>
+                      <p>Una buena forma física es esencial para el trabajo de mantenimiento. La dieta, el ejercicio y los chequeos médicos periódicos son fundamentales.</p>
+                      <h4>Ritmos Circadianos</h4>
+                      <p>Son ciclos fisiológicos de aproximadamente 24 horas que afectan el rendimiento. La temperatura corporal, el apetito y el ciclo sueño-vigilia varían a lo largo del día. El rendimiento es óptimo durante el día y baja por la noche.</p>
+                      <h4>Estrés</h4>
+                      <p>El estrés es la respuesta del organismo a estímulos (estresores). El Síndrome General de Adaptación (Selye) tiene tres fases:</p>
+                      <ul>
+                        <li><strong>Alarma:</strong> Liberación de adrenalina.</li>
+                        <li><strong>Resistencia:</strong> Liberación de cortisol.</li>
+                        <li><strong>Agotamiento:</strong> Cuando los recursos se agotan.</li>
+                      </ul>
+                      <h4>Presión de Tiempo</h4>
+                      <p>Aumenta la probabilidad de errores de omisión y de tomar atajos en los procedimientos.</p>
+                      <h4>Carga de Trabajo</h4>
+                      <ul>
+                        <li><strong>Infra-carga (Underload):</strong> Baja activación, aburrimiento, complacencia.</li>
+                        <li><strong>Carga normal:</strong> Rendimiento óptimo.</li>
+                        <li><strong>Sobrecarga (Overload):</strong> Estrés excesivo, errores por presión.</li>
+                      </ul>
+                      <h4>Fatiga y Sueño</h4>
+                      <p>La fatiga reduce la atención, la memoria y la capacidad de juicio. El sueño REM y NREM son fases del sueño. La inercia del sueño es el período de transición al despertar.</p>
+                      <h4>Alcohol y Medicamentos</h4>
+                      <p>El alcohol altera las funciones mentales, incluso en pequeñas dosis. Los medicamentos pueden tener efectos secundarios que afecten el rendimiento. Es fundamental leer los prospectos.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Trabajar en un turno de noche cuando la temperatura corporal está en su punto más bajo aumenta el riesgo de errores.</div>`
+            },
+            // === 9.5.1 ===
+            {
+                id: '9.5.1',
+                titulo: 'Entorno Físico (Ruido, Iluminación)',
+                contenido: `<h3>Entorno Físico</h3>
+                      <h4>Ruido</h4>
+                      <p>El ruido es un estresor que afecta la concentración y la comunicación. La exposición a ruidos superiores a 85 dB requiere protección auditiva. El ruido puede causar:</p>
+                      <ul>
+                        <li>Molestia.</li>
+                        <li>Interferencia en la conversación.</li>
+                        <li>Fatiga mental.</li>
+                        <li>Pérdida auditiva temporal o permanente.</li>
+                      </ul>
+                      <h4>Iluminación</h4>
+                      <p>Una iluminación adecuada es crucial para las tareas de mantenimiento. Los niveles de iluminación se miden en candelas (lux).</p>
+                      <ul>
+                        <li>Hangar: 75-100 lux.</li>
+                        <li>Inspecciones visuales: 200-500 lux.</li>
+                        <li>Salidas de emergencia: 5 lux.</li>
+                      </ul>
+                      <p>El deslumbramiento (directo o indirecto) reduce la capacidad visual. La interpretación de los colores depende de la fuente de luz.</p>
+                      <h4>Clima y Temperatura</h4>
+                      <p>Las temperaturas extremas (calor o frío) afectan el rendimiento. La humedad también influye en la sensación térmica.</p>
+                      <h4>Vibraciones</h4>
+                      <p>Las vibraciones (0.5-20 Hz) son absorbidas por el cuerpo y pueden causar fatiga y problemas circulatorios.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Una iluminación insuficiente en un hangar puede hacer que un técnico no vea una grieta durante una inspección visual.</div>`
+            },
+            // === 9.6.1 ===
+            {
+                id: '9.6.1',
+                titulo: 'Tareas y Comunicación',
+                contenido: `<h3>Tareas y Comunicación</h3>
+                      <h4>Trabajo Físico</h4>
+                      <p>Incluye tareas que requieren esfuerzo físico. Puede causar fatiga y lesiones si no se gestiona bien. Es importante planificar y usar equipos adecuados.</p>
+                      <h4>Tareas Repetitivas</h4>
+                      <p>Son tareas rutinarias que pueden causar aburrimiento y complacencia. Es esencial seguir las listas de verificación (checklists) para evitar omisiones.</p>
+                      <h4>Inspección Visual</h4>
+                      <p>Es el método más importante para garantizar la aeronavegabilidad. Requiere alta concentración y el uso de herramientas como espejos, linternas y boroscopios.</p>
+                      <ul>
+                        <li>Conocer el área a inspeccionar.</li>
+                        <li>Realizar un barrido sistemático.</li>
+                        <li>Registrar las observaciones inmediatamente.</li>
+                      </ul>
+                      <h4>Sistemas Complejos</h4>
+                      <p>Los sistemas modernos son complejos y requieren formación específica. El mantenimiento debe seguir estrictamente los procedimientos para evitar consecuencias imprevistas.</p>
+                      <h4>Comunicación</h4>
+                      <p>La comunicación es esencial para la seguridad. Puede ser:</p>
+                      <ul>
+                        <li><strong>Verbal:</strong> Hablada o escrita.</li>
+                        <li><strong>No verbal:</strong> Lenguaje corporal, gestos.</li>
+                        <li><strong>Sincrónica:</strong> En tiempo real (ej. radio).</li>
+                        <li><strong>Asincrónica:</strong> Diferida en el tiempo (ej. manuales).</li>
+                      </ul>
+                      <p>La comunicación eficaz requiere claridad, escucha activa y retroalimentación (feedback).</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El accidente de Gatwick (A320) ocurrió porque los técnicos no comunicaron correctamente que los spoilers estaban en modo mantenimiento durante el cambio de turno.</div>`
+            },
+            // === 9.8.1 ===
+            {
+                id: '9.8.1',
+                titulo: 'Error Humano y Modelos',
+                contenido: `<h3>Error Humano</h3>
+                      <h4>Clasificación de Errores</h4>
+                      <ul>
+                        <li><strong>Diseño vs. Operador:</strong> Error inherente al diseño o causado por el operador.</li>
+                        <li><strong>Variable vs. Constante:</strong> Aleatorio o predecible.</li>
+                        <li><strong>Reversible vs. Irreversible:</strong> Corregible o no.</li>
+                        <li><strong>Omisión, Comisión y Extrañeza:</strong> Acción no realizada, realizada incorrectamente o añadida.</li>
+                        <li><strong>Deslices y Lapsus:</strong> Errores de atención o de memoria.</li>
+                        <li><strong>Errores de Juicio:</strong> Errores en la planificación.</li>
+                        <li><strong>Violaciones:</strong> Desviaciones conscientes de las reglas.</li>
+                      </ul>
+                      <h4>Modelo de Rasmussen</h4>
+                      <ul>
+                        <li><strong>Basado en Habilidades (Skill-based):</strong> Acciones automáticas, baja atención.</li>
+                        <li><strong>Basado en Reglas (Rule-based):</strong> Aplicación de reglas conocidas.</li>
+                        <li><strong>Basado en Conocimiento (Knowledge-based):</strong> Situaciones nuevas, alta concentración.</li>
+                      </ul>
+                      <h4>Modelo del Queso Suizo (Reason)</h4>
+                      <p>Los accidentes ocurren cuando los "agujeros" (errores) en las diferentes capas del sistema (diseño, producción, mantenimiento, operación) se alinean. Los <strong>fallos activos</strong> son errores de los operadores directos (pilotos, técnicos). Los <strong>fallos latentes</strong> son errores en capas más alejadas (gestión, diseño).</p>
+                      <h4>Los 12 Sucios (Dirty Dozen)</h4>
+                      <ul>
+                        <li>Falta de comunicación.</li>
+                        <li>Complacencia.</li>
+                        <li>Falta de conocimiento.</li>
+                        <li>Distracción.</li>
+                        <li>Falta de trabajo en equipo.</li>
+                        <li>Fatiga.</li>
+                        <li>Falta de recursos.</li>
+                        <li>Presión.</li>
+                        <li>Falta de asertividad.</li>
+                        <li>Estrés.</li>
+                        <li>Falta de atención.</li>
+                        <li>Normas (asumir que algo es correcto por costumbre).</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En el accidente de la Aloha Airlines, la complacencia y la falta de atención durante la inspección nocturna llevaron a no detectar las grietas por fatiga.</div>`
+            },
+            // === 9.9.1 ===
+            {
+                id: '9.9.1',
+                titulo: 'Peligros en el Lugar de Trabajo',
+                contenido: `<h3>Peligros en el Lugar de Trabajo</h3>
+                      <h4>Reconocimiento y Evitación de Peligros</h4>
+                      <p>El mantenimiento aeronáutico es un entorno con muchos peligros potenciales. Algunos de los más comunes son:</p>
+                      <ul>
+                        <li><strong>Descarga eléctrica:</strong> Contacto con equipos de >30V.</li>
+                        <li><strong>Humos y vapores:</strong> De sustancias químicas o combustión.</li>
+                        <li><strong>Radiaciones:</strong> Rayos X, gamma, microondas (en ensayos no destructivos).</li>
+                        <li><strong>Materiales radiactivos y agentes químicos:</strong> Lubricantes, fluidos hidráulicos, pinturas.</li>
+                        <li><strong>Quemaduras/Conmociones:</strong> Por superficies calientes o frías.</li>
+                        <li><strong>Incendios y explosiones:</strong> Por combustibles y sustancias inflamables.</li>
+                        <li><strong>Radiaciones lumínicas:</strong> Lámparas UV (Wood) que pueden dañar la retina.</li>
+                      </ul>
+                      <h4>Clasificación de Incendios</h4>
+                      <ul>
+                        <li><strong>Clase A:</strong> Madera, papel, tela (agua).</li>
+                        <li><strong>Clase B:</strong> Líquidos inflamables (sofocación).</li>
+                        <li><strong>Clase C:</strong> Equipos eléctricos (agentes no conductores).</li>
+                      </ul>
+                      <h4>Señalización</h4>
+                      <ul>
+                        <li><strong>PELIGRO:</strong> Riesgo grave e inmediato.</li>
+                        <li><strong>PRECAUCIÓN:</strong> Riesgo potencial.</li>
+                        <li><strong>INDICACIONES GENERALES:</strong> Normas de seguridad.</li>
+                        <li><strong>INCENDIO Y EMERGENCIA:</strong> Extintores y procedimientos.</li>
+                      </ul>
+                      <h4>Actuación en Emergencias</h4>
+                      <ul>
+                        <li>Mantener la calma y evaluar la situación.</li>
+                        <li>Asegurar el área y proteger a los heridos.</li>
+                        <li>Pedir ayuda y utilizar el equipo de emergencia.</li>
+                        <li>No intentar apagar un incendio si no se sabe cómo hacerlo correctamente.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Trabajar en el interior de un tanque de combustible requiere usar equipos de respiración y trabajar en pareja para evitar riesgos de asfixia o claustrofobia.</div>`
+            }
+        ];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema)
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(pregunta, opciones, correcta) {
+                preguntas.push({ pregunta, opciones, correcta });
+            }
+
+            const generadores = [
+                // 9.1.1
+                () => {
+                    add('¿Qué es el Factor Humano en el contexto aeronáutico?',
+                        ['El estudio del comportamiento humano en sistemas tecnológicos complejos', 'El estudio de las máquinas y su rendimiento', 'El estudio de las condiciones meteorológicas', 'El estudio de la economía del sector'], 0);
+                    add('¿Qué accidente impulsó los cursos de CRM (Crew Resource Management)?',
+                        ['Tenerife 1977', 'Maui 1988', 'Didcot 1990', 'Palermo 2005'], 0);
+                    add('¿Qué representa la "H" en el modelo SHELL?',
+                        ['Hardware (equipos e instrumentos)', 'Human (el hombre)', 'Health (salud)', 'Help (ayuda)'], 0);
+                    add('¿Qué representa la primera "L" en el modelo SHELL?',
+                        ['Liveware (el hombre)', 'Love (afecto)', 'Language (lenguaje)', 'Logic (lógica)'], 0);
+                    add('¿Qué representa la "S" en el modelo SHELL?',
+                        ['Software (procedimientos y reglas)', 'Safety (seguridad)', 'System (sistema)', 'Supervisor (supervisor)'], 0);
+                    add('¿Qué accidente demostró que los errores de mantenimiento pueden ser tan graves como los de los pilotos?',
+                        ['Maui 1988 (Aloha Airlines)', 'Tenerife 1977', 'Didcot 1990', 'Marathon 2005'], 0);
+                    add('¿Cuándo se hizo obligatoria la formación en factores humanos en Europa?',
+                        ['2003', '1990', '1977', '2010'], 0);
+                    add('¿Qué representa la "E" en el modelo SHELL?',
+                        ['Environment (entorno físico y organizacional)', 'Engineering (ingeniería)', 'Emergency (emergencia)', 'Error (error)'], 0);
+                    add('¿Qué estudia la ergonomía en relación con los factores humanos?',
+                        ['La optimización de la relación entre el hombre y su entorno laboral', 'La estructura del ojo', 'El procesamiento de la información', 'El comportamiento en grupo'], 0);
+                    add('¿Qué es el MRM en el contexto de los factores humanos?',
+                        ['Maintenance Resource Management', 'Management of Resources and Maintenance', 'Manual de Recursos de Mantenimiento', 'Maintenance Rules and Manuals'], 0);
+                },
+                // 9.1.2
+                () => {
+                    add('¿Qué porcentaje de accidentes aéreos se atribuyen a errores humanos?',
+                        ['70-90%', '30-50%', '10-20%', '90-100%'], 0);
+                    add('¿Qué accidente fue causado por la instalación de un indicador de combustible incorrecto?',
+                        ['Palermo 2005 (ATR72)', 'Maui 1988', 'Didcot 1990', 'Marathon 2005'], 0);
+                    add('¿Qué accidente fue causado por la falta de presurización debido a un sistema dejado en manual?',
+                        ['Marathon 2005 (Boeing 737)', 'Tenerife 1977', 'Maui 1988', 'Didcot 1990'], 0);
+                    add('¿Qué accidente ocurrió debido a la fatiga de materiales y fallos en la inspección visual?',
+                        ['Maui 1988 (Aloha Airlines)', 'Didcot 1990', 'Palermo 2005', 'Marathon 2005'], 0);
+                    add('¿Qué accidente fue causado por el uso de pernos incorrectos en la ventanilla de la cabina?',
+                        ['Didcot 1990 (BAC 1-11)', 'Tenerife 1977', 'Maui 1988', 'Palermo 2005'], 0);
+                    add('¿Qué accidente fue causado por errores de comunicación y presión en la torre de control?',
+                        ['Tenerife 1977', 'Didcot 1990', 'Maui 1988', 'Marathon 2005'], 0);
+                    add('Según la OACI, ¿qué es un incidente?',
+                        ['Un suceso que pone en peligro la seguridad', 'Un suceso que causa lesiones graves', 'Un suceso que causa daños estructurales', 'Un suceso que ocurre durante el mantenimiento'], 0);
+                    add('¿Qué porcentaje de los accidentes por factores humanos se atribuyen al mantenimiento?',
+                        ['12-15%', '5-10%', '20-30%', '50-60%'], 0);
+                    add('¿Qué ocurrió en el accidente de Marathon 2005?',
+                        ['La aeronave perdió presurización y la tripulación sufrió hipoxia', 'Se desprendió el fuselaje', 'Colisionó con otra aeronave', 'Se quedó sin combustible'], 0);
+                    add('¿Qué es la complacencia en el contexto de los factores humanos?',
+                        ['Exceso de confianza que lleva a subestimar los riesgos', 'Falta de motivación', 'Estrés laboral', 'Fatiga crónica'], 0);
+                },
+                // 9.2.1
+                () => {
+                    add('¿Qué es la memoria sensorial?',
+                        ['Retiene información por muy poco tiempo', 'Almacena información a largo plazo', 'Es la memoria de trabajo', 'Almacena habilidades motoras'], 0);
+                    add('¿Qué función tiene la atención?',
+                        ['Filtrar y seleccionar la información relevante', 'Almacenar información a largo plazo', 'Procesar la información sensorial', 'Coordinar los movimientos'], 0);
+                    add('¿Qué es un modelo mental?',
+                        ['Una representación interna de la realidad', 'Una lista de verificación', 'Un procedimiento escrito', 'Un diagrama del sistema'], 0);
+                    add('¿Cuáles son los tres niveles de la conciencia situacional?',
+                        ['Percepción, comprensión y proyección', 'Atención, memoria y juicio', 'Alarma, resistencia y agotamiento', 'Omisión, comisión y extrañeza'], 0);
+                    add('¿Qué es la tendencia a la confirmación?',
+                        ['Buscar pruebas que apoyen una hipótesis inicial', 'Ignorar la información nueva', 'Seguir las reglas al pie de la letra', 'Trabajar en equipo'], 0);
+                    add('¿Qué tipo de error es más probable en un experto?',
+                        ['Error perceptivo (descuido)', 'Error de comprensión', 'Error de proyección', 'Error de planificación'], 0);
+                    add('¿Qué es la toma de decisiones?',
+                        ['El proceso de elegir una acción entre varias opciones', 'El proceso de percibir un estímulo', 'El proceso de almacenar información', 'El proceso de coordinar movimientos'], 0);
+                    add('¿Qué factores pueden influir negativamente en la toma de decisiones?',
+                        ['Ansiedad y estrés', 'Experiencia y formación', 'Trabajo en equipo', 'Procedimientos claros'], 0);
+                    add('¿Qué es la percepción?',
+                        ['El mecanismo que da significado a la información sensorial', 'El filtro que selecciona la información', 'El almacén de información a largo plazo', 'El proceso de ejecutar una acción'], 0);
+                    add('¿Qué ocurre si un técnico tiene un modelo mental erróneo?',
+                        ['Puede interpretar incorrectamente la información', ['Siempre detectará los problemas', 'No cometerá errores', 'Trabajará más rápido'], 0]);
+                },
+                // 9.2.2
+                () => {
+                    add('¿Qué parte del ojo enfoca la luz?',
+                        ['Córnea y cristalino', 'Pupila', 'Retina', 'Iris'], 0);
+                    add('¿Qué tipo de células fotorreceptoras son responsables de la visión nocturna?',
+                        ['Bastones', 'Conos', 'Células bipolares', 'Células ganglionares'], 0);
+                    add('¿Dónde se encuentran los conos principalmente?',
+                        ['En la fóvea', 'En la periferia de la retina', 'En la córnea', 'En el cristalino'], 0);
+                    add('¿Cuánto tiempo tardan los bastones en adaptarse a la oscuridad?',
+                        ['30 minutos', '7 minutos', '2 minutos', '1 hora'], 0);
+                    add('¿Qué estructura del oído es responsable del equilibrio?',
+                        ['Conductos semicirculares', 'Cóclea', 'Tímpano', 'Martillo'], 0);
+                    add('¿Cuál es el límite superior de audición humana en frecuencia?',
+                        ['20000 Hz', '10000 Hz', '50000 Hz', '200 Hz'], 0);
+                    add('¿A partir de qué nivel de ruido se recomienda el uso de protección auditiva?',
+                        ['85 dB', '60 dB', '100 dB', '50 dB'], 0);
+                    add('¿Qué es la presbiacusia?',
+                        ['Pérdida auditiva por envejecimiento', ['Pérdida auditiva por ruido', 'Pérdida auditiva por infección', 'Pérdida auditiva por genética'], 0]);
+                    add('¿Qué ocurre con la miopía?',
+                        ['El ojo es más largo, la imagen se forma delante de la retina', 'El ojo es más corto, la imagen se forma detrás de la retina', 'La córnea es irregular', 'El cristalino pierde elasticidad'], 0);
+                    add('¿Qué es el efecto del alcohol en la visión?',
+                        ['Reduce la visión periférica', 'Mejora la visión nocturna', 'Aumenta la agudeza visual', 'No tiene efecto'], 0);
+                },
+                // 9.3.1
+                () => {
+                    add('¿Qué es la responsabilidad individual en mantenimiento?',
+                        ['Cada técnico es responsable de su propia tarea', 'El equipo es responsable del trabajo', 'El supervisor es el único responsable', 'La empresa es responsable'], 0);
+                    add('¿Qué es la difusión de la responsabilidad?',
+                        ['Nadie se siente personalmente responsable', 'Todos comparten la responsabilidad', 'El supervisor asume toda la responsabilidad', 'La responsabilidad se delega en los pilotos'], 0);
+                    add('Según la pirámide de Maslow, ¿qué necesidad está en la base?',
+                        ['Fisiológicas (comer, dormir)', 'Seguridad', 'Sociales', 'Autorrealización'], 0);
+                    add('¿Qué caracteriza a una cultura de seguridad positiva?',
+                        ['Comunicación abierta y aprendizaje de errores', 'Culpar a los individuos por los errores', 'Ignorar los informes de incidentes', 'Reducir la formación'], 0);
+                    add('¿Qué es la motivación?',
+                        ['La fuerza interna que impulsa a lograr un objetivo', 'La presión externa para trabajar', 'La capacidad de trabajar en equipo', 'El conocimiento de los procedimientos'], 0);
+                    add('¿Qué puede causar desmotivación en un técnico?',
+                        ['Condiciones laborales precarias', 'Reconocimiento del trabajo', 'Formación continua', 'Buen ambiente de trabajo'], 0);
+                    add('¿Qué es la responsabilidad de grupo?',
+                        ['El equipo es responsable del resultado global', 'Cada individuo es responsable de su tarea', 'El supervisor es responsable de todo', 'Los pilotos son responsables'], 0);
+                    add('¿Qué es la cultura de una organización?',
+                        ['El conjunto de valores y hábitos que influyen en el comportamiento', 'El reglamento interno', 'La estructura jerárquica', 'Los procedimientos de mantenimiento'], 0);
+                    add('¿Qué necesidad de Maslow se relaciona con el reconocimiento y el logro?',
+                        ['Estima', 'Seguridad', 'Sociales', 'Autorrealización'], 0);
+                    add('¿Qué es la autorrealización en la pirámide de Maslow?',
+                        ['Alcanzar el máximo potencial personal', 'Tener seguridad laboral', 'Formar parte de un grupo', 'Cubrir necesidades básicas'], 0);
+                },
+                // 9.4.1
+                () => {
+                    add('¿Qué son los ritmos circadianos?',
+                        ['Ciclos fisiológicos de aproximadamente 24 horas', 'Ciclos de sueño profundo', 'Variaciones en la presión arterial', 'Cambios en la dieta'], 0);
+                    add('¿Cuándo es más bajo el rendimiento humano según los ritmos circadianos?',
+                        ['Durante la noche', 'Por la mañana', 'Al mediodía', 'Por la tarde'], 0);
+                    add('¿Cuáles son las tres fases del Síndrome General de Adaptación al estrés?',
+                        ['Alarma, resistencia y agotamiento', 'Alarma, adaptación y recuperación', 'Estrés, tensión y relajación', 'Percepción, comprensión y proyección'], 0);
+                    add('¿Qué es la presión de tiempo?',
+                        ['Un estresor que puede llevar a tomar atajos', 'Un factor que mejora el rendimiento', 'Una técnica de gestión del tiempo', 'Un procedimiento de seguridad'], 0);
+                    add('¿Qué es la infra-carga (underload)?',
+                        ['Baja activación que causa aburrimiento', 'Alta activación que causa estrés', 'Carga de trabajo óptima', 'Fatiga crónica'], 0);
+                    add('¿Qué es la sobrecarga (overload)?',
+                        ['Estrés excesivo que causa errores', 'Baja activación que causa aburrimiento', 'Carga de trabajo óptima', 'Falta de motivación'], 0);
+                    add('¿Cuánto tiempo de sueño se recomienda para un adulto?',
+                        ['8 horas', '4 horas', '12 horas', '6 horas'], 0);
+                    add('¿Qué es la inercia del sueño?',
+                        ['El período de transición al despertar con baja atención', 'La fase de sueño profundo', 'La fase de sueño REM', 'La dificultad para conciliar el sueño'], 0);
+                    add('¿Cómo afecta el alcohol al rendimiento?',
+                        ['Altera las funciones mentales incluso en pequeñas dosis', 'Mejora la concentración', 'Aumenta la percepción del riesgo', 'No tiene efecto'], 0);
+                    add('¿Qué se debe hacer antes de tomar un medicamento?',
+                        ['Leer el prospecto para conocer los efectos secundarios', 'Tomarlo sin consultar', 'Aumentar la dosis para mayor efecto', 'Mezclarlo con alcohol'], 0);
+                },
+                // 9.5.1
+                () => {
+                    add('¿A partir de qué nivel de ruido se recomienda protección auditiva?',
+                        ['85 dB', '60 dB', '100 dB', '50 dB'], 0);
+                    add('¿Qué efecto tiene el ruido en el rendimiento?',
+                        ['Causa fatiga mental y reduce la concentración', 'Mejora la concentración', 'Aumenta la motivación', 'No tiene efecto'], 0);
+                    add('¿Qué nivel de iluminación se recomienda para un hangar?',
+                        ['75-100 lux', '200-500 lux', '5 lux', '1000 lux'], 0);
+                    add('¿Qué es el deslumbramiento indirecto?',
+                        ['Reflejo de la luz en superficies', 'Luz directa en el campo de visión', 'Falta de luz', 'Luz demasiado tenue'], 0);
+                    add('¿Cómo afecta la humedad a la sensación térmica?',
+                        ['Aumenta la sensación de frío o calor', 'No tiene efecto', 'Reduce la sensación de frío', 'Reduce la sensación de calor'], 0);
+                    add('¿Qué tipo de incendio involucra equipos eléctricos?',
+                        ['Clase C', 'Clase A', 'Clase B', 'Clase D'], 0);
+                    add('¿Qué es la fatiga por vibraciones?',
+                        ['Un efecto que causa cansancio y problemas circulatorios', 'Un tipo de estrés auditivo', 'Un efecto visual', 'Un tipo de estrés térmico'], 0);
+                    add('¿Qué tipo de incendio se apaga con agua?',
+                        ['Clase A (madera, papel)', 'Clase B (líquidos inflamables)', 'Clase C (eléctricos)', 'Clase D (metales)'], 0);
+                    add('¿Qué es la iluminación base?',
+                        ['La iluminación general de un entorno', 'La iluminación específica para una tarea', 'La iluminación de emergencia', 'La iluminación natural'], 0);
+                    add('¿Por qué es importante la interpretación de los colores en mantenimiento?',
+                        ['Para identificar componentes y cableados', ['Para decorar el hangar', 'Para mejorar la estética', 'Para reducir costes'], 0]);
+                },
+                // 9.6.1
+                () => {
+                    add('¿Qué es una tarea repetitiva?',
+                        ['Una tarea que se realiza de forma rutinaria', 'Una tarea nueva y compleja', 'Una tarea que requiere gran esfuerzo físico', 'Una tarea que requiere alta concentración'], 0);
+                    add('¿Qué es la complacencia?',
+                        ['Exceso de confianza que lleva a no seguir los procedimientos', 'Falta de motivación', 'Estrés laboral', 'Fatiga crónica'], 0);
+                    add('¿Cuál es el método más importante para la inspección en mantenimiento?',
+                        ['La inspección visual', 'La inspección con boroscopio', 'La inspección con rayos X', 'La inspección con ultrasonidos'], 0);
+                    add('¿Qué herramienta se utiliza para inspeccionar lugares de difícil acceso?',
+                        ['Boroscopio', 'Espejo de inspección', 'Linterna', 'Lupa'], 0);
+                    add('¿Qué es un sistema complejo en el contexto del mantenimiento?',
+                        ['Un sistema con múltiples subsistemas interconectados', 'Un sistema mecánico simple', 'Un sistema eléctrico básico', 'Un sistema neumático'], 0);
+                    add('¿Qué es la comunicación sincrónica?',
+                        ['Comunicación en tiempo real', 'Comunicación diferida en el tiempo', 'Comunicación escrita', 'Comunicación no verbal'], 0);
+                    add('¿Qué es la comunicación asincrónica?',
+                        ['Comunicación diferida en el tiempo', 'Comunicación en tiempo real', 'Comunicación verbal', 'Comunicación por radio'], 0);
+                    add('¿Qué debe incluir el cambio de turno (handover)?',
+                        ['Tareas completadas, pendientes y problemas encontrados', 'Solo las tareas completadas', 'Solo los problemas encontrados', 'Información general sin detalles'], 0);
+                    add('¿Qué es la comunicación no verbal?',
+                        ['Lenguaje corporal y gestos', 'Palabras escritas', 'Palabras habladas', 'Comunicación por radio'], 0);
+                    add('¿Por qué es importante la retroalimentación (feedback) en la comunicación?',
+                        ['Para verificar que el mensaje ha sido entendido', 'Para finalizar la comunicación', 'Para iniciar la comunicación', 'Para evitar la comunicación'], 0);
+                },
+                // 9.8.1
+                () => {
+                    add('¿Qué es un error de omisión?',
+                        ['No realizar una acción requerida', 'Realizar una acción incorrectamente', 'Realizar una acción no planificada', 'Olvidar una regla'], 0);
+                    add('¿Qué es un error de comisión?',
+                        ['Realizar una acción incorrectamente', 'No realizar una acción requerida', 'Realizar una acción no planificada', 'Olvidar una regla'], 0);
+                    add('¿Qué es un error basado en habilidades (skill-based)?',
+                        ['Un error en una acción automática y de baja atención', 'Un error al aplicar una regla', 'Un error en una situación nueva', 'Un error de planificación'], 0);
+                    add('¿Qué es un error basado en reglas (rule-based)?',
+                        ['Un error al aplicar una regla conocida', 'Un error en una acción automática', 'Un error en una situación nueva', 'Un error de memoria'], 0);
+                    add('¿Qué es un error basado en conocimiento (knowledge-based)?',
+                        ['Un error en una situación nueva que requiere razonamiento', 'Un error en una acción automática', 'Un error al aplicar una regla', 'Un error de memoria'], 0);
+                    add('¿Qué es un fallo activo en el modelo del queso suizo?',
+                        ['Un error cometido por un operador directo', 'Un error en la gestión', 'Un error en el diseño', 'Un error en los procedimientos'], 0);
+                    add('¿Qué es un fallo latente en el modelo del queso suizo?',
+                        ['Un error en capas alejadas del sistema', 'Un error de un piloto', 'Un error de un técnico', 'Un error de un controlador aéreo'], 0);
+                    add('¿Qué son los "12 Sucios" (Dirty Dozen)?',
+                        ['Factores de riesgo comunes en los errores de mantenimiento', 'Un tipo de error humano', 'Un modelo de error', 'Un procedimiento de seguridad'], 0);
+                    add('¿Qué es una violación?',
+                        ['Una desviación consciente de las reglas', 'Un error de atención', 'Un error de memoria', 'Un error de juicio'], 0);
+                    add('¿Qué tipo de error es un desliz (slip)?',
+                        ['Un error de atención', 'Un error de memoria', 'Un error de juicio', 'Un error de planificación'], 0);
+                },
+                // 9.9.1
+                () => {
+                    add('¿Qué tipo de incendio involucra líquidos inflamables?',
+                        ['Clase B', 'Clase A', 'Clase C', 'Clase D'], 0);
+                    add('¿Qué tipo de incendio se apaga con agua?',
+                        ['Clase A (madera, papel)', 'Clase B (líquidos inflamables)', 'Clase C (eléctricos)', 'Clase D (metales)'], 0);
+                    add('¿Qué tipo de señalización indica un riesgo grave e inmediato?',
+                        ['PELIGRO', 'PRECAUCIÓN', 'INDICACIONES GENERALES', 'INCENDIO Y EMERGENCIA'], 0);
+                    add('¿Qué riesgo representa el uso de lámparas UV (Wood) sin protección?',
+                        ['Daños permanentes en la retina', 'Quemaduras en la piel', 'Pérdida auditiva', 'Intoxicación'], 0);
+                    add('¿Qué se debe hacer en caso de emergencia?',
+                        ['Mantener la calma y evaluar la situación', 'Correr y gritar', 'Ignorar la situación', 'Intentar apagar el incendio sin saber cómo'], 0);
+                    add('¿Qué es la claustrofobia?',
+                        ['Miedo a los espacios cerrados', 'Miedo a las alturas', 'Miedo a los ruidos', 'Miedo a los espacios abiertos'], 0);
+                    add('¿Qué es el "white finger syndrome"?',
+                        ['Un efecto de las vibraciones en las manos', 'Un tipo de quemadura', 'Un efecto del alcohol', 'Un tipo de estrés'], 0);
+                    add('¿Qué color caracteriza las señales de PRECAUCIÓN?',
+                        ['Amarillo y negro', 'Rojo, blanco y negro', 'Verde y blanco', 'Azul y blanco'], 0);
+                    add('¿Qué se debe hacer con los materiales peligrosos?',
+                        ['Almacenarlos correctamente y seguir los procedimientos', 'Desecharlos en la basura común', 'Dejarlos al alcance de todos', 'Ignorar las etiquetas'], 0);
+                    add('¿Qué es una descarga eléctrica?',
+                        ['El efecto de la electricidad en el cuerpo humano', 'Un tipo de incendio', 'Un tipo de radiación', 'Un tipo de vibración'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => ({ ...t, preguntas: generarPreguntas(idx) }))
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA
+        // ============================================================
+        let state = {
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_modulo9_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_modulo9_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  DOM REFERENCES Y FUNCIONES PRINCIPALES
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo.substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            let html = '';
+            data.temas.forEach((item, idx) => {
+                const bloqueado = !state.temasDesbloqueados[idx];
+                const completado = state.temasCompletados[idx];
+                const activo = idx === state.currentTema;
+                const bookmarked = state.bookmarks[idx];
+                let cls = '';
+                if (bloqueado) cls += ' locked';
+                if (completado) cls += ' completed';
+                if (activo) cls += ' active';
+                if (bookmarked) cls += ' bookmarked';
+                const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                html += `<li class="${cls}" data-index="${idx}">
+                            <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                            <span>${item.id}. ${item.titulo}</span>
+                            <span class="badge">${badge}</span>
+                        </li>`;
+            });
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const contenido = tema.contenido;
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${tema.id}</div>
+                            <h1>${tema.titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} Marcador</button>
+                                <button id="resetTemaBtn">🔄 Reiniciar test</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            📝 Modo Examen: contenido oculto
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>📝 Notas personales</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="Escribe aquí tus notas...">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 Test de evaluación</h3>
+                            <div class="test-stats">
+                                Intentos: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${p.correcta}">
+                            <p>${i+1}. ${p.pregunta}</p>`;
+                p.opciones.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">✅ Corregir test</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">👁️ Mostrar respuestas</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">➡️ Siguiente tema</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm('¿Reiniciar el test de este tema?')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = '✅ Test superado';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ¡Correcto!';
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[correcta];
+                    expl.textContent = `❌ Respuesta correcta: ${correctaText}`;
+                } else {
+                    expl.textContent = '⚠️ Selecciona una opción';
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = `✅ ¡Excelente! Has acertado ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent =
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = `💡 Respuesta: ${correctaText}`;
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function aplicarBusqueda(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido;
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${t.id} - ${t.titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_modulo9_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 CSV exportado');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ ¿Reiniciar todo el progreso?')) return;
+            localStorage.removeItem('aerotraining_modulo9_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD, THEME, MODES
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '0':
+                    let num;
+                    if (e.key === '0') num = 9;
+                    else num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast('🚀 Temario desbloqueado');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ AeroTraining 66 - Módulo 9 cargado');
+        console.log('📊 10 temas con todas las funcionalidades.');
+    </script>
+
+</body>
+</html>
