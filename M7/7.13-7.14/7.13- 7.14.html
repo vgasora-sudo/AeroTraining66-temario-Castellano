@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 7.13 y 7.14 · Cables de Control y Manejo de Materiales - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content .ejemplo strong {
+            color: var(--accent-light);
+        }
+        .tema .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+        }
+        .tema .content table td,
+        .tema .content table th {
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.6rem;
+            text-align: left;
+        }
+        .tema .content table th {
+            background: var(--bg-body);
+            color: var(--accent-light);
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 10</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <!-- Temas -->
+        <div id="temaContainer"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <!-- Certificado -->
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado la Sección 7.13 y 7.14: Cables de Control y Manejo de Materiales</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en la realización de accesorios de extremo, inspección de cables de control, inspección de accesorios de cables, cables Bowden, sistemas de control flexibles, manejo de chapa metálica, inspección de chapa metálica, materiales compuestos y sus inspecciones.</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <!-- Shortcuts hint -->
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: 10 TEMAS - SECCIÓN 7.13 Y 7.14 (SOLO CASTELLANO)
+        // ============================================================
+        const temasBase = [
+            // === SECCIÓN 7.13 ===
+            {
+                id: '7.13.1',
+                titulo: 'Realización/Engaste de Accesorios de Extremo',
+                contenido: `<h3>Realización/Engaste de Accesorios de Extremo</h3>
+                      <p>El método más común para asegurar un accesorio de extremo metálico al extremo de un cable se basa en la deformación plástica del vástago hueco del mismo accesorio. Este proceso se llama engaste (swaging).</p>
+                      <p>Los accesorios de extremo metálicos (o terminales) se utilizan comúnmente en aeronaves civiles: estos terminales tienen valores de resistencia iguales a los del cable. Hoy en día, los accesorios de extremo metálicos reemplazan los empalmes engastados.</p>
+                      <h4>Procedimiento básico para el engaste</h4>
+                      <ul>
+                        <li>1. Cortar el cable según el tamaño deseado</li>
+                        <li>2. Aplicar un producto protector en el extremo del cable antes de insertarlo en el terminal</li>
+                        <li>3. Evitar cualquier tipo de soldadura en el extremo del cable</li>
+                        <li>4. Insertar el cable en el terminal aproximadamente 1 pulgada</li>
+                        <li>5. Doblar el cable en la dirección del terminal para mantener la posición</li>
+                        <li>6. Insertar el cable hasta que alcance el fondo del alojamiento</li>
+                        <li>7. Proceder con el engaste según las instrucciones del fabricante</li>
+                      </ul>
+                      <h4>Verificaciones después del engaste</h4>
+                      <ul>
+                        <li>Controlar que se use la combinación correcta de cable y accesorios</li>
+                        <li>Medir el diámetro del accesorio engastado</li>
+                        <li>Verificar que el cable esté correctamente acoplado</li>
+                        <li>No deben haber signos de corrosión o grietas</li>
+                        <li>Verificar la longitud correcta y las marcas de identificación</li>
+                      </ul>
+                      <p>El cable debe ser probado con una carga igual al 60% del valor de resistencia a la tracción nominal.</p>`
+            }, {
+                id: '7.13.2',
+                titulo: 'Inspecciones de Cables de Control',
+                contenido: `<h3>Inspecciones de Cables de Control</h3>
+                      <p>Los sistemas de cables de control en la aeronave trabajan en diferentes condiciones ambientales. Por estas razones, el cable de control debe ser inspeccionado y controlado para asegurar su correcto funcionamiento.</p>
+                      <h4>Aspectos importantes en la inspección</h4>
+                      <ul>
+                        <li><strong>Manejo:</strong> un manejo incorrecto puede causar torceduras (kinks). Si un cable tiene una torcedura, debe ser desechado.</li>
+                        <li><strong>Corte:</strong> los cables deben cortarse solo con métodos mecánicos, nunca con llama.</li>
+                        <li><strong>Limpieza:</strong> se realiza con un paño humedecido en disolvente de grasa. Los cables nunca deben sumergirse en disolvente.</li>
+                        <li><strong>Corrosión:</strong> las áreas más propensas son donde se acumula humedad o donde el cable pasa por poleas.</li>
+                        <li><strong>Desgaste:</strong> puede ser externo o interno. El desgaste externo se identifica por la rotura de la estructura del cable.</li>
+                        <li><strong>Tensión:</strong> se controla con un tensiómetro y se ajusta mediante tensores.</li>
+                      </ul>`
+            }, {
+                id: '7.13.3',
+                titulo: 'Inspecciones de Accesorios de Cables de Control',
+                contenido: `<h3>Inspecciones de Accesorios de Cables de Control</h3>
+                      <p>Es muy importante verificar el estado de los diferentes elementos instalados en los sistemas de cables de control. Todo el recorrido de los cables debe ser revisado, ya que el desgaste o daño de los accesorios podría causar un mal funcionamiento.</p>
+                      <h4>Elementos que requieren inspección</h4>
+                      <ul>
+                        <li><strong>Pasacables (Fairleads):</strong> evitan que los cables rocen con la estructura. No deben lubricarse porque acumulan suciedad.</li>
+                        <li><strong>Poleas (Pulleys):</strong> permiten cambios de dirección. Deben inspeccionarse por desgaste, agarrotamiento, presencia de material extraño en las ranuras y alineación.</li>
+                        <li><strong>Tensores (Turnbuckles):</strong> se utilizan para imponer la tensión correcta en los cables. Su bloqueo es muy importante.</li>
+                      </ul>
+                      <h4>Técnicas de bloqueo de tensores</h4>
+                      <ul>
+                        <li>Atado con alambre simple</li>
+                        <li>Atado con alambre en espiral doble</li>
+                        <li>Técnica de clip de bloqueo</li>
+                      </ul>`
+            }, {
+                id: '7.13.4',
+                titulo: 'Cables Bowden y Sistemas de Control Flexibles',
+                contenido: `<h3>Cables Bowden y Sistemas de Control Flexibles</h3>
+                      <p>Los cables Bowden se utilizan en sistemas que requieren pequeñas cargas de trabajo: por ejemplo, freno de estacionamiento y válvulas selectoras.</p>
+                      <h4>Estructura de los cables Bowden</h4>
+                      <p>Están hechos de acero inoxidable y están cubiertos por un conducto que permite su guía a través de la estructura y facilita los cambios de dirección. El conducto consiste en una cubierta de bobina metálica, algodón trenzado y un recubrimiento plástico resistente a la humedad.</p>
+                      <p>Los extremos del cable están equipados con tetinas de latón soldadas al cable; los extremos del conducto se bloquean con tapas metálicas.</p>
+                      <h4>Inspecciones de cables Bowden</h4>
+                      <ul>
+                        <li>Limpieza de los cables</li>
+                        <li>Lubricación de los cables internos</li>
+                        <li>Ajuste del conducto exterior</li>
+                      </ul>
+                      <h4>Cables Teleflex</h4>
+                      <p>Se pueden comparar con un sistema de cremallera: su estructura espiral se une a un engranaje helicoidal que permite el movimiento, tanto en tracción como en compresión.</p>`
+            },
+            // === SECCIÓN 7.14 ===
+            {
+                id: '7.14.1.1',
+                titulo: 'Chapa Metálica: Conformado, Tizado, Corte y Doblado',
+                contenido: `<h3>Chapa Metálica: Conformado, Tizado, Corte y Doblado</h3>
+                      <p>La primera consideración sobre las chapas de aleación de aluminio está relacionada con las precauciones de seguridad. Debido a su sección transversal muy delgada, estas chapas se consideran muy afiladas y tienen un alto riesgo de cortes.</p>
+                      <p>Las chapas de aleación de aluminio se almacenan verticalmente (por el lado más largo) en bastidores de madera dedicados, para evitar deformaciones.</p>
+                      <h4>Conformado</h4>
+                      <p>Los métodos más comunes para el conformado de aluminio son: conformado por presión, conformado por deformación y conformado por rodillos.</p>
+                      <h4>Tizado</h4>
+                      <p>Durante este procedimiento, el patrón de la pieza que se va a formar se dibuja en las chapas de material. Es necesario establecer una línea o punto de referencia del cual se toman todas las medidas.</p>
+                      <h4>Corte</h4>
+                      <p>El corte se puede realizar con herramientas manuales o eléctricas. Las cizallas deben usarse solo con chapas de espesor aprobado por el fabricante.</p>
+                      <h4>Doblado</h4>
+                      <p>La tolerancia de doblado es la longitud del material requerida para el doblado. El radio de doblado y la línea neutra son conceptos importantes. La línea neutra está generalmente a 0.445 veces el espesor del metal (T), medida desde el lado interior del radio de doblado.</p>`
+            }, {
+                id: '7.14.1.2',
+                titulo: 'Inspecciones de Chapa Metálica',
+                contenido: `<h3>Inspecciones de Chapa Metálica</h3>
+                      <p>Las inspecciones en chapa metálica se pueden realizar mediante controles visuales o métodos visuales asistidos. El personal aprobado y cualificado puede realizar procedimientos de líquidos penetrantes para detectar grietas.</p>
+                      <p>Además, se pueden utilizar ensayos no destructivos (END) para comprobar el estado de la chapa metálica. Estos ensayos pueden incluir:</p>
+                      <ul>
+                        <li>Inspección radiográfica</li>
+                        <li>Inspección por corrientes de Foucault</li>
+                        <li>Inspección ultrasónica</li>
+                      </ul>
+                      <p>Los ensayos no destructivos deben ser realizados por personal de END aprobado.</p>`
+            }, {
+                id: '7.14.2.1',
+                titulo: 'Materiales Compuestos: Tipos de Materiales',
+                contenido: `<h3>Materiales Compuestos: Tipos de Materiales</h3>
+                      <p>Los materiales compuestos garantizan alta resistencia con un bajo peso. En las aeronaves modernas se utilizan para la mayor parte de la estructura.</p>
+                      <h4>Tipos principales de materiales compuestos</h4>
+                      <ul>
+                        <li><strong>GRP (Plástico Reforzado con Vidrio):</strong> conocido como fibra de vidrio. Utilizado en radomos de radar y paneles de construcción.</li>
+                        <li><strong>Fibras cerámicas:</strong> utilizadas para aplicaciones de alta temperatura (hasta 1650°C).</li>
+                        <li><strong>Fibras de carbono:</strong> también conocidas como grafito. Extremadamente ligeras y con buena resistencia a alta temperatura.</li>
+                        <li><strong>ARP (Plástico Reforzado con Fibra de Aramida) o Kevlar:</strong> fibra amarilla suave, extremadamente ligera y resistente. Utilizada en chalecos antibalas y protección de cabinas.</li>
+                      </ul>`
+            }, {
+                id: '7.14.2.2',
+                titulo: 'Materiales Compuestos: Técnicas de Fabricación, Orientación de Urdimbre y Taladrado',
+                contenido: `<h3>Materiales Compuestos: Técnicas de Fabricación, Orientación de Urdimbre y Taladrado</h3>
+                      <h4>Técnicas de fabricación</h4>
+                      <p>La fabricación de elementos en material compuesto se realiza mediante moldes. Los moldes pueden ser abiertos o cerrados (principio macho-hembra).</p>
+                      <p>El curado se realiza en autoclave (para componentes de gran volumen) o en bolsas de vacío con fuentes de calor separadas (para componentes de bajo volumen).</p>
+                      <h4>Orientación de la urdimbre</h4>
+                      <p>Las propiedades de resistencia y la capacidad de carga de un compuesto fibroso se maximizan cuando la carga se aplica en la misma dirección de las fibras.</p>
+                      <p>La orientación de la urdimbre se especifica mediante un "reloj de urdimbre", un círculo dividido en cuatro cuadrantes con orientaciones de más y menos.</p>
+                      <p>Los materiales compuestos se dividen en: anisotrópicos, cuasi-isotrópicos e isotrópicos.</p>
+                      <h4>Recorte y taladrado</h4>
+                      <p>El recorte y el taladrado requieren mucha atención para evitar la delaminación. Se deben utilizar brocas especiales con forma de espada o cónica larga.</p>`
+            }, {
+                id: '7.14.2.3',
+                titulo: 'Inspecciones de Materiales Compuestos',
+                contenido: `<h3>Inspecciones de Materiales Compuestos</h3>
+                      <p>Los métodos de inspección aplicados a las estructuras compuestas cambian según el tipo de material y la especialización requerida por el personal.</p>
+                      <p>Normalmente se utilizan métodos de Inspección No Destructiva (END):</p>
+                      <ul>
+                        <li><strong>Inspección por emisiones acústicas:</strong> revela la presencia de vacíos y daños entre capas.</li>
+                        <li><strong>Inspección holográfica</strong></li>
+                        <li><strong>Inspección ultrasónica:</strong> permite determinar la posición, profundidad y extensión del daño.</li>
+                        <li><strong>Inspección por rayos X:</strong> ayuda a localizar problemas de humedad, corrosión, delaminaciones y separaciones.</li>
+                        <li><strong>Inspección termográfica</strong></li>
+                        <li><strong>Inspección con anillo</strong></li>
+                      </ul>`
+            },
+            // === SECCIÓN 7.14 (continuación) ===
+            {
+                id: '7.14.3',
+                titulo: 'Manejo y Almacenamiento de Materiales Compuestos',
+                contenido: `<h3>Manejo y Almacenamiento de Materiales Compuestos</h3>
+                      <p>El manejo de materiales compuestos requiere precauciones especiales debido a su naturaleza y a los riesgos asociados con su manipulación.</p>
+                      <h4>Precauciones de almacenamiento</h4>
+                      <ul>
+                        <li>Los materiales compuestos deben almacenarse en un ambiente controlado, con temperatura y humedad reguladas.</li>
+                        <li>Deben protegerse de la luz solar directa y de fuentes de calor.</li>
+                        <li>Los materiales pre-impregnados (pre-preg) deben almacenarse en refrigeración para evitar el curado prematuro.</li>
+                        <li>El tiempo de vida útil (shelf life) de los materiales pre-preg debe ser controlado estrictamente.</li>
+                      </ul>
+                      <h4>Manejo de materiales compuestos</h4>
+                      <ul>
+                        <li>Usar guantes limpios y sin polvo para manipular los materiales.</li>
+                        <li>Evitar el contacto con aceites y grasas que puedan contaminar el material.</li>
+                        <li>Las herramientas utilizadas deben ser específicas para materiales compuestos para evitar daños.</li>
+                      </ul>`
+            }
+        ];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema)
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(pregunta, opciones, correcta) {
+                preguntas.push({ pregunta, opciones, correcta });
+            }
+
+            const generadores = [
+                // 7.13.1
+                () => {
+                    add('¿Qué proceso se utiliza para asegurar un accesorio metálico al extremo de un cable?',
+                        ['Engaste (Swaging)', 'Soldadura', 'Atornillado', 'Pegado'], 0);
+                    add('¿Qué porcentaje de la resistencia a la tracción nominal se usa para probar el cable después del engaste?',
+                        ['60%', '80%', '50%', '100%'], 0);
+                    add('¿Qué se debe evitar al cortar cables de control?',
+                        ['Cortar con llama', 'Cortar con cizalla', 'Cortar con cortacables', 'Cortar con alicates'], 0);
+                    add('¿Qué se debe hacer antes de insertar el cable en el terminal?',
+                        ['Aplicar producto protector', 'Soldar el extremo', 'Engrasar el cable', 'Calentar el cable'], 0);
+                    add('¿Qué se debe verificar después del engaste?', ['El diámetro y la correcta fijación', 'Solo el color', 'Solo la longitud', 'Solo el peso'], 0);
+                    add('¿Qué tipo de máquina se utiliza para engastar en fábrica?', ['Máquina rotativa', 'Máquina manual', 'Máquina hidráulica', 'Máquina neumática'], 0);
+                    add('¿Qué se debe hacer si un terminal tiene signos de corrosión?', ['Rechazarlo', 'Limpiarlo', 'Pintarlo', 'Lubricarlo'], 0);
+                    add('¿Cuánto cable debe insertarse en el terminal?', ['Aproximadamente 1 pulgada', 'Aproximadamente 0.5 pulgadas', 'Aproximadamente 2 pulgadas', 'Aproximadamente 3 pulgadas'], 0);
+                    add('¿Qué instrumento se usa para medir el diámetro del terminal engastado?', ['Micrómetro', 'Calibre', 'Regla', 'Cinta métrica'], 0);
+                    add('¿Qué se debe hacer si el cable tiene una torcedura (kink)?', ['Desecharlo', 'Enderezarlo', 'Soldarlo', 'Ignorarlo'], 0);
+                },
+                // 7.13.2
+                () => {
+                    add('¿Qué causa una torcedura (kink) en un cable de control?', ['Manejo incorrecto', 'Corrosión', 'Desgaste', 'Sobrecarga'], 0);
+                    add('¿Cómo se identifica una torcedura?', ['El cordón central sale del centro', 'El cable está oxidado', 'El cable está desgastado', 'El cable está sucio'], 0);
+                    add('¿Con qué se limpian los cables de control?', ['Paño humedecido en disolvente', 'Agua', 'Aire comprimido', 'Arena'], 0);
+                    add('¿Qué método de corte no se debe usar para cables de control?', ['Corte con llama', 'Corte con cizalla', 'Corte con cortacables', 'Corte con alicates'], 0);
+                    add('¿Qué se debe hacer si se encuentra corrosión en un cable?', ['Desecharlo', 'Limpiarlo', 'Pintarlo', 'Lubricarlo'], 0);
+                    add('¿Qué instrumento se usa para medir la tensión de un cable?', ['Tensiómetro', 'Micrómetro', 'Calibre', 'Regla'], 0);
+                    add('¿Qué se debe hacer con el lubricante interno del cable durante la limpieza?', ['No debe eliminarse', 'Eliminarse completamente', 'Reemplazarse', 'Ignorarse'], 0);
+                    add('¿Cuándo se debe sustituir un cable por desgaste externo?', ['Cuando la superficie está desgastada al 40-50%', 'Cuando está oxidado', 'Cuando está sucio', 'Cuando está torcido'], 0);
+                    add('¿Qué se usa para ajustar la tensión de un cable?', ['Tensores (Turnbuckles)', 'Poleas', 'Pasacables', 'Alicates'], 0);
+                    add('¿Qué tipo de inspección se requiere para detectar desgaste interno?', ['Inspección detallada con desmontaje', 'Inspección visual simple', 'Inspección con tensiómetro', 'Inspección con micrómetro'], 0);
+                },
+                // 7.13.3
+                () => {
+                    add('¿Qué función tienen los pasacables (fairleads)?', ['Evitar que los cables rocen con la estructura', 'Cambiar la dirección del cable', 'Aumentar la tensión', 'Medir la tensión'], 0);
+                    add('¿Qué se debe verificar en las poleas?', ['Desgaste, agarrotamiento y alineación', 'Solo el color', 'Solo el peso', 'Solo la marca'], 0);
+                    add('¿Qué se usa para ajustar la tensión en los cables?', ['Tensores (Turnbuckles)', 'Pasacables', 'Poleas', 'Alicates'], 0);
+                    add('¿Qué técnica de bloqueo de tensores es la más segura?', ['Atado con alambre', 'Cinta adhesiva', 'Pegamento', 'Soldadura'], 0);
+                    add('¿Qué no debe tener un pasacables?', ['Lubricación', 'Sujeción', 'Alineación', 'Protección'], 0);
+                    add('¿Qué se debe verificar en los tensores?', ['El bloqueo correcto', 'El color', 'El peso', 'La marca'], 0);
+                    add('¿Qué tipo de alambre se usa para bloquear tensores?', ['Alambre de acero', 'Alambre de cobre', 'Alambre de aluminio', 'Alambre de plástico'], 0);
+                    add('¿Qué problema puede causar la falta de lubricación en un pasacables?', ['Acumulación de suciedad', 'Mayor tensión', 'Desgaste del cable', 'Corrosión'], 0);
+                    add('¿Qué se debe hacer si una polea tiene material extraño en la ranura?', ['Limpiarla', 'Ignorarlo', 'Lubricarla', 'Reemplazarla'], 0);
+                    add('¿Qué técnica de bloqueo de tensores usa un clip?', ['Técnica de clip de bloqueo', 'Atado simple', 'Atado doble', 'Soldadura'], 0);
+                },
+                // 7.13.4
+                () => {
+                    add('¿Qué tipo de cables se usan para pequeñas cargas como freno de estacionamiento?',
+                        ['Cables Bowden', 'Cables Teleflex', 'Cables de acero', 'Cables de control'], 0);
+                    add('¿De qué material están hechos los cables Bowden?',
+                        ['Acero inoxidable', 'Aluminio', 'Cobre', 'Latón'], 0);
+                    add('¿Qué cubre los cables Bowden?', ['Un conducto', 'Una pintura', 'Una cinta', 'Un plástico'], 0);
+                    add('¿Qué tipo de sistema es un cable Teleflex?', ['Sistema de cremallera', 'Sistema hidráulico', 'Sistema neumático', 'Sistema eléctrico'], 0);
+                    add('¿Qué se debe hacer con los cables Bowden?', ['Limpiar y lubricar', 'Solo limpiar', 'Solo lubricar', 'Reemplazar'], 0);
+                    add('¿Qué extremos tienen los cables Bowden?', ['Tetinas de latón', 'Conectores de plástico', 'Terminales de acero', 'Pernos'], 0);
+                    add('¿Qué tipo de movimiento permite un cable Teleflex?', ['Tracción y compresión', 'Solo tracción', 'Solo compresión', 'Rotación'], 0);
+                    add('¿Qué se debe verificar en los conductos de los cables Bowden?', ['Que no estén deformados', 'Que estén pintados', 'Que estén lubricados', 'Que estén calientes'], 0);
+                    add('¿Qué tipo de mantenimiento requieren los cables Bowden?', ['Lubricación periódica', 'No requieren mantenimiento', 'Solo inspección', 'Solo reemplazo'], 0);
+                    add('¿Qué tipo de cable es el Teleflex?', ['Cable de control flexible', 'Cable rígido', 'Cable hidráulico', 'Cable neumático'], 0);
+                },
+                // 7.14.1.1
+                () => {
+                    add('¿Cómo se almacenan las chapas de aleación de aluminio?', ['Verticalmente en bastidores de madera', 'Horizontalmente apiladas', 'Enrolladas', 'Colgadas'], 0);
+                    add('¿Qué método de conformado usa una temperatura ligeramente superior al límite elástico?',
+                        ['Conformado por deformación', 'Conformado por presión', 'Conformado por rodillos', 'Conformado por estirado'], 0);
+                    add('¿Qué se debe establecer antes de comenzar el tizado?', ['Una línea o punto de referencia', 'El color de la pintura', 'El tipo de herramienta', 'La temperatura ambiente'], 0);
+                    add('¿Qué es la tolerancia de doblado?', ['La longitud de material requerida para el doblado', 'El ángulo del doblado', 'El radio del doblado', 'La resistencia del material'], 0);
+                    add('¿Dónde se encuentra la línea neutra en un doblado?', ['A 0.445 veces el espesor desde el interior', 'En el centro del material', 'En la superficie exterior', 'En la superficie interior'], 0);
+                    add('¿Qué tipo de cizalla se usa para chapas de espesor aprobado?', ['Cizalla de banco', 'Cizalla manual', 'Cizalla eléctrica', 'Cizalla hidráulica'], 0);
+                    add('¿Qué se debe evitar al cortar chapas de aluminio?', ['Deformaciones', 'Exceso de velocidad', 'Falta de lubricación', 'Temperatura alta'], 0);
+                    add('¿Qué máquina se usa para doblar grandes secciones de chapa?', ['Plegadora', 'Cizalla', 'Torno', 'Fresadora'], 0);
+                    add('¿Qué método de conformado usa rodillos?', ['Conformado por rodillos', 'Conformado por presión', 'Conformado por deformación', 'Conformado por estirado'], 0);
+                    add('¿Qué se debe hacer después del tizado?', ['Cortar las piezas', 'Pintar las piezas', 'Engrasar las piezas', 'Calentar las piezas'], 0);
+                },
+                // 7.14.1.2
+                () => {
+                    add('¿Qué tipo de inspección se usa para detectar grietas en chapa metálica?',
+                        ['Líquidos penetrantes', 'Inspección visual', 'Radiográfica', 'Ultrasónica'], 0);
+                    add('¿Quién puede realizar ensayos no destructivos?', ['Personal END aprobado', 'Cualquier técnico', 'Solo el ingeniero', 'Solo el supervisor'], 0);
+                    add('¿Qué tipo de inspección usa radiografía?', ['END radiográfica', 'Líquidos penetrantes', 'Corrientes de Foucault', 'Ultrasónica'], 0);
+                    add('¿Qué técnica END usa ondas sonoras?', ['Ultrasónica', 'Radiográfica', 'Corrientes de Foucault', 'Líquidos penetrantes'], 0);
+                    add('¿Qué técnica END usa campos electromagnéticos?', ['Corrientes de Foucault', 'Ultrasónica', 'Radiográfica', 'Líquidos penetrantes'], 0);
+                    add('¿Qué tipo de inspección es la más básica?', ['Inspección visual', 'Líquidos penetrantes', 'Radiográfica', 'Ultrasónica'], 0);
+                    add('¿Qué se debe hacer si se encuentra una grieta en una chapa?', ['Reparar o reemplazar', 'Ignorarla', 'Pintarla', 'Lubricarla'], 0);
+                    add('¿Qué tipo de inspección requiere un revelador?', ['Líquidos penetrantes', 'Ultrasónica', 'Radiográfica', 'Visual'], 0);
+                    add('¿Qué técnica END puede detectar corrosión en capas internas?', ['Radiográfica', 'Ultrasónica', 'Líquidos penetrantes', 'Visual'], 0);
+                    add('¿Qué se debe hacer después de una inspección END?', ['Documentar los resultados', 'Ignorar los resultados', 'Pintar la pieza', 'Lubricar la pieza'], 0);
+                },
+                // 7.14.2.1
+                () => {
+                    add('¿Qué material compuesto se conoce como fibra de vidrio?', ['GRP', 'CFC', 'ARP', 'Kevlar'], 0);
+                    add('¿Qué tipo de fibra se usa para aplicaciones de alta temperatura hasta 1650°C?',
+                        ['Fibras cerámicas', 'Fibras de carbono', 'Fibras de vidrio', 'Fibras de aramida'], 0);
+                    add('¿Qué material compuesto es conocido como grafito?', ['Fibras de carbono', 'GRP', 'Kevlar', 'Fibras cerámicas'], 0);
+                    add('¿Qué material compuesto es una fibra amarilla suave y resistente?', ['Kevlar', 'GRP', 'CFC', 'Fibra de vidrio'], 0);
+                    add('¿Dónde se utiliza comúnmente el GRP?', ['Radomos de radar', 'Motores', 'Trenes de aterrizaje', 'Hélices'], 0);
+                    add('¿Qué característica tienen las fibras de carbono?', ['Extremadamente ligeras', 'Muy pesadas', 'Muy frágiles', 'Muy flexibles'], 0);
+                    add('¿Qué tipo de fibra se usa en chalecos antibalas?', ['Kevlar', 'Fibra de carbono', 'Fibra de vidrio', 'Fibra cerámica'], 0);
+                    add('¿Qué desventaja tiene el GRP?', ['Falta de rigidez', 'Alto peso', 'Alta conductividad', 'Baja resistencia'], 0);
+                    add('¿Qué tipo de fibra tiene buena resistencia a altas temperaturas?', ['Fibras de carbono', 'Fibras de vidrio', 'Kevlar', 'Fibra de poliéster'], 0);
+                    add('¿Qué material compuesto se usa en discos de freno de Fórmula 1?', ['Carbono-carbono', 'GRP', 'Kevlar', 'Fibra cerámica'], 0);
+                },
+                // 7.14.2.2
+                () => {
+                    add('¿Qué tipo de molde permite un fácil acceso durante la fabricación?',
+                        ['Molde abierto', 'Molde cerrado', 'Molde macho-hembra', 'Molde de inyección'], 0);
+                    add('¿Qué se utiliza para el curado de componentes de bajo volumen?',
+                        ['Bolsas de vacío', 'Autoclave', 'Horno', 'Prensa'], 0);
+                    add('¿Qué se utiliza para el curado de componentes de alto volumen?',
+                        ['Autoclave', 'Bolsas de vacío', 'Horno', 'Prensa'], 0);
+                    add('¿Qué es la delaminación en materiales compuestos?',
+                        ['Separación de las capas del material', 'Rotura de la fibra', 'Oxidación de la matriz', 'Deformación del material'], 0);
+                    add('¿Qué tipo de broca se usa para taladrar materiales compuestos?',
+                        ['Broca en forma de espada', 'Broca helicoidal', 'Broca de carburo', 'Broca de alta velocidad'], 0);
+                    add('¿Qué indica el "reloj de urdimbre"?',
+                        ['La orientación de las fibras', 'El tiempo de curado', 'La temperatura de curado', 'La presión de moldeo'], 0);
+                    add('¿Qué tipo de material compuesto tiene capacidad de carga en una sola dirección?',
+                        ['Anisotrópico', 'Isotrópico', 'Cuasi-isotrópico', 'Ortotrópico'], 0);
+                    add('¿Qué tipo de material compuesto tiene capacidad de carga en todas las direcciones?',
+                        ['Isotrópico', 'Anisotrópico', 'Cuasi-isotrópico', 'Ortotrópico'], 0);
+                    add('¿Qué se debe usar para evitar la delaminación?', ['Herramientas especiales', 'Herramientas comunes', 'Herramientas manuales', 'Herramientas eléctricas'], 0);
+                    add('¿Qué tipo de molde se diseña según el principio macho-hembra?',
+                        ['Molde cerrado', 'Molde abierto', 'Molde plano', 'Molde cilíndrico'], 0);
+                },
+                // 7.14.2.3
+                () => {
+                    add('¿Qué técnica END usa ondas sonoras para detectar delaminaciones?',
+                        ['Ultrasónica', 'Radiográfica', 'Líquidos penetrantes', 'Corrientes de Foucault'], 0);
+                    add('¿Qué técnica END ayuda a localizar problemas de humedad en compuestos?',
+                        ['Radiográfica', 'Ultrasónica', 'Líquidos penetrantes', 'Emisiones acústicas'], 0);
+                    add('¿Qué técnica END revela vacíos entre capas de material compuesto?',
+                        ['Emisiones acústicas', 'Holográfica', 'Termográfica', 'Corrientes de Foucault'], 0);
+                    add('¿Qué técnica END usa rayos X?',
+                        ['Radiográfica', 'Ultrasónica', 'Líquidos penetrantes', 'Termográfica'], 0);
+                    add('¿Qué tipo de inspección permite determinar la profundidad del daño en un compuesto?',
+                        ['Ultrasónica', 'Radiográfica', 'Visual', 'Líquidos penetrantes'], 0);
+                    add('¿Qué se debe consultar antes de realizar una inspección en compuestos?',
+                        ['El manual de mantenimiento', 'El manual de vuelo', 'El manual del motor', 'El manual hidráulico'], 0);
+                    add('¿Qué técnica END es útil para detectar separaciones del núcleo de la piel?',
+                        ['Radiográfica', 'Ultrasónica', 'Líquidos penetrantes', 'Visual'], 0);
+                    add('¿Qué tipo de inspección requiere equipos especializados?',
+                        ['Todas las END', 'Solo la visual', 'Solo los líquidos penetrantes', 'Solo la termográfica'], 0);
+                    add('¿Qué técnica END se usa para detectar daños en la superficie de un compuesto?',
+                        ['Líquidos penetrantes', 'Radiográfica', 'Ultrasónica', 'Termográfica'], 0);
+                    add('¿Qué se debe hacer si se detecta un daño en un material compuesto?',
+                        ['Reparar según el manual', 'Ignorarlo', 'Pintarlo', 'Lubricarlo'], 0);
+                },
+                // 7.14.3
+                () => {
+                    add('¿Cómo deben almacenarse los materiales compuestos?',
+                        ['En ambiente controlado', 'Al aire libre', 'En condiciones húmedas', 'En condiciones cálidas'], 0);
+                    add('¿Qué tipo de guantes se deben usar para manipular materiales compuestos?',
+                        ['Guantes limpios y sin polvo', 'Guantes de cuero', 'Guantes de goma', 'Guantes de algodón'], 0);
+                    add('¿Qué se debe evitar durante el manejo de materiales compuestos?',
+                        ['Contacto con aceites y grasas', 'Contacto con agua', 'Contacto con el aire', 'Contacto con la luz'], 0);
+                    add('¿Qué condición debe tener el almacenamiento de materiales pre-impregnados?',
+                        ['Refrigeración', 'Calefacción', 'Humedad', 'Luz solar'], 0);
+                    add('¿Qué es el "shelf life" de un material pre-preg?',
+                        ['El tiempo de vida útil', 'El tiempo de curado', 'El tiempo de almacenamiento', 'El tiempo de transporte'], 0);
+                    add('¿Qué tipo de herramientas se deben usar para materiales compuestos?',
+                        ['Herramientas específicas', 'Herramientas comunes', 'Herramientas manuales', 'Herramientas eléctricas'], 0);
+                    add('¿Qué se debe hacer si un material compuesto se contamina con aceite?',
+                        ['Desecharlo', 'Limpiarlo', 'Pintarlo', 'Lubricarlo'], 0);
+                    add('¿Qué se debe evitar en el almacenamiento de materiales compuestos?',
+                        ['Luz solar directa', 'Temperatura ambiente', 'Humedad controlada', 'Oscuridad'], 0);
+                    add('¿Qué tipo de material compuesto requiere almacenamiento en refrigeración?',
+                        ['Pre-impregnado', 'Tejido seco', 'Fibra suelta', 'Resina'], 0);
+                    add('¿Qué se debe hacer si un material pre-preg supera su vida útil?',
+                        ['Desecharlo', 'Usarlo', 'Reutilizarlo', 'Venderlo'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => ({ ...t, preguntas: generarPreguntas(idx) }))
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA
+        // ============================================================
+        let state = {
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_modulo7_13_7_14_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_modulo7_13_7_14_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  DOM REFERENCES Y FUNCIONES PRINCIPALES
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo.substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            let html = '';
+            data.temas.forEach((item, idx) => {
+                const bloqueado = !state.temasDesbloqueados[idx];
+                const completado = state.temasCompletados[idx];
+                const activo = idx === state.currentTema;
+                const bookmarked = state.bookmarks[idx];
+                let cls = '';
+                if (bloqueado) cls += ' locked';
+                if (completado) cls += ' completed';
+                if (activo) cls += ' active';
+                if (bookmarked) cls += ' bookmarked';
+                const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                html += `<li class="${cls}" data-index="${idx}">
+                            <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                            <span>${item.id}. ${item.titulo}</span>
+                            <span class="badge">${badge}</span>
+                        </li>`;
+            });
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const contenido = tema.contenido;
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${tema.id}</div>
+                            <h1>${tema.titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} Marcador</button>
+                                <button id="resetTemaBtn">🔄 Reiniciar test</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            📝 Modo Examen: contenido oculto
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>📝 Notas personales</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="Escribe aquí tus notas...">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 Test de evaluación</h3>
+                            <div class="test-stats">
+                                Intentos: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${p.correcta}">
+                            <p>${i+1}. ${p.pregunta}</p>`;
+                p.opciones.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">✅ Corregir test</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">👁️ Mostrar respuestas</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">➡️ Siguiente tema</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm('¿Reiniciar el test de este tema?')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = '✅ Test superado';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ¡Correcto!';
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[correcta];
+                    expl.textContent = `❌ Respuesta correcta: ${correctaText}`;
+                } else {
+                    expl.textContent = '⚠️ Selecciona una opción';
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = `✅ ¡Excelente! Has acertado ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent =
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = `💡 Respuesta: ${correctaText}`;
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function aplicarBusqueda(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido;
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${t.id} - ${t.titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_modulo7_13_7_14_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 CSV exportado');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ ¿Reiniciar todo el progreso?')) return;
+            localStorage.removeItem('aerotraining_modulo7_13_7_14_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD, THEME, MODES
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '0':
+                    let num;
+                    if (e.key === '0') num = 9;
+                    else num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast('🚀 Temario desbloqueado');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ AeroTraining 66 - Módulo 7.13 y 7.14 cargado');
+        console.log('📊 10 temas con todas las funcionalidades.');
+    </script>
+
+</body>
+</html>

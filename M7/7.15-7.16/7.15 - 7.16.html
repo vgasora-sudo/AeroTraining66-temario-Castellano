@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 7.15 y 7.16 · Soldadura, Uniones Adhesivas, Peso y Balanceo - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content .ejemplo strong {
+            color: var(--accent-light);
+        }
+        .tema .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+        }
+        .tema .content table td,
+        .tema .content table th {
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.6rem;
+            text-align: left;
+        }
+        .tema .content table th {
+            background: var(--bg-body);
+            color: var(--accent-light);
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 13</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <!-- Temas -->
+        <div id="temaContainer"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <!-- Certificado -->
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado la Sección 7.15 y 7.16: Soldadura, Uniones Adhesivas, Peso y Balanceo</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en soldadura, soldadura blanda, uniones adhesivas, inspección de soldaduras, así como en peso y balanceo de aeronaves, cálculo del centro de gravedad, momentos, documentación de masa y balanceo, y procedimientos de pesaje.</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <!-- Shortcuts hint -->
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: 13 TEMAS - SECCIÓN 7.15 Y 7.16 (SOLO CASTELLANO)
+        // ============================================================
+        const temasBase = [
+            // === SECCIÓN 7.15 ===
+            {
+                id: '7.15.1',
+                titulo: 'Introducción a la Soldadura',
+                contenido: `<h3>Introducción a la Soldadura</h3>
+                      <p>La industria aeronáutica utiliza procedimientos de soldadura, soldadura blanda y uniones adhesivas durante el proceso de fabricación de aeronaves y, a veces, durante los procedimientos de mantenimiento.</p>
+                      <p>Estos métodos crean una unión permanente entre diferentes estructuras, según el material empleado. Para realizar uno de estos procesos es necesario considerar los materiales a unir, porque no todos pueden ser soldados.</p>
+                      <p>El procedimiento de soldadura debe ser realizado por un técnico aprobado y siguiendo las especificaciones de la autoridad.</p>
+                      <p>Los soldadores aprobados deben demostrar su competencia ante la autoridad de aviación, presentando varias piezas de prueba de su trabajo típico para su verificación, y están sujetos a pruebas similares cada 12 meses para mantener sus aprobaciones.</p>
+                      <p>La soldadura se define como la unión permanente, por fusión, de dos componentes (generalmente metálicos), basada en una secuencia de fusiones y solidificaciones de los componentes en el punto de unión.</p>`
+            }, {
+                id: '7.15.2',
+                titulo: 'Soldadura - Métodos y Procedimientos',
+                contenido: `<h3>Soldadura - Métodos y Procedimientos</h3>
+                      <h4>Métodos de soldadura</h4>
+                      <ul>
+                        <li><strong>Soldadura oxiacetilénica:</strong> proceso basado en una llama de alta temperatura producida por la mezcla de oxígeno y acetileno. La llama arde a 3150°C.</li>
+                        <li><strong>Soldadura manual por arco eléctrico:</strong> utiliza electricidad para proporcionar calor a la unión. Un arco eléctrico se establece entre una varilla de metal de aporte recubierta de fundente y los componentes a unir.</li>
+                        <li><strong>Soldadura MIG (Metal Inert Gas):</strong> utiliza un alambre continuo como electrodo y un gas de protección para proteger el baño de soldadura.</li>
+                        <li><strong>Soldadura TIG (Tungsten Inert Gas):</strong> utiliza un electrodo de tungsteno no consumible y gas argón como gas de protección.</li>
+                        <li><strong>Soldadura por chispa (Flash butt welding):</strong> combinación de calentamiento mecánico y eléctrico.</li>
+                        <li><strong>Soldadura por puntos por resistencia (Resistance spot welding):</strong> utiliza el mismo principio que la soldadura por chispa pero para puntos de soldadura entre chapas metálicas.</li>
+                        <li><strong>Soldadura por resistencia continua (Resistance seam welding):</strong> emplea dos ruedas en lugar de puntas que transmiten la corriente en la zona de contacto.</li>
+                      </ul>`
+            }, {
+                id: '7.15.3',
+                titulo: 'Inspección y Pruebas de Soldaduras',
+                contenido: `<h3>Inspección y Pruebas de Soldaduras</h3>
+                      <p>Las técnicas de soldadura están muy difundidas en la producción industrial, por lo que es importante establecer reglas y requisitos para su implementación.</p>
+                      <p>Estos requisitos incluyen algunas pruebas para la calificación de los procedimientos y del personal.</p>
+                      <h4>Pruebas no destructivas</h4>
+                      <ul>
+                        <li>Radiográficas</li>
+                        <li>Ultrasónicas</li>
+                        <li>Partículas magnéticas</li>
+                      </ul>
+                      <p>Estas pruebas deben ser realizadas por personal especializado y calificado.</p>
+                      <h4>Pruebas destructivas</h4>
+                      <p>Incluyen el seccionado de la soldadura para verificar la integridad de la estructura de la soldadura.</p>
+                      <p>El personal de mantenimiento simple no está autorizado a realizar estas pruebas. En algunos casos, solo están autorizados para realizar inspecciones visuales o inspecciones limitadas con líquidos penetrantes.</p>`
+            }, {
+                id: '7.15.4',
+                titulo: 'Soldadura Blanda (Sofdering)',
+                contenido: `<h3>Soldadura Blanda (Sofdering)</h3>
+                      <p>La soldadura blanda es similar a la soldadura, pero este tipo de uniones se realiza a temperaturas más bajas y no contempla la fusión entre los componentes.</p>
+                      <p>Para generar la unión, se aplica una aleación no ferrosa en el punto de unión con los componentes calentados: cuando la aleación se enfría, los dos componentes quedan unidos.</p>
+                      <h4>Tipos de soldadura blanda</h4>
+                      <ul>
+                        <li><strong>Soldadura fuerte (Hard soldering/brazing):</strong> se realiza a temperaturas superiores a 500°C con el uso de una aleación de latón (cobre y zinc) como metal de aportación. El punto de fusión del latón es de aproximadamente 880°C.</li>
+                        <li><strong>Soldadura blanda (Soft soldering):</strong> utiliza una aleación de plomo y estaño como metal de aportación. Se funde a una temperatura relativamente baja (de 180°C a 330°C).</li>
+                      </ul>
+                      <h4>Soldadura eléctrica</h4>
+                      <p>Los soldadores eléctricos están disponibles en una variedad de tamaños y pesos con puntas con formas adaptadas a la aplicación particular. Antes de cualquier operación de soldadura, las superficies de la unión deben estar adecuadamente preparadas, limpias de suciedad y grasa.</p>`
+            }, {
+                id: '7.15.5',
+                titulo: 'Inspección y Pruebas de Soldaduras Blandas',
+                contenido: `<h3>Inspección y Pruebas de Soldaduras Blandas</h3>
+                      <p>La inspección de las uniones soldadas es generalmente de tipo visual, y la prueba se obtiene mediante una fuerza de tracción.</p>
+                      <p>En los contactos eléctricos realizados con técnica de soldadura blanda, se prueban mediante una suave fuerza de tracción de los cables para asegurar su correcto bloqueo con sus puntos de unión.</p>
+                      <p>Los puntos de contacto también deben ser probados para la continuidad eléctrica y los valores de resistencia con los instrumentos apropiados.</p>`
+            }, {
+                id: '7.15.6',
+                titulo: 'Uniones Adhesivas (Bonding)',
+                contenido: `<h3>Uniones Adhesivas (Bonding)</h3>
+                      <p>La unión adhesiva es una técnica muy difundida en el campo aeronáutico. Incluye operaciones como el fuselaje de la aeronave, las superficies de control, las hélices y las palas del rotor.</p>
+                      <h4>Métodos de unión adhesiva</h4>
+                      <ul>
+                        <li><strong>Mecánico:</strong> el adhesivo forma un bloqueo mecánico penetrando la superficie y a través de la estructura.</li>
+                        <li><strong>Químico:</strong> el adhesivo se extiende sobre la superficie y crea un enlace químico con ella.</li>
+                      </ul>
+                      <h4>Tipos de tensiones en uniones adhesivas</h4>
+                      <ul>
+                        <li><strong>Tracción:</strong> las dos superficies se separan directamente.</li>
+                        <li><strong>Corte:</strong> las dos superficies tienden a deslizarse una sobre la otra.</li>
+                        <li><strong>Hendidura (Cleavage):</strong> dos bordes se separan.</li>
+                        <li><strong>Pelado (Peel):</strong> una superficie se despega de la otra.</li>
+                      </ul>`
+            }, {
+                id: '7.15.7',
+                titulo: 'Procedimiento y Precauciones en Uniones Adhesivas',
+                contenido: `<h3>Procedimiento y Precauciones en Uniones Adhesivas</h3>
+                      <p>La unión adhesiva es un procedimiento que requiere precisión y atención; no es simplemente pegar algo. Requiere personal cualificado y herramientas dedicadas para asegurar el resultado correcto.</p>
+                      <h4>Precauciones importantes</h4>
+                      <ul>
+                        <li><strong>Limpieza absoluta:</strong> es esencial en todas las etapas. La preparación de la superficie del componente también es crucial.</li>
+                        <li><strong>Presión y calor:</strong> pueden ser necesarios. Se requiere equipo sofisticado para producir presión y calor en las áreas donde se aplican los adhesivos.</li>
+                        <li><strong>Inspección:</strong> la inspección de la unión adhesiva es difícil. Se necesitan técnicas de inspección especiales y piezas de prueba para verificar la integridad de la unión.</li>
+                      </ul>
+                      <h4>Procedimiento</h4>
+                      <p>Se debe realizar un montaje en seco (prueba de ensamblaje de todas las piezas relacionadas) para comprobar y ajustar el ajuste si es necesario. El adhesivo se aplica y el conjunto se sujeta adecuadamente, se coloca en una bolsa de vacío de nailon y se calienta en un autoclave.</p>`
+            },
+            // === SECCIÓN 7.16 ===
+            {
+                id: '7.16.1',
+                titulo: 'Introducción al Centro de Gravedad y Límites de Balanceo',
+                contenido: `<h3>Introducción al Centro de Gravedad y Límites de Balanceo</h3>
+                      <p>El objetivo principal de la operación de peso y balanceo está relacionado con mantener la seguridad y lograr la eficiencia en el vuelo.</p>
+                      <p>La posición de las cargas y el payload (pasajeros, equipaje, carga, combustible y equipo) alterará la posición del Centro de Gravedad (CG) de la aeronave, que es el punto donde actúa la masa total de la aeronave verticalmente hacia abajo.</p>
+                      <p>La fuerza de sustentación total generada por una aeronave actúa a través de un punto llamado Centro de Presión (CP) que normalmente se encuentra detrás de la posición del CG.</p>
+                      <p>En cada aeronave, la fuerza de sustentación produce un efecto de giro alrededor del CG, que tiende a empujar el morro de la aeronave hacia abajo; la línea de acción del empuje está por debajo del datum del CG y la línea de acción de la resistencia, y se opone al efecto de giro de la sustentación.</p>`
+            }, {
+                id: '7.16.2',
+                titulo: 'Momentos y Referencia de Cálculo',
+                contenido: `<h3>Momentos y Referencia de Cálculo</h3>
+                      <p>El método de cálculo de la posición del CG se basa en el principio de los momentos de giro.</p>
+                      <p>Consideremos una fuerza genérica que actúa sobre un plano. La distancia entre el punto de acción de la fuerza y su fulcro de aplicación (medida perpendicularmente a la fuerza) se llama "brazo"; esta distancia, multiplicada por la fuerza, da el efecto de giro, o "momento" alrededor del fulcro.</p>
+                      <p>El momento puede ser horario o antihorario alrededor del fulcro dependiendo de la dirección de la fuerza aplicada.</p>
+                      <h4>Convención de signos</h4>
+                      <ul>
+                        <li><strong>Horizontal:</strong> negativo hacia adelante del datum y positivo hacia atrás del datum</li>
+                        <li><strong>Vertical:</strong> negativo por debajo del datum y positivo por encima del datum</li>
+                        <li><strong>Transversal:</strong> negativo a la derecha del datum y positivo a la izquierda del datum</li>
+                      </ul>`
+            }, {
+                id: '7.16.3',
+                titulo: 'Documentación de Masa y Balanceo',
+                contenido: `<h3>Documentación de Masa y Balanceo</h3>
+                      <p>La regulación que cubre los requisitos legales de la masa y balanceo de cualquier aeronave es la "EU-OPS 1 subpart J".</p>
+                      <h4>Definiciones de masa</h4>
+                      <ul>
+                        <li><strong>Masa operativa en seco (Dry operating mass):</strong> masa total de la aeronave lista para un tipo específico de operación, excluyendo todo el combustible utilizable y la carga de tráfico.</li>
+                        <li><strong>Masa máxima sin combustible (Maximum zero fuel mass):</strong> masa máxima permisible de una aeronave sin combustible utilizable.</li>
+                        <li><strong>Masa máxima de aterrizaje estructural (Maximum structural landing mass):</strong> masa total máxima permisible de la aeronave al aterrizar en circunstancias normales.</li>
+                        <li><strong>Masa máxima de despegue estructural (Maximum structural take off mass):</strong> masa total máxima permisible de la aeronave al inicio de la carrera de despegue.</li>
+                      </ul>`
+            }, {
+                id: '7.16.4',
+                titulo: 'Procedimientos Generales de Masa y Balanceo',
+                contenido: `<h3>Procedimientos Generales de Masa y Balanceo</h3>
+                      <p>EU-OPS 1 subpart J especifica los procedimientos generales sobre masa y balanceo.</p>
+                      <p>Cada aeronave debe ser pesada antes de entrar en servicio. La masa y la posición del CG de cada aeronave deben reestablecerse periódicamente. El intervalo máximo entre un pesaje de la aeronave y el siguiente debe ser definido por el operador, pero no debe exceder el límite de 4/9 años.</p>
+                      <h4>Envolvente del CG</h4>
+                      <p>Los límites permitidos para el movimiento del CG se muestran en un gráfico llamado "envolvente del CG". Cualquier movimiento del CG en el área marcada está permitido.</p>
+                      <h4>Documentos obligatorios</h4>
+                      <ul>
+                        <li><strong>Registro de pesaje (Weighing record):</strong> contiene registros del pesaje y los cálculos involucrados.</li>
+                        <li><strong>Informe de peso y balanceo (Weight and balance report):</strong> contiene los datos de carga esenciales para que una aeronave en particular pueda ser cargada correctamente.</li>
+                      </ul>`
+            }, {
+                id: '7.16.5',
+                titulo: 'Ejemplo de Cálculo de Masa y Balanceo',
+                contenido: `<h3>Ejemplo de Cálculo de Masa y Balanceo</h3>
+                      <p>La posición del CG de la aeronave puede calcularse mediante los siguientes pasos:</p>
+                      <ul>
+                        <li>1. Cálculo de la masa total sumando la masa de cada carga</li>
+                        <li>2. Cálculo del momento de cada carga multiplicando cada masa por su brazo</li>
+                        <li>3. Cálculo del momento total sumando todos los momentos</li>
+                        <li>4. El momento total se divide por la masa total para encontrar la posición del CG</li>
+                      </ul>
+                      <p>Luego, utilizando gráficos de envolvente del CG o de momentos, se puede calcular el punto dentro del gráfico para evaluar el balanceo de la aeronave.</p>
+                      <h4>Ejemplo - Cessna 172</h4>
+                      <ul>
+                        <li>Peso básico vacío: 1318 lbs</li>
+                        <li>Piloto y pasajero delantero: 340 lbs</li>
+                        <li>Pasajeros traseros: 340 lbs</li>
+                        <li>Combustible: 248 lbs</li>
+                        <li>Aceite: 15 lbs</li>
+                        <li>Equipaje: 15 lbs</li>
+                      </ul>
+                      <p>Masa total: 2276 lbs | Momento total: 214,760 | CG: 94.4</p>`
+            }, {
+                id: '7.16.6',
+                titulo: 'Efectos de Carga y Balanceo Incorrectos',
+                contenido: `<h3>Efectos de Carga y Balanceo Incorrectos</h3>
+                      <h4>Si el CG está adelante del límite delantero</h4>
+                      <ul>
+                        <li>Se requiere más potencia para una velocidad determinada</li>
+                        <li>La aeronave "cabecea hacia abajo" durante el despegue</li>
+                        <li>Aumento de la fatiga del piloto</li>
+                        <li>Reducción del recorrido efectivo del elevador hacia arriba</li>
+                      </ul>
+                      <h4>Si el CG está detrás del límite trasero</h4>
+                      <ul>
+                        <li>Cola pesada</li>
+                        <li>Reducción del recorrido efectivo del elevador hacia abajo</li>
+                        <li>Aumento de la tendencia a la pérdida</li>
+                        <li>Posible daño a la estructura de la cola durante el aterrizaje</li>
+                      </ul>
+                      <h4>En caso de sobrecarga</h4>
+                      <ul>
+                        <li>Aumento de la velocidad de pérdida</li>
+                        <li>Mayor carrera de despegue y aterrizaje</li>
+                        <li>Reducción de la maniobrabilidad</li>
+                        <li>Mayor desgaste de los conjuntos del tren de aterrizaje y frenos</li>
+                      </ul>`
+            }, {
+                id: '7.16.7',
+                titulo: 'Preparación de la Aeronave para el Pesaje',
+                contenido: `<h3>Preparación de la Aeronave para el Pesaje</h3>
+                      <p>Antes del pesaje, la aeronave debe estar en una condición que cumpla con los requisitos de EU-OPS-1.</p>
+                      <ul>
+                        <li>La aeronave debe colocarse en el área de pesaje varias horas antes del pesaje para estabilizar la temperatura</li>
+                        <li>La aeronave debe colocarse en la posición de rigging utilizando un nivel de burbuja</li>
+                        <li>La aeronave debe estar limpia y seca</li>
+                        <li>Debe estar equipada de acuerdo con los programas correspondientes</li>
+                        <li>Solo debe haber combustible y aceite no utilizable en los tanques apropiados</li>
+                        <li>El depósito del sistema hidráulico debe estar lleno hasta el nivel correcto</li>
+                      </ul>
+                      <p>La operación de pesaje debe realizarse siempre en el interior (hangar).</p>`
+            }, {
+                id: '7.16.8',
+                titulo: 'Pesaje de la Aeronave',
+                contenido: `<h3>Pesaje de la Aeronave</h3>
+                      <p>El equipo de pesaje de aeronaves consta de los siguientes elementos:</p>
+                      <ul>
+                        <li><strong>Básculas de plataforma (Weighbridge scales):</strong> consisten en una serie de plataformas de pesaje separadas, una para cada rueda. Pueden ser portátiles o fijas.</li>
+                        <li><strong>Unidades de pesaje hidrostático:</strong> basadas en el principio físico de que en un cilindro la presión del fluido depende del área del pistón y de la carga aplicada.</li>
+                        <li><strong>Equipo de pesaje electrónico con galgas extensométricas:</strong> incorporan celdas que utilizan elementos de resistencia metálicos o galgas extensométricas.</li>
+                      </ul>
+                      <h4>Precauciones</h4>
+                      <ul>
+                        <li>Cada equipo de pesaje debe estar calibrado y puesto a cero antes de cualquier operación de pesaje.</li>
+                        <li>Las básculas deben calibrarse al menos cada dos años.</li>
+                      </ul>`
+            }
+        ];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema)
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(pregunta, opciones, correcta) {
+                preguntas.push({ pregunta, opciones, correcta });
+            }
+
+            const generadores = [
+                // 7.15.1
+                () => {
+                    add('¿Qué tipo de unión crea la soldadura entre dos componentes?',
+                        ['Unión permanente por fusión', 'Unión temporal', 'Unión mecánica', 'Unión adhesiva'], 0);
+                    add('¿Quién debe realizar los procedimientos de soldadura en aeronáutica?',
+                        ['Técnico aprobado', 'Cualquier mecánico', 'Solo el ingeniero', 'Solo el supervisor'], 0);
+                    add('¿Cada cuánto tiempo deben ser reexaminados los soldadores aprobados?',
+                        ['12 meses', '6 meses', '24 meses', '36 meses'], 0);
+                    add('¿Qué es la soldadura?', ['Unión permanente por fusión', 'Unión temporal', 'Unión mecánica', 'Unión adhesiva'], 0);
+                    add('¿Qué deben presentar los soldadores para demostrar su competencia?',
+                        ['Piezas de prueba', 'Certificados académicos', 'Cartas de recomendación', 'Exámenes escritos'], 0);
+                    add('¿Qué autoridad regula los procedimientos de soldadura en aeronáutica?',
+                        ['La autoridad de aviación', 'La ISO', 'La OACI', 'La IATA'], 0);
+                    add('¿Qué tipo de materiales no pueden ser soldados?',
+                        ['Algunos no metálicos', 'Todos los metales', 'Todos los materiales', 'Solo el aluminio'], 0);
+                    add('¿Qué tipo de unión es la soldadura?',
+                        ['Permanente', 'Temporal', 'Removible', 'Ajustable'], 0);
+                    add('¿Qué se necesita para realizar una soldadura?',
+                        ['Fusión de los materiales', 'Solo presión', 'Solo adhesivo', 'Solo calor'], 0);
+                    add('¿Qué tipo de técnico está calificado para soldar en aeronáutica?',
+                        ['Técnico aprobado por la autoridad', 'Cualquier técnico', 'Solo ingenieros', 'Solo supervisores'], 0);
+                },
+                // 7.15.2
+                () => {
+                    add('¿A qué temperatura arde la llama oxiacetilénica?',
+                        ['3150°C', '2500°C', '4000°C', '2000°C'], 0);
+                    add('¿Qué tipo de soldadura utiliza un arco eléctrico entre una varilla recubierta de fundente y los componentes?',
+                        ['Manual por arco eléctrico', 'MIG', 'TIG', 'Oxiacetilénica'], 0);
+                    add('¿Qué gas se utiliza como protección en la soldadura MIG?',
+                        ['Argón, CO₂ u otros gases inertes', 'Oxígeno', 'Nitrógeno', 'Helio'], 0);
+                    add('¿Qué electrodo se utiliza en la soldadura TIG?',
+                        ['Tungsteno no consumible', 'Acero consumible', 'Aluminio', 'Cobre'], 0);
+                    add('¿Qué proceso de soldadura utiliza alambre continuo como electrodo?',
+                        ['MIG', 'TIG', 'Oxiacetilénica', 'Manual por arco'], 0);
+                    add('¿Qué tipo de soldadura por resistencia se usa para puntos de soldadura entre chapas?',
+                        ['Soldadura por puntos', 'Soldadura por chispa', 'Soldadura por costura', 'Soldadura MIG'], 0);
+                    add('¿Qué gas se utiliza en la soldadura TIG?',
+                        ['Argón', 'Oxígeno', 'CO₂', 'Helio'], 0);
+                    add('¿Qué tipo de soldadura utiliza un electrodo de tungsteno?',
+                        ['TIG', 'MIG', 'Oxiacetilénica', 'Manual por arco'], 0);
+                    add('¿Qué tipo de soldadura utiliza dos ruedas para transmitir corriente?',
+                        ['Soldadura por costura', 'Soldadura por puntos', 'Soldadura por chispa', 'Soldadura MIG'], 0);
+                    add('¿Qué tipo de soldadura es una combinación de calentamiento mecánico y eléctrico?',
+                        ['Soldadura por chispa', 'Soldadura por puntos', 'Soldadura por costura', 'Soldadura TIG'], 0);
+                },
+                // 7.15.3
+                () => {
+                    add('¿Qué tipo de prueba de soldadura utiliza rayos X?',
+                        ['Radiográfica', 'Ultrasónica', 'Partículas magnéticas', 'Líquidos penetrantes'], 0);
+                    add('¿Qué tipo de prueba de soldadura utiliza ondas sonoras?',
+                        ['Ultrasónica', 'Radiográfica', 'Partículas magnéticas', 'Líquidos penetrantes'], 0);
+                    add('¿Qué tipo de prueba de soldadura utiliza partículas magnéticas?',
+                        ['Partículas magnéticas', 'Radiográfica', 'Ultrasónica', 'Líquidos penetrantes'], 0);
+                    add('¿Quién puede realizar pruebas no destructivas de soldaduras?',
+                        ['Personal especializado y calificado', 'Cualquier técnico', 'Solo ingenieros', 'Solo supervisores'], 0);
+                    add('¿Qué tipo de prueba de soldadura implica seccionar la soldadura?',
+                        ['Prueba destructiva', 'Prueba radiográfica', 'Prueba ultrasónica', 'Prueba de partículas magnéticas'], 0);
+                    add('¿Qué tipo de inspección puede realizar el personal de mantenimiento simple?',
+                        ['Inspección visual', 'Radiográfica', 'Ultrasónica', 'Partículas magnéticas'], 0);
+                    add('¿Qué tipo de prueba no destructiva se usa para soldaduras?',
+                        ['Radiográfica, ultrasónica y partículas magnéticas', 'Solo radiográfica', 'Solo ultrasónica', 'Solo partículas magnéticas'], 0);
+                    add('¿Qué se requiere para calificar procedimientos de soldadura?',
+                        ['Pruebas y calificación del personal', 'Solo inspección visual', 'Solo documentación', 'Solo experiencia'], 0);
+                    add('¿Qué tipo de prueba es la inspección con líquidos penetrantes?',
+                        ['No destructiva', 'Destructiva', 'Mecánica', 'Térmica'], 0);
+                    add('¿Qué tipo de personal está autorizado para realizar pruebas no destructivas?',
+                        ['Personal especializado', 'Cualquier técnico', 'Solo ingenieros', 'Solo supervisores'], 0);
+                },
+                // 7.15.4
+                () => {
+                    add('¿Cuál es la diferencia principal entre la soldadura blanda y la soldadura fuerte?',
+                        ['La temperatura de fusión', 'El material de aportación', 'El tipo de unión', 'El equipo utilizado'], 0);
+                    add('¿A qué temperatura se realiza la soldadura fuerte (brazing)?',
+                        ['Superior a 500°C', 'Entre 180°C y 330°C', 'Superior a 1000°C', 'Inferior a 200°C'], 0);
+                    add('¿Qué aleación se usa como metal de aportación en la soldadura fuerte?',
+                        ['Aleación de latón (cobre y zinc)', 'Aleación de plomo y estaño', 'Aleación de aluminio', 'Aleación de acero'], 0);
+                    add('¿Qué aleación se usa en la soldadura blanda?',
+                        ['Aleación de plomo y estaño', 'Aleación de latón', 'Aleación de aluminio', 'Aleación de cobre'], 0);
+                    add('¿A qué temperatura se funde la aleación de latón en la soldadura fuerte?',
+                        ['880°C', '300°C', '500°C', '1000°C'], 0);
+                    add('¿A qué temperatura se funde la aleación de plomo y estaño en la soldadura blanda?',
+                        ['180°C a 330°C', '500°C a 600°C', '880°C', '100°C a 150°C'], 0);
+                    add('¿Qué se debe hacer antes de cualquier operación de soldadura?',
+                        ['Preparar las superficies de la unión', 'Calentar el soldador', 'Lubricar el soldador', 'Pintar las superficies'], 0);
+                    add('¿Qué tipo de soldador eléctrico se usa comúnmente?',
+                        ['Soldador de 25 vatios', 'Soldador de 100 vatios', 'Soldador de 500 vatios', 'Soldador de 10 vatios'], 0);
+                    add('¿Qué se usa para proteger la unión durante la soldadura?',
+                        ['Fundente', 'Aceite', 'Grasa', 'Agua'], 0);
+                    add('¿Qué tipo de soldadura se usa para uniones eléctricas?',
+                        ['Soldadura blanda', 'Soldadura fuerte', 'Soldadura por arco', 'Soldadura TIG'], 0);
+                },
+                // 7.15.5
+                () => {
+                    add('¿Qué tipo de inspección se realiza principalmente en uniones soldadas?',
+                        ['Visual', 'Radiográfica', 'Ultrasónica', 'Partículas magnéticas'], 0);
+                    add('¿Qué prueba se realiza en contactos eléctricos soldados?',
+                        ['Prueba de tracción suave', 'Prueba de presión', 'Prueba de temperatura', 'Prueba de vibración'], 0);
+                    add('¿Qué se debe probar en los contactos eléctricos después de la soldadura?',
+                        ['Continuidad eléctrica y resistencia', 'Solo la resistencia', 'Solo la continuidad', 'Solo la temperatura'], 0);
+                    add('¿Qué instrumento se usa para probar la continuidad eléctrica?',
+                        ['Multímetro', 'Micrómetro', 'Calibre', 'Tensiómetro'], 0);
+                    add('¿Qué tipo de prueba se realiza en uniones soldadas?',
+                        ['Prueba de tracción', 'Prueba de presión', 'Prueba de temperatura', 'Prueba de vibración'], 0);
+                    add('¿Qué se debe verificar en una unión soldada eléctrica?',
+                        ['Que los cables estén bien sujetos', 'Que los cables estén pintados', 'Que los cables estén lubricados', 'Que los cables estén calientes'], 0);
+                    add('¿Qué tipo de prueba es la inspección visual de una soldadura?',
+                        ['No destructiva', 'Destructiva', 'Mecánica', 'Térmica'], 0);
+                    add('¿Qué se debe hacer si una unión soldada no pasa la prueba?',
+                        ['Repararla o rehacerla', 'Ignorarla', 'Pintarla', 'Lubricarla'], 0);
+                    add('¿Qué tipo de instrumento se usa para medir resistencia en contactos soldados?',
+                        ['Multímetro', 'Micrómetro', 'Calibre', 'Tensiómetro'], 0);
+                    add('¿Qué se debe verificar visualmente en una soldadura?',
+                        ['Aspecto y calidad de la unión', 'Solo el color', 'Solo el tamaño', 'Solo la forma'], 0);
+                },
+                // 7.15.6
+                () => {
+                    add('¿Qué tipo de unión adhesiva forma un bloqueo mecánico?',
+                        ['Mecánico', 'Químico', 'Térmico', 'Eléctrico'], 0);
+                    add('¿Qué tipo de unión adhesiva crea un enlace químico con la superficie?',
+                        ['Químico', 'Mecánico', 'Térmico', 'Eléctrico'], 0);
+                    add('¿Qué tipo de tensión se produce cuando dos superficies se separan directamente?',
+                        ['Tracción', 'Corte', 'Hendidura', 'Pelado'], 0);
+                    add('¿Qué tipo de tensión se produce cuando dos superficies tienden a deslizarse una sobre la otra?',
+                        ['Corte', 'Tracción', 'Hendidura', 'Pelado'], 0);
+                    add('¿Qué tipo de tensión se produce cuando dos bordes se separan?',
+                        ['Hendidura', 'Tracción', 'Corte', 'Pelado'], 0);
+                    add('¿Qué tipo de tensión se produce cuando una superficie se despega de la otra?',
+                        ['Pelado', 'Tracción', 'Corte', 'Hendidura'], 0);
+                    add('¿Qué tipo de junta es la más ventajosa para uniones adhesivas?',
+                        ['Junta solapada', 'Junta a tope', 'Junta en T', 'Junta en esquina'], 0);
+                    add('¿Qué tipo de tensión es la máxima en uniones adhesivas?',
+                        ['Corte', 'Tracción', 'Hendidura', 'Pelado'], 0);
+                    add('¿Qué tipo de unión se usa en superficies de control?',
+                        ['Unión adhesiva', 'Soldadura', 'Remachado', 'Atornillado'], 0);
+                    add('¿Qué tipo de tensión debe evitarse en uniones adhesivas?',
+                        ['Tracción y pelado', 'Corte', 'Hendidura', 'Compresión'], 0);
+                },
+                // 7.15.7
+                () => {
+                    add('¿Qué es esencial en todas las etapas de la unión adhesiva?',
+                        ['Limpieza absoluta', 'Alta temperatura', 'Alta presión', 'Luz solar'], 0);
+                    add('¿Qué se necesita para producir presión en las áreas de unión adhesiva?',
+                        ['Equipo sofisticado', 'Solo manos', 'Solo peso', 'Solo aire comprimido'], 0);
+                    add('¿Qué se utiliza para el curado en uniones adhesivas?',
+                        ['Autoclave', 'Horno', 'Prensa', 'Refrigerador'], 0);
+                    add('¿Qué se debe hacer antes de la aplicación del adhesivo?',
+                        ['Montaje en seco', 'Pintar las superficies', 'Engrasar las superficies', 'Calentar las superficies'], 0);
+                    add('¿Qué tipo de inspección es difícil en uniones adhesivas?',
+                        ['Inspección de la unión', 'Inspección visual', 'Inspección dimensional', 'Inspección de peso'], 0);
+                    add('¿Qué se usa para aplicar presión en uniones adhesivas?',
+                        ['Bolsas de vacío', 'Prensa hidráulica', 'Martillo', 'Cinta adhesiva'], 0);
+                    add('¿Qué se usa para calentar en uniones adhesivas?',
+                        ['Autoclave', 'Horno', 'Prensa', 'Refrigerador'], 0);
+                    add('¿Qué se debe verificar después del curado?',
+                        ['Línea de rebaba y grosor del adhesivo', 'Solo el color', 'Solo el peso', 'Solo la forma'], 0);
+                    add('¿Qué tipo de sala se necesita para uniones adhesivas?',
+                        ['Sala limpia', 'Sala de pintura', 'Sala de máquinas', 'Sala de almacenamiento'], 0);
+                    add('¿Qué se debe hacer si la unión adhesiva no pasa la inspección?',
+                        ['Reparar o rehacer la unión', 'Ignorarla', 'Pintarla', 'Lubricarla'], 0);
+                },
+                // 7.16.1
+                () => {
+                    add('¿Qué punto es donde actúa la masa total de la aeronave verticalmente hacia abajo?',
+                        ['Centro de Gravedad (CG)', 'Centro de Presión (CP)', 'Centro de Sustentación', 'Centro de Empuje'], 0);
+                    add('¿Dónde se encuentra normalmente el Centro de Presión (CP) en relación al CG?',
+                        ['Detrás del CG', 'Delante del CG', 'En el mismo punto', 'No tiene relación'], 0);
+                    add('¿Qué efecto produce la fuerza de sustentación alrededor del CG?',
+                        ['Tiende a empujar el morro hacia abajo', 'Tiende a empujar el morro hacia arriba', 'No produce efecto', 'Produce guiñada'], 0);
+                    add('¿Qué sucede si el CG está demasiado adelante?',
+                        ['Tendencia a cabecear hacia abajo', 'Tendencia a cabecear hacia arriba', 'Mayor estabilidad', 'Menor consumo de combustible'], 0);
+                    add('¿Qué sucede si el CG está demasiado atrás?',
+                        ['Tendencia a cabecear hacia arriba', 'Tendencia a cabecear hacia abajo', 'Menor estabilidad', 'Mayor velocidad'], 0);
+                    add('¿Qué sucede si el CG se alinea con el CP?',
+                        ['La aeronave se vuelve muy sensible', 'La aeronave se vuelve muy estable', 'No hay cambio', 'Aumenta el consumo de combustible'], 0);
+                    add('¿Qué riesgo hay si el CG está demasiado adelante en un rotorcraft?',
+                        ['Esfuerzo excesivo en el cabezal del rotor', 'Pérdida de control', 'Menor velocidad', 'Mayor consumo'], 0);
+                    add('¿Qué riesgo hay si el CG está demasiado atrás en un rotorcraft?',
+                        ['Límite de velocidad y alcance', 'Mayor estabilidad', 'Menor consumo', 'Mayor velocidad'], 0);
+                    add('¿Qué se debe asegurar en cada condición de vuelo?',
+                        ['Que la posición del CG esté dentro de los límites de seguridad', 'Que el CG esté en el centro', 'Que el CG esté adelante', 'Que el CG esté atrás'], 0);
+                    add('¿Qué es el Centro de Presión (CP)?', ['Punto donde actúa la fuerza de sustentación', 'Punto donde actúa el peso', 'Punto donde actúa el empuje', 'Punto donde actúa la resistencia'], 0);
+                },
+                // 7.16.2
+                () => {
+                    add('¿Qué es el "brazo" en el cálculo de momentos?',
+                        ['La distancia entre el punto de acción y el fulcro', 'La fuerza aplicada', 'El momento resultante', 'El peso del objeto'], 0);
+                    add('¿Qué es el "momento" en el cálculo de CG?',
+                        ['Fuerza multiplicada por la distancia (brazo)', 'Solo la fuerza', 'Solo la distancia', 'El peso total'], 0);
+                    add('¿Qué signo tienen los momentos detrás del datum?',
+                        ['Positivo', 'Negativo', 'Cero', 'Indefinido'], 0);
+                    add('¿Qué signo tienen los momentos delante del datum?',
+                        ['Negativo', 'Positivo', 'Cero', 'Indefinido'], 0);
+                    add('¿Qué es el "reference datum" en el cálculo de CG?',
+                        ['Un punto de referencia fijo para medir distancias', 'El punto de aplicación de la fuerza', 'El centro de gravedad', 'El centro de presión'], 0);
+                    add('¿Qué signo tienen las distancias horizontales por encima del datum?',
+                        ['Positivo', 'Negativo', 'Cero', 'Indefinido'], 0);
+                    add('¿Qué signo tienen las distancias horizontales por debajo del datum?',
+                        ['Negativo', 'Positivo', 'Cero', 'Indefinido'], 0);
+                    add('¿Dónde se encuentra generalmente el reference datum?',
+                        ['En o justo delante del morro', 'En la cola', 'En el centro del fuselaje', 'En el tren de aterrizaje'], 0);
+                    add('¿Qué relación tiene el reference datum con el sistema de estaciones?',
+                        ['Coincide con la estación cero', 'No tiene relación', 'Está en la estación 100', 'Está en la estación 50'], 0);
+                    add('¿Para qué sirve el reference datum?', ['Para medir la posición de todos los equipos y brazos de palanca', 'Para calcular el peso total', 'Para determinar el centro de presión', 'Para medir la velocidad'], 0);
+                },
+                // 7.16.3
+                () => {
+                    add('¿Qué regulación cubre los requisitos de masa y balanceo?',
+                        ['EU-OPS 1 subpart J', 'FAR 25', 'JAR 25', 'ISO 9001'], 0);
+                    add('¿Qué es la masa operativa en seco (Dry operating mass)?',
+                        ['Masa total de la aeronave lista para operar sin combustible ni carga', 'Masa máxima de despegue', 'Masa máxima de aterrizaje', 'Masa del combustible'], 0);
+                    add('¿Qué es la masa máxima sin combustible (Maximum zero fuel mass)?',
+                        ['Masa máxima sin combustible utilizable', 'Masa máxima de despegue', 'Masa máxima de aterrizaje', 'Masa del combustible'], 0);
+                    add('¿Qué es la masa máxima de aterrizaje estructural?',
+                        ['Masa total máxima al aterrizar', 'Masa máxima de despegue', 'Masa máxima sin combustible', 'Masa del combustible'], 0);
+                    add('¿Qué es la masa máxima de despegue estructural?',
+                        ['Masa total máxima al inicio del despegue', 'Masa máxima de aterrizaje', 'Masa máxima sin combustible', 'Masa del combustible'], 0);
+                    add('¿Qué documentación debe prepararse antes del vuelo?',
+                        ['Hoja de carga (load sheet)', 'Solo el manual de vuelo', 'Solo la lista de equipos', 'Solo el certificado de aeronavegabilidad'], 0);
+                    add('¿Qué clasificación se usa para pasajeros?',
+                        ['Adultos, niños e infantes', 'Hombres y mujeres', 'Pasajeros de primera clase y turista', 'Pasajeros con y sin equipaje'], 0);
+                    add('¿Qué es la carga de tráfico (Traffic load)?',
+                        ['Masa total de pasajeros, equipaje y carga', 'Solo pasajeros', 'Solo equipaje', 'Solo carga'], 0);
+                    add('¿Qué debe incluir la documentación de masa y balanceo?',
+                        ['Registro de la aeronave, tipo, masa operativa seca y CG', 'Solo el peso total', 'Solo la posición del CG', 'Solo el combustible'], 0);
+                    add('¿Qué son los cambios de última hora (Last minute change)?',
+                        ['Cambios después de completar la documentación', 'Cambios durante el vuelo', 'Cambios en el plan de vuelo', 'Cambios en el combustible'], 0);
+                },
+                // 7.16.4
+                () => {
+                    add('¿Cada cuánto tiempo debe reestablecerse la masa y CG de una aeronave?',
+                        ['No más de 4/9 años', 'Cada año', 'Cada mes', 'Cada semana'], 0);
+                    add('¿Cuándo debe reestablecerse la masa y CG por cálculo?',
+                        ['Si los cambios acumulativos exceden ±0.5% de la masa máxima de aterrizaje', 'Solo cuando se pesa', 'Solo cuando se modifica', 'Solo cuando se repara'], 0);
+                    add('¿Qué es la envolvente del CG (CG envelope)?',
+                        ['Un gráfico que muestra los límites permitidos del CG', 'La forma del fuselaje', 'La posición de los asientos', 'La distribución de combustible'], 0);
+                    add('¿Qué representa el eje horizontal en la envolvente del CG?',
+                        ['Los límites del brazo del CG en pulgadas', 'El peso de la aeronave', 'La velocidad', 'La altitud'], 0);
+                    add('¿Qué representa el eje vertical en la envolvente del CG?',
+                        ['El peso cargado de la aeronave', 'Los límites del CG', 'La velocidad', 'La altitud'], 0);
+                    add('¿Qué es el WCGS (Weight and Centre of Gravity Schedule)?',
+                        ['Un documento que detalla el peso básico y la posición del CG', 'Un plano de la aeronave', 'Una lista de equipos', 'Un manual de vuelo'], 0);
+                    add('¿Qué partes tiene el WCGS?', ['Parte A (peso básico), Parte B (carga variable), Parte C (carga desechable)', 'Solo una parte', 'Dos partes', 'Cuatro partes'], 0);
+                    add('¿Qué contiene la Parte A del WCGS?', ['El peso básico y la posición del CG', 'La carga variable', 'La carga desechable', 'El combustible'], 0);
+                    add('¿Qué contiene la Parte C del WCGS?', ['Información sobre carga desechable (pasajeros, equipaje, combustible)', 'El peso básico', 'La carga variable', 'El aceite'], 0);
+                    add('¿Qué masa estándar se usa para miembros de la tripulación?', ['85 kg para tripulación de vuelo, 75 kg para tripulación de cabina', '70 kg para todos', '80 kg para todos', '90 kg para todos'], 0);
+                },
+                // 7.16.5
+                () => {
+                    add('¿Cuál es el primer paso para calcular la posición del CG?',
+                        ['Calcular la masa total sumando cada carga', 'Calcular el momento total', 'Dividir el momento total por la masa total', 'Sumar todos los brazos'], 0);
+                    add('¿Cómo se calcula el momento de cada carga?',
+                        ['Multiplicando la masa por su brazo', 'Sumando la masa y el brazo', 'Dividiendo la masa por el brazo', 'Restando la masa del brazo'], 0);
+                    add('¿Cómo se calcula el momento total?',
+                        ['Sumando todos los momentos', 'Restando todos los momentos', 'Multiplicando todos los momentos', 'Dividiendo todos los momentos'], 0);
+                    add('¿Cómo se encuentra la posición del CG?',
+                        ['Dividiendo el momento total por la masa total', 'Multiplicando el momento total por la masa total', 'Sumando el momento total y la masa total', 'Restando el momento total de la masa total'], 0);
+                    add('¿Qué instrumento se usa para verificar el CG en el ejemplo del Cessna 172?',
+                        ['Envolvente del CG', 'Micrómetro', 'Calibre', 'Tensiómetro'], 0);
+                    add('¿Qué datos se usan en el ejemplo del Cessna 172?',
+                        ['Peso vacío, pasajeros, combustible, aceite y equipaje', 'Solo el peso vacío', 'Solo los pasajeros', 'Solo el combustible'], 0);
+                    add('¿Qué representa el punto en la envolvente del CG?',
+                        ['La ubicación del CG para la carga calculada', 'La velocidad máxima', 'La altitud máxima', 'El peso máximo'], 0);
+                    add('¿Qué significa que el punto caiga dentro de la envolvente?',
+                        ['La carga cumple con todos los requisitos de balanceo', 'La carga es incorrecta', 'La aeronave no puede volar', 'La aeronave está sobrecargada'], 0);
+                    add('¿Qué se debe hacer si el punto cae fuera de la envolvente?',
+                        ['Ajustar la carga', 'Ignorarlo', 'Pintarlo', 'Lubricarlo'], 0);
+                    add('¿Qué es el momento total en el ejemplo?', ['214,760', '2276', '94.4', '1318'], 0);
+                },
+                // 7.16.6
+                () => {
+                    add('¿Qué efecto tiene un CG demasiado adelante en el consumo de combustible?',
+                        ['Aumenta el consumo', 'Disminuye el consumo', 'No afecta', 'Mejora el rendimiento'], 0);
+                    add('¿Qué efecto tiene un CG demasiado adelante en el despegue?',
+                        ['La aeronave "cabecea hacia abajo"', 'La aeronave "cabecea hacia arriba"', 'Despegue más corto', 'Despegue más suave'], 0);
+                    add('¿Qué efecto tiene un CG demasiado atrás en la tendencia a la pérdida?',
+                        ['Aumenta la tendencia a la pérdida', 'Disminuye la tendencia a la pérdida', 'No afecta', 'Mejora la estabilidad'], 0);
+                    add('¿Qué efecto tiene un CG demasiado atrás en la cola?',
+                        ['Cola pesada', 'Cola ligera', 'No afecta', 'Mejora el rendimiento'], 0);
+                    add('¿Qué efecto tiene la sobrecarga en la velocidad de pérdida?',
+                        ['Aumenta la velocidad de pérdida', 'Disminuye la velocidad de pérdida', 'No afecta', 'Mejora el rendimiento'], 0);
+                    add('¿Qué efecto tiene la sobrecarga en la maniobrabilidad?',
+                        ['Reduce la maniobrabilidad', 'Aumenta la maniobrabilidad', 'No afecta', 'Mejora el rendimiento'], 0);
+                    add('¿Qué efecto tiene un CG demasiado adelante en el recorrido del elevador?',
+                        ['Reduce el recorrido efectivo del elevador hacia arriba', 'Reduce el recorrido efectivo del elevador hacia abajo', 'No afecta', 'Aumenta el recorrido del elevador'], 0);
+                    add('¿Qué efecto tiene un CG demasiado atrás en el recorrido del elevador?',
+                        ['Reduce el recorrido efectivo del elevador hacia abajo', 'Reduce el recorrido efectivo del elevador hacia arriba', 'No afecta', 'Aumenta el recorrido del elevador'], 0);
+                    add('¿Qué efecto tiene la sobrecarga en la carrera de despegue?',
+                        ['Aumenta la carrera de despegue', 'Disminuye la carrera de despegue', 'No afecta', 'Aumenta la velocidad de despegue'], 0);
+                    add('¿Qué efecto tiene la sobrecarga en el desgaste del tren de aterrizaje?',
+                        ['Aumenta el desgaste', 'Disminuye el desgaste', 'No afecta', 'Reduce el desgaste'], 0);
+                },
+                // 7.16.7
+                () => {
+                    add('¿Dónde debe realizarse el pesaje de la aeronave?',
+                        ['En el interior (hangar)', 'Al aire libre', 'En la pista', 'En la plataforma'], 0);
+                    add('¿Cuánto tiempo antes del pesaje debe colocarse la aeronave en el área?',
+                        ['Varias horas antes', 'Inmediatamente antes', 'Un día antes', 'Una semana antes'], 0);
+                    add('¿Qué herramienta se usa para colocar la aeronave en la posición de rigging?',
+                        ['Nivel de burbuja', 'Micrómetro', 'Calibre', 'Regla'], 0);
+                    add('¿Qué condición debe tener la aeronave para el pesaje?',
+                        ['Limpia y seca', 'Sucia y húmeda', 'Con combustible lleno', 'Con carga completa'], 0);
+                    add('¿Qué tipo de combustible debe tener la aeronave durante el pesaje?',
+                        ['Solo combustible no utilizable', 'Tanques llenos', 'Tanques vacíos', 'Combustible de aviación'], 0);
+                    add('¿Qué nivel debe tener el sistema hidráulico durante el pesaje?',
+                        ['Nivel correcto', 'Vacío', 'Lleno', 'A la mitad'], 0);
+                    add('¿Qué se debe hacer con la aeronave antes del pesaje?', ['Equiparla según los programas correspondientes', 'Desmontar todo el equipo', 'Pintarla', 'Engrasarla'], 0);
+                    add('¿Por qué es importante estabilizar la temperatura antes del pesaje?',
+                        ['Para obtener lecturas fiables', 'Para ahorrar tiempo', 'Para reducir costes', 'Para mejorar la precisión del combustible'], 0);
+                    add('¿Qué tipo de aeronave puede tener una carga negativa en la cola durante el pesaje?',
+                        ['Aeronaves de cola con rueda trasera', 'Aeronaves con morro', 'Aeronaves con tren delantero', 'Helicópteros'], 0);
+                    add('¿Qué se debe hacer con los residuos de los desagües durante el pesaje?',
+                        ['Mantenerlos limpios', 'Ignorarlos', 'Pintarlos', 'Lubricarlos'], 0);
+                },
+                // 7.16.8
+                () => {
+                    add('¿Qué tipo de báscula se usa para aeronaves grandes?',
+                        ['Básculas de plataforma portátiles o fijas', 'Básculas de baño', 'Básculas de cocina', 'Básculas de carga'], 0);
+                    add('¿Cuál es el principio de funcionamiento de las unidades hidrostáticas?',
+                        ['La presión del fluido depende del área del pistón y la carga', 'El peso se mide por deformación', 'La resistencia eléctrica varía con la carga', 'El flujo de aire mide el peso'], 0);
+                    add('¿Qué equipo electrónico se usa para pesar aeronaves?',
+                        ['Galgas extensométricas', 'Básculas de plataforma', 'Unidades hidrostáticas', 'Básculas de resorte'], 0);
+                    add('¿Qué se debe hacer antes de cualquier operación de pesaje?',
+                        ['Calibrar y poner a cero el equipo', 'Pintar el equipo', 'Engrasar el equipo', 'Calentar el equipo'], 0);
+                    add('¿Cada cuánto tiempo deben calibrarse las básculas?',
+                        ['Al menos cada dos años', 'Cada mes', 'Cada semana', 'Cada año'], 0);
+                    add('¿Qué tipo de báscula se usa para pesaje de aeronaves pequeñas?',
+                        ['Básculas de plataforma', 'Básculas hidrostáticas', 'Galgas extensométricas', 'Básculas de resorte'], 0);
+                    add('¿Dónde se colocan los cilindros hidrostáticos?', ['Entre el gato y el punto de izado', 'Debajo de las ruedas', 'En la cabina', 'En el morro'], 0);
+                    add('¿Qué principio físico usan las galgas extensométricas?', ['Variación de resistencia con la deformación', 'Variación de presión', 'Variación de temperatura', 'Variación de flujo'], 0);
+                    add('¿Qué kit incluye el equipo de pesaje electrónico?', ['Cinta métrica, plomadas, nivel y celdas de carga', 'Solo celdas de carga', 'Solo nivel', 'Solo cinta métrica'], 0);
+                    add('¿Qué tipo de báscula se usa para pesaje de aeronaves pequeñas?', ['Básculas de plataforma', 'Básculas hidrostáticas', 'Galgas extensométricas', 'Básculas de resorte'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => ({ ...t, preguntas: generarPreguntas(idx) }))
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA
+        // ============================================================
+        let state = {
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_modulo7_15_7_16_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_modulo7_15_7_16_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  DOM REFERENCES Y FUNCIONES PRINCIPALES
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo.substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            let html = '';
+            data.temas.forEach((item, idx) => {
+                const bloqueado = !state.temasDesbloqueados[idx];
+                const completado = state.temasCompletados[idx];
+                const activo = idx === state.currentTema;
+                const bookmarked = state.bookmarks[idx];
+                let cls = '';
+                if (bloqueado) cls += ' locked';
+                if (completado) cls += ' completed';
+                if (activo) cls += ' active';
+                if (bookmarked) cls += ' bookmarked';
+                const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                html += `<li class="${cls}" data-index="${idx}">
+                            <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                            <span>${item.id}. ${item.titulo}</span>
+                            <span class="badge">${badge}</span>
+                        </li>`;
+            });
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const contenido = tema.contenido;
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${tema.id}</div>
+                            <h1>${tema.titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} Marcador</button>
+                                <button id="resetTemaBtn">🔄 Reiniciar test</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            📝 Modo Examen: contenido oculto
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>📝 Notas personales</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="Escribe aquí tus notas...">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 Test de evaluación</h3>
+                            <div class="test-stats">
+                                Intentos: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${p.correcta}">
+                            <p>${i+1}. ${p.pregunta}</p>`;
+                p.opciones.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">✅ Corregir test</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">👁️ Mostrar respuestas</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">➡️ Siguiente tema</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm('¿Reiniciar el test de este tema?')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = '✅ Test superado';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ¡Correcto!';
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[correcta];
+                    expl.textContent = `❌ Respuesta correcta: ${correctaText}`;
+                } else {
+                    expl.textContent = '⚠️ Selecciona una opción';
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = `✅ ¡Excelente! Has acertado ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent =
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = `💡 Respuesta: ${correctaText}`;
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function aplicarBusqueda(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido;
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${t.id} - ${t.titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_modulo7_15_7_16_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 CSV exportado');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ ¿Reiniciar todo el progreso?')) return;
+            localStorage.removeItem('aerotraining_modulo7_15_7_16_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD, THEME, MODES
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '0':
+                    let num;
+                    if (e.key === '0') num = 9;
+                    else num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast('🚀 Temario desbloqueado');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ AeroTraining 66 - Módulo 7.15 y 7.16 cargado');
+        console.log('📊 13 temas con todas las funcionalidades.');
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 7.3 y 7.4 · Tools y Avionic Test Equipment - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content .ejemplo strong {
+            color: var(--accent-light);
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 12</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <!-- Temas -->
+        <div id="temaContainer"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <!-- Certificado -->
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado la Sección 7.3 y 7.4: Tools y Avionic Test Equipment</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en herramientas manuales, herramientas eléctricas, instrumentos de medición de precisión, equipos de lubricación, equipos de prueba eléctrica y equipos de prueba aviónicos.</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <!-- Shortcuts hint -->
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: 12 TEMAS - SECCIÓN 7.3 Y 7.4 (SOLO CASTELLANO)
+        // ============================================================
+        const temasBase = [
+            // === SECCIÓN 7.3 ===
+            {
+                id: '7.3.1',
+                titulo: 'Herramientas Manuales Comunes',
+                contenido: `<h3>Herramientas Manuales Comunes</h3>
+                      <p>En las prácticas de taller, las herramientas manuales son los equipos más utilizados para realizar tareas de mantenimiento en aeronaves.</p>
+                      <p>Por esta razón, las prácticas de mantenimiento y la seguridad dependen, entre otras cosas, del uso correcto de estas herramientas, combinado con un mantenimiento preciso y programado.</p>
+                      <p>Es evidente que un uso incorrecto de las herramientas manuales puede causar daños a la aeronave y resultar peligroso para la salud del operador.</p>
+                      <h4>Tipos de herramientas manuales</h4>
+                      <ul>
+                        <li><strong>Tornillo de banco:</strong> se utiliza para sujetar objetos y trabajar de forma segura sobre un componente.</li>
+                        <li><strong>Limas:</strong> herramienta de acero templado utilizada para alisar y pulir superficies de madera y metal.</li>
+                        <li><strong>Martillos y mazos:</strong> herramienta manual compuesta por una masa de acero montada en un mango de madera.</li>
+                        <li><strong>Sierras de arco:</strong> herramienta utilizada para cortar metales.</li>
+                        <li><strong>Cinceles:</strong> herramientas utilizadas en la fabricación de metales, madera y piedra.</li>
+                        <li><strong>Punzones:</strong> herramientas de acero con punta, utilizadas para obtener pequeñas hendiduras o marcas.</li>
+                        <li><strong>Llaves:</strong> herramientas comunes utilizadas para aplicar pares de torsión sobre elementos mecánicos como tuercas y pernos.</li>
+                        <li><strong>Destornilladores:</strong> herramientas diseñadas para apretar y aflojar tornillos.</li>
+                        <li><strong>Alicates:</strong> herramientas utilizadas principalmente para sujetar objetos firmemente.</li>
+                        <li><strong>Taladros:</strong> herramientas utilizadas para obtener varios tipos de perforaciones.</li>
+                        <li><strong>Linternas:</strong> dispositivos de iluminación portátiles.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Precaución:</strong> Las herramientas deben guardarse siempre en un lugar adecuado para evitar pérdidas, corrosión o daños por impacto con otras herramientas.</div>`
+            }, {
+                id: '7.3.2',
+                titulo: 'Herramientas Eléctricas Comunes',
+                contenido: `<h3>Herramientas Eléctricas Comunes</h3>
+                      <h4>Torno</h4>
+                      <p>El torno es un equipo utilizado para la fabricación de componentes. El principio de funcionamiento del torno se basa en la rotación del componente, que se sujeta entre el plato de auto-centrado y el contrapunto y se pone en rotación. Una herramienta, llamada inserto, entra en contacto con la superficie giratoria del componente y se mueve sobre ella siguiendo coordenadas tridimensionales.</p>
+                      <p>En los tornos tradicionales o manuales, el movimiento del inserto es accionado manualmente; en los tornos modernos con control numérico (CNC), el operador proporciona datos a una computadora que calcula el movimiento del inserto en los ejes X, Y y Z.</p>
+                      <h4>Fresadora</h4>
+                      <p>La fresadora se puede considerar como un torno móvil. El trabajo se basa en el arranque de viruta, pero la herramienta se mueve alrededor del componente. Existen modelos manuales y modelos con control numérico.</p>
+                      <h4>Rectificadora</h4>
+                      <p>La rectificadora es muy similar a la fresadora y se utiliza en la fabricación y acabado de superficies finas cuando se requiere alta precisión.</p>
+                      <h4>Rectificadora de banco</h4>
+                      <p>La muela de rectificado de banco se utiliza ampliamente para rectificar, pulir, cortar, afeitar y afilar. Es importante respetar las precauciones de seguridad para evitar un uso inadecuado.</p>
+                      <h4>Dobladora</h4>
+                      <p>La dobladora se utiliza para doblar componentes de diversos materiales, siguiendo radios geométricos y ángulos predeterminados. Puede ser accionada manualmente o computerizada.</p>
+                      <h4>Cizalla</h4>
+                      <p>Las cizallas están dedicadas al corte de chapa metálica. Existen máquinas de diferentes dimensiones, desde tipos de banco hasta tipos industriales, accionadas manualmente o servo-accionadas mediante actuadores neumáticos, hidráulicos o eléctricos.</p>`
+            }, {
+                id: '7.3.3',
+                titulo: 'Instrumentos de Medición de Precisión',
+                contenido: `<h3>Instrumentos de Medición de Precisión</h3>
+                      <p>Los instrumentos de medición se utilizan para especificar las dimensiones de un componente. Existen dimensiones lineales y dimensiones angulares.</p>
+                      <h4>Calibre (pie de rey)</h4>
+                      <p>El calibre es un instrumento de precisión utilizado para mediciones externas e internas de componentes mecánicos. Puede utilizarse para medir el espesor de componentes con superficies planas, el diámetro de tubos o alambres, y la profundidad y anchura de cavidades.</p>
+                      <p>El calibre consta de: escala principal, sonda de profundidad, cursor, tornillo de fijación, mordazas exteriores, mordazas interiores, nonio y superficies de contacto.</p>
+                      <p>El nonio es una escala auxiliar que se desliza a lo largo de la escala principal y permite medir fracciones de la unidad de medida más pequeña de la escala principal.</p>
+                      <p>Existen calibres con carátula (dial) y calibres digitales, que son más precisos y fáciles de leer.</p>
+                      <h4>Micrómetro</h4>
+                      <p>El micrómetro es otro instrumento de medición, más preciso que el calibre. Permite la medición de longitudes mediante el movimiento rotativo de un tornillo, convirtiendo el movimiento de rotación en lineal.</p>
+                      <p>Un micrómetro está compuesto por: yunque, husillo, manguito, tambor, trinquete, tornillo de fijación y bastidor.</p>
+                      <p>Existen micrómetros digitales, micrómetros de profundidad y micrómetros para medición de roscas.</p>
+                      <h4>Instrumentos de control</h4>
+                      <p>Los instrumentos de control son instrumentos estándar utilizados para verificar si los componentes son estándar y para establecer características dimensionales. Algunos son: galgas de roscas, calibres fijos, escuadras, placas de superficie y relojes comparadores.</p>`
+            }, {
+                id: '7.3.4',
+                titulo: 'Equipos y Métodos de Lubricación',
+                contenido: `<h3>Equipos y Métodos de Lubricación</h3>
+                      <p>Los sistemas de lubricación incluyen todos los equipos y suministros relacionados con las operaciones de mantenimiento de aeronaves. Las tareas de mantenimiento se realizan siguiendo los requisitos indicados en los manuales de mantenimiento y generalmente están programadas.</p>
+                      <p>La lubricación es de suma importancia porque permite disminuir la fricción entre componentes en movimiento relativo. Por ejemplo, un eje de turbina es un componente en el que la lubricación es fundamental para el correcto funcionamiento del sistema motor.</p>
+                      <p>El fabricante decide el programa de lubricación y el lubricante adecuado que debe utilizarse para un componente específico.</p>
+                      <h4>Tipos de lubricantes</h4>
+                      <ul>
+                        <li>Lubricantes estándar</li>
+                        <li>Lubricantes alternativos</li>
+                        <li>Lubricantes especiales: grasas de alta presión, grasas para tuberías de oxígeno, etc.</li>
+                        <li>Lubricantes de alta temperatura, lubricantes resistentes a combustibles, lubricantes anti-apriete, lubricantes para juntas tóricas.</li>
+                      </ul>
+                      <p>Es importante manejar estas sustancias con cuidado debido al peligro relacionado con su composición, que puede causar lesiones directas, como irritaciones y quemaduras, y lesiones indirectas, debido al peligro de resbalones.</p>
+                      <h4>Métodos de aplicación</h4>
+                      <ul>
+                        <li>Engrase manual con los dedos</li>
+                        <li>Aplicación de aceite con brocha</li>
+                        <li>Aplicación de aceite con aceitera de presión manual</li>
+                        <li>Aplicación de grasa con pistola de engrase con bomba manual</li>
+                        <li>Aplicación de grasa con pistola de engrase con inyector manual</li>
+                        <li>Lubricación automática a presión con equipos dedicados.</li>
+                      </ul>
+                      <p>Los puntos de lubricación se llaman <strong>nipples</strong> y pueden ser fijos o removibles. Dentro del nipple hay una válvula de retención que impide el reflujo del lubricante.</p>`
+            }, {
+                id: '7.3.5',
+                titulo: 'Equipos de Prueba Eléctrica General',
+                contenido: `<h3>Equipos de Prueba Eléctrica General</h3>
+                      <h4>Multímetro</h4>
+                      <p>El multímetro es un instrumento que incluye todos los requisitos para medir las características eléctricas de un componente: tensión, resistencia e intensidad.</p>
+                      <p>El multímetro puede ser analógico o digital. En ambos casos, un selector permite elegir la característica eléctrica a medir y una pantalla muestra los valores medidos.</p>
+                      <h4>Medición de tensión</h4>
+                      <p>La medición de tensiones es una de las principales tareas de un multímetro. Para medir la tensión, se selecciona la función de tensión (V~ o V-), se conectan las puntas de prueba en paralelo al circuito y se lee el valor en la pantalla.</p>
+                      <h4>Medición de resistencia</h4>
+                      <p>Las mediciones de resistencia se utilizan para determinar la resistencia de conductores, el valor de resistores o para verificar el funcionamiento de resistores variables. Estas mediciones deben realizarse con el circuito desconectado de la alimentación.</p>
+                      <h4>Medición de corriente</h4>
+                      <p>Las mediciones de corriente se utilizan para determinar sobrecargas en circuitos, corrientes de operación y corrientes que pasan por diferentes partes de un circuito. La corriente se mide en serie, no en paralelo.</p>
+                      <h4>Pruebas de continuidad</h4>
+                      <p>Las pruebas de continuidad se utilizan para verificar si los fusibles funcionan correctamente, si los conductores están abiertos o en cortocircuito, y para rastrear trayectorias de circuitos.</p>`
+            },
+            // === SECCIÓN 7.4 ===
+            {
+                id: '7.4.1',
+                titulo: 'Introducción a Equipos de Prueba Aviónicos',
+                contenido: `<h3>Introducción a los Equipos de Prueba Aviónicos</h3>
+                      <p>Los equipos de prueba aviónicos son instrumentos especializados utilizados para verificar y calibrar los sistemas electrónicos y de navegación de las aeronaves.</p>
+                      <p>Estos equipos son esenciales para garantizar que los sistemas de comunicación, navegación y vigilancia funcionen correctamente y cumplan con las especificaciones de la aviación civil.</p>
+                      <p>Los equipos de prueba aviónicos incluyen, entre otros:</p>
+                      <ul>
+                        <li>Equipos de prueba de datos de aire</li>
+                        <li>Equipos de prueba de transpondedor, DME y TCAS</li>
+                        <li>Equipos de prueba de comunicaciones VOR/ILS</li>
+                        <li>Equipos para comprobaciones operacionales de FDR/CVR</li>
+                        <li>Equipos de prueba de capacitancia/cantidad de combustible</li>
+                      </ul>
+                      <p>La calibración y el mantenimiento adecuados de estos equipos son fundamentales para la seguridad de las operaciones aéreas.</p>`
+            }, {
+                id: '7.4.2',
+                titulo: 'Equipo de Prueba de Datos de Aire (Air Data Test Set)',
+                contenido: `<h3>Equipo de Prueba de Datos de Aire (Air Data Test Set)</h3>
+                      <p>El equipo de prueba de datos de aire es un instrumento utilizado para simular las condiciones de presión y altitud a las que está sometida una aeronave en vuelo.</p>
+                      <p>Este equipo se utiliza para verificar y calibrar los sistemas de datos de aire, incluyendo los indicadores de altitud, velocidad y Mach, así como los sistemas de control de presurización de la cabina.</p>
+                      <h4>Funciones principales</h4>
+                      <ul>
+                        <li>Generación de presiones estáticas y totales controladas</li>
+                        <li>Simulación de altitudes y velocidades de vuelo</li>
+                        <li>Verificación de la precisión de los indicadores de la cabina</li>
+                        <li>Pruebas de fugas en los sistemas de datos de aire</li>
+                      </ul>
+                      <p>El equipo de prueba de datos de aire debe ser calibrado regularmente para garantizar la precisión de las mediciones. Durante las pruebas, se conecta al sistema de datos de aire de la aeronave y se aplican presiones controladas mientras se comparan las lecturas del instrumento con los valores de referencia.</p>
+                      <div class="ejemplo"><strong>Importante:</strong> Las pruebas de datos de aire deben realizarse siguiendo estrictamente los procedimientos del manual de mantenimiento de la aeronave para evitar daños a los sistemas sensibles de presión.</div>`
+            }, {
+                id: '7.4.3',
+                titulo: 'Equipo de Prueba de Transpondedor, DME y TCAS',
+                contenido: `<h3>Equipo de Prueba de Transpondedor, DME y TCAS</h3>
+                      <p>El equipo de prueba de transpondedor se utiliza para verificar el funcionamiento de los sistemas de transpondedor, DME (Distance Measuring Equipment) y TCAS (Traffic Collision Avoidance System).</p>
+                      <h4>Transpondedor</h4>
+                      <p>El transpondedor es un sistema que responde a las interrogaciones de los radares terrestres y de otras aeronaves, transmitiendo información como el código de identificación y la altitud.</p>
+                      <p>El equipo de prueba simula las interrogaciones del radar y verifica que el transpondedor responda correctamente con los códigos y datos adecuados.</p>
+                      <h4>DME (Distance Measuring Equipment)</h4>
+                      <p>El DME proporciona información de distancia entre la aeronave y una estación terrestre. El equipo de prueba simula las señales de la estación DME y verifica que el equipo de a bordo calcule correctamente la distancia.</p>
+                      <h4>TCAS (Traffic Collision Avoidance System)</h4>
+                      <p>El TCAS es un sistema de prevención de colisiones que detecta aeronaves cercanas y proporciona advertencias y resoluciones de conflicto. El equipo de prueba simula tráfico aéreo y verifica que el sistema genere las advertencias y resoluciones apropiadas.</p>
+                      <p>El equipo de prueba de transpondedor y TCAS debe cumplir con los estándares de la aviación civil, como los establecidos por la FAA y EASA, para garantizar la seguridad del espacio aéreo.</p>`
+            }, {
+                id: '7.4.4',
+                titulo: 'Equipo de Prueba de Comunicaciones VOR/ILS',
+                contenido: `<h3>Equipo de Prueba de Comunicaciones VOR/ILS</h3>
+                      <p>El equipo de prueba VOR/ILS se utiliza para verificar el funcionamiento de los sistemas de navegación VOR (VHF Omni-directional Range) e ILS (Instrument Landing System).</p>
+                      <h4>VOR (VHF Omni-directional Range)</h4>
+                      <p>El VOR es un sistema de navegación que permite a la aeronave determinar su posición relativa a una estación terrestre. El equipo de prueba simula las señales VOR y verifica que el equipo de a bordo indique correctamente el radial seleccionado.</p>
+                      <h4>ILS (Instrument Landing System)</h4>
+                      <p>El ILS es un sistema de aproximación que proporciona guía lateral (localizer) y vertical (glide slope) para el aterrizaje. El equipo de prueba simula las señales del localizer y del glide slope, verificando que el equipo de a bordo muestre correctamente la desviación respecto al centro de la pista y la trayectoria de descenso.</p>
+                      <p>El equipo de prueba VOR/ILS también puede verificar los marcadores (marker beacons) que indican la distancia a la pista durante la aproximación.</p>
+                      <div class="ejemplo"><strong>Nota:</strong> Las pruebas VOR/ILS son fundamentales para garantizar que los sistemas de navegación y aproximación funcionen correctamente, especialmente en condiciones de baja visibilidad.</div>`
+            }, {
+                id: '7.4.5',
+                titulo: 'Comprobaciones Operacionales de FDR y CVR',
+                contenido: `<h3>Comprobaciones Operacionales de FDR y CVR</h3>
+                      <p>El FDR (Flight Data Recorder) y el CVR (Cockpit Voice Recorder) son dispositivos de registro críticos para la investigación de accidentes.</p>
+                      <h4>FDR (Flight Data Recorder)</h4>
+                      <p>El FDR registra parámetros de vuelo como altitud, velocidad, actitud y posición de los controles. Las comprobaciones operacionales verifican que el FDR registre correctamente todos los parámetros y que los datos sean legibles y estén sincronizados con otros sistemas.</p>
+                      <h4>CVR (Cockpit Voice Recorder)</h4>
+                      <p>El CVR registra las comunicaciones en la cabina de pilotos. Las comprobaciones operacionales verifican que el CVR grabe correctamente el audio de los micrófonos de la cabina y que la reproducción sea clara y sin distorsiones.</p>
+                      <p>Las comprobaciones operacionales se realizan siguiendo los procedimientos del manual de mantenimiento y utilizando equipos de prueba específicos para FDR/CVR.</p>
+                      <p>Estas comprobaciones son obligatorias para mantener la certificación de la aeronave y deben documentarse adecuadamente en los registros de mantenimiento.</p>`
+            }, {
+                id: '7.4.6',
+                titulo: 'Equipo de Prueba de Capacitancia/Cantidad de Combustible',
+                contenido: `<h3>Equipo de Prueba de Capacitancia/Cantidad de Combustible</h3>
+                      <p>El equipo de prueba de capacitancia/cantidad de combustible se utiliza para verificar la precisión de los sistemas de medición de combustible en las aeronaves.</p>
+                      <p>Este equipo simula los valores de capacitancia de los sensores de combustible (sondas) para verificar que el indicador de cantidad de combustible muestre los valores correctos.</p>
+                      <h4>Principio de funcionamiento</h4>
+                      <p>Los sensores de combustible funcionan midiendo la capacitancia entre dos electrodos, que varía según el nivel de combustible en el tanque. El equipo de prueba genera señales de capacitancia equivalentes a diferentes niveles de combustible.</p>
+                      <h4>Procedimiento de prueba</h4>
+                      <ul>
+                        <li>Se desconectan las sondas de combustible del indicador</li>
+                        <li>Se conecta el equipo de prueba en su lugar</li>
+                        <li>Se aplican valores de capacitancia correspondientes a tanque vacío, tanque lleno y niveles intermedios</li>
+                        <li>Se verifican las lecturas en el indicador de cantidad de combustible</li>
+                      </ul>
+                      <p>El equipo de prueba de capacitancia debe calibrarse regularmente para garantizar la precisión de las simulaciones y, por lo tanto, la fiabilidad de las pruebas de los sistemas de combustible.</p>`
+            }, {
+                id: '7.4.7',
+                titulo: 'Equipo de Prueba de Comunicaciones y Navegación',
+                contenido: `<h3>Equipo de Prueba de Comunicaciones y Navegación</h3>
+                      <p>El equipo de prueba de comunicaciones y navegación se utiliza para verificar y calibrar los sistemas de radio de las aeronaves.</p>
+                      <h4>Equipo de prueba de comunicaciones VHF/HF</h4>
+                      <p>Este equipo verifica la potencia de transmisión, la sensibilidad del receptor y la modulación de los sistemas de comunicaciones VHF y HF.</p>
+                      <p>El equipo de prueba genera señales de RF controladas y mide la potencia de transmisión y la distorsión de la señal.</p>
+                      <h4>Equipo de prueba de ADF (Automatic Direction Finder)</h4>
+                      <p>El equipo de prueba de ADF simula las señales de las estaciones de radio NDB (Non-Directional Beacon) y verifica que el sistema de a bordo indique correctamente la dirección hacia la estación.</p>
+                      <h4>Equipo de prueba de DME (Distance Measuring Equipment)</h4>
+                      <p>Además de las pruebas de transpondedor, el equipo de prueba de DME se utiliza específicamente para verificar la precisión de la medición de distancia del sistema DME.</p>
+                      <p>El equipo de prueba de DME simula las señales de respuesta de una estación terrestre y verifica que el equipo de a bordo calcule correctamente la distancia.</p>
+                      <div class="ejemplo"><strong>Importante:</strong> Las pruebas de comunicaciones y navegación deben realizarse siguiendo los procedimientos del manual de mantenimiento y utilizando equipos de prueba calibrados y certificados.</div>`
+            }, {
+                id: '7.4.8',
+                titulo: 'Equipo de Prueba de Radar Meteorológico',
+                contenido: `<h3>Equipo de Prueba de Radar Meteorológico</h3>
+                      <p>El equipo de prueba de radar meteorológico se utiliza para verificar el funcionamiento del sistema de radar meteorológico (Weather Radar) de la aeronave.</p>
+                      <p>El radar meteorológico es un sistema que detecta precipitaciones y condiciones meteorológicas adversas para ayudar a los pilotos a evitar tormentas y otras condiciones peligrosas.</p>
+                      <h4>Funciones del equipo de prueba</h4>
+                      <ul>
+                        <li>Generación de señales de RF que simulan ecos de precipitaciones</li>
+                        <li>Verificación de la potencia de transmisión y la sensibilidad del receptor</li>
+                        <li>Pruebas de la antena y del sistema de estabilización</li>
+                        <li>Verificación de los modos de operación (WX, WX+T, MAP, etc.)</li>
+                      </ul>
+                      <p>El equipo de prueba de radar meteorológico se conecta al sistema de radar de la aeronave a través de interfaces de RF y de control, permitiendo verificar el funcionamiento del sistema en tierra.</p>
+                      <div class="ejemplo"><strong>Precaución:</strong> No operar el radar meteorológico durante el reabastecimiento de combustible de la aeronave ni a menos de 300 pies de otras operaciones de reabastecimiento.</div>`
+            }
+        ];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema)
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(pregunta, opciones, correcta) {
+                preguntas.push({ pregunta, opciones, correcta });
+            }
+
+            const generadores = [
+                // 7.3.1
+                () => {
+                    add('¿Qué herramienta se utiliza para sujetar objetos en el banco de trabajo?', ['Tornillo de banco', 'Alicate', 'Martillo', 'Destornillador'], 0);
+                    add('¿Qué herramienta se usa para alisar y pulir superficies metálicas?', ['Lima', 'Cincel', 'Punzón', 'Sierra'], 0);
+                    add('¿Qué tipo de llave se usa para aplicar pares de torsión?', ['Llave fija', 'Destornillador', 'Alicate', 'Martillo'], 0);
+                    add('¿Qué herramienta se usa para cortar metal?', ['Sierra de arco', 'Cincel', 'Lima', 'Punzón'], 0);
+                    add('¿Qué herramienta se utiliza para marcar puntos de perforación?', ['Punzón de centro', 'Cincel', 'Lima', 'Destornillador'], 0);
+                    add('¿Qué tipo de destornillador tiene punta en forma de cruz?', ['Phillips', 'Plano', 'Torx', 'Hexagonal'], 0);
+                    add('¿Qué herramienta se usa para sujetar objetos firmemente?', ['Alicate', 'Destornillador', 'Llave', 'Martillo'], 0);
+                    add('¿Qué tipo de martillo se usa para trabajos de remachado?', ['Bola de acero', 'Mazo', 'De garra', 'De goma'], 0);
+                    add('¿Qué herramienta se usa para cortar roscas internas?', ['Macho de roscar', 'Terraja', 'Lima', 'Cincel'], 0);
+                    add('¿Qué herramienta se usa para cortar roscas externas?', ['Terraja', 'Macho de roscar', 'Lima', 'Punzón'], 0);
+                },
+                // 7.3.2
+                () => {
+                    add('¿Qué máquina herramienta se basa en la rotación del componente?', ['Torno', 'Fresadora', 'Rectificadora', 'Cizalla'], 0);
+                    add('¿Qué máquina herramienta mueve la herramienta alrededor del componente?', ['Fresadora', 'Torno', 'Rectificadora', 'Dobladora'], 0);
+                    add('¿Qué máquina se usa para el acabado fino de superficies?', ['Rectificadora', 'Torno', 'Fresadora', 'Cizalla'], 0);
+                    add('¿Qué máquina se usa para doblar chapas metálicas?', ['Dobladora', 'Cizalla', 'Torno', 'Fresadora'], 0);
+                    add('¿Qué máquina se usa para cortar chapas metálicas?', ['Cizalla', 'Dobladora', 'Torno', 'Rectificadora'], 0);
+                    add('¿Qué tipo de torno usa control numérico por computadora?', ['CNC', 'Manual', 'Automático', 'Hidráulico'], 0);
+                    add('¿Qué máquina herramienta usa puntos con diferentes formas?', ['Fresadora', 'Torno', 'Rectificadora', 'Cizalla'], 0);
+                    add('¿Qué máquina se usa para pulir y afilar herramientas?', ['Rectificadora de banco', 'Torno', 'Fresadora', 'Cizalla'], 0);
+                    add('¿Qué máquina puede ser accionada manualmente o computerizada?', ['Dobladora', 'Cizalla', 'Torno', 'Rectificadora'], 0);
+                    add('¿Qué tipo de cizalla se usa en talleres pequeños?', ['Cizalla de banco', 'Cizalla industrial', 'Cizalla CNC', 'Cizalla hidráulica'], 0);
+                },
+                // 7.3.3
+                () => {
+                    add('¿Qué instrumento de medición es más preciso que el calibre?', ['Micrómetro', 'Regla', 'Cinta métrica', 'Transportador'], 0);
+                    add('¿Qué parte del calibre permite medir profundidades?', ['Sonda de profundidad', 'Mordazas exteriores', 'Nonio', 'Tornillo de fijación'], 0);
+                    add('¿Qué escala auxiliar permite medir fracciones de la escala principal?', ['Nonio', 'Escala principal', 'Carátula', 'Pantalla digital'], 0);
+                    add('¿Qué instrumento de control se usa para verificar roscas?', ['Galgas de roscas', 'Calibre fijo', 'Escuadra', 'Placa de superficie'], 0);
+                    add('¿Qué tipo de calibre usa una carátula para la lectura?', ['Dial', 'Digital', 'Vernier', 'Fijo'], 0);
+                    add('¿Qué parte del micrómetro se usa para aplicar fuerza constante?', ['Trinquete', 'Yunque', 'Tambor', 'Manguito'], 0);
+                    add('¿Qué instrumento se usa para verificar la planitud de superficies?', ['Placa de superficie', 'Escuadra', 'Calibre fijo', 'Galgas de roscas'], 0);
+                    add('¿Qué instrumento de control se usa para medir variaciones de altura?', ['Reloj comparador', 'Calibre', 'Micrómetro', 'Transportador'], 0);
+                    add('¿Qué tipo de calibre tiene mayor resolución?', ['Digital', 'Vernier', 'Dial', 'Fijo'], 0);
+                    add('¿Qué instrumento se usa para medir la altura de componentes?', ['Calibre de altura', 'Micrómetro', 'Calibre', 'Regla'], 0);
+                },
+                // 7.3.4
+                () => {
+                    add('¿Qué función principal tiene la lubricación?', ['Disminuir la fricción', 'Aumentar la fricción', 'Enfriar el motor', 'Limpiar componentes'], 0);
+                    add('¿Cómo se llama el punto de lubricación en un componente?', ['Nipple', 'Válvula', 'Conector', 'Tubo'], 0);
+                    add('¿Qué tipo de lubricante se usa para tuberías de oxígeno?', ['Grasa especial', 'Aceite mineral', 'Grasa multipropósito', 'Aceite sintético'], 0);
+                    add('¿Qué equipo se usa para aplicar grasa a presión?', ['Pistola de engrase', 'Aceitera', 'Brocha', 'Dedo'], 0);
+                    add('¿Qué contiene el nipple de lubricación?', ['Válvula de retención', 'Resorte', 'Filtro', 'Tubo'], 0);
+                    add('¿Qué método de lubricación es el más básico?', ['Engrase manual con los dedos', 'Pistola de engrase', 'Sistema automático', 'Brocha'], 0);
+                    add('¿Qué tipo de grasa se usa para sellado entre piezas metálicas?', ['Grasa selladora', 'Grasa de grafito', 'Grasa multipropósito', 'Grasa de litio'], 0);
+                    add('¿Qué equipo se usa para lubricación automática a presión?', ['Sistema dedicado', 'Pistola manual', 'Aceitera', 'Brocha'], 0);
+                    add('¿Qué precaución se debe tener al manipular lubricantes?', ['Evitar contacto con la piel', 'Mezclar diferentes tipos', 'Almacenar al sol', 'Usar sin guantes'], 0);
+                    add('¿Qué determina el tipo de lubricante a usar?', ['El fabricante y el componente', 'El precio', 'El color', 'La marca'], 0);
+                },
+                // 7.3.5
+                () => {
+                    add('¿Qué magnitudes eléctricas mide un multímetro?', ['Tensión, corriente y resistencia', 'Potencia y frecuencia', 'Inductancia y capacitancia', 'Temperatura y presión'], 0);
+                    add('¿Cómo se conecta el multímetro para medir tensión?', ['En paralelo', 'En serie', 'En cortocircuito', 'En circuito abierto'], 0);
+                    add('¿Cómo se conecta el multímetro para medir corriente?', ['En serie', 'En paralelo', 'En cortocircuito', 'En circuito abierto'], 0);
+                    add('¿Qué se debe hacer antes de medir resistencia?', ['Desconectar la alimentación', 'Conectar la alimentación', 'Poner el circuito en corto', 'Poner el circuito en abierto'], 0);
+                    add('¿Qué muestra un multímetro digital cuando la resistencia es infinita?', ['OL', '0', 'Infinito', 'Error'], 0);
+                    add('¿Qué tipo de multímetro usa una aguja para la lectura?', ['Analógico', 'Digital', 'De carátula', 'De gancho'], 0);
+                    add('¿Qué función permite verificar continuidad en un circuito?', ['Prueba de continuidad', 'Medición de tensión', 'Medición de corriente', 'Medición de resistencia'], 0);
+                    add('¿Qué selector se usa para medir tensión alterna?', ['V~', 'V-', 'A~', 'Ω'], 0);
+                    add('¿Qué selector se usa para medir tensión continua?', ['V-', 'V~', 'A-', 'Ω'], 0);
+                    add('¿Qué se mide para determinar si un conductor está abierto?', ['Continuidad', 'Tensión', 'Corriente', 'Potencia'], 0);
+                },
+                // 7.4.1
+                () => {
+                    add('¿Qué sistemas verifican los equipos de prueba aviónicos?', ['Comunicación, navegación y vigilancia', 'Solo comunicación', 'Solo navegación', 'Solo vigilancia'], 0);
+                    add('¿Qué organización establece estándares para equipos aviónicos?', ['EASA, FAA y otras autoridades', 'Solo EASA', 'Solo FAA', 'ISO'], 0);
+                    add('¿Qué sistema es fundamental para la seguridad de las operaciones?', ['Todos los sistemas aviónicos', 'Solo el radar', 'Solo el transpondedor', 'Solo el ILS'], 0);
+                    add('¿Qué equipo de prueba se usa para datos de aire?', ['Air Data Test Set', 'Transponder Test Set', 'VOR/ILS Test Set', 'FDR/CVR Test Set'], 0);
+                    add('¿Qué equipo de prueba se usa para transpondedor y TCAS?', ['Transponder/TCAS Test Set', 'Air Data Test Set', 'VOR/ILS Test Set', 'FDR/CVR Test Set'], 0);
+                    add('¿Qué equipo de prueba se usa para VOR e ILS?', ['VOR/ILS Test Set', 'Transponder/TCAS Test Set', 'Air Data Test Set', 'FDR/CVR Test Set'], 0);
+                    add('¿Qué registran el FDR y el CVR?', ['Datos de vuelo y audio de cabina', 'Solo datos de vuelo', 'Solo audio de cabina', 'Datos de mantenimiento'], 0);
+                    add('¿Qué equipo de prueba se usa para medir cantidad de combustible?', ['Fuel Capacitance Test Set', 'Air Data Test Set', 'VOR/ILS Test Set', 'Transponder Test Set'], 0);
+                    add('¿Qué garantiza la calibración de los equipos de prueba?', ['Precisión y fiabilidad', 'Mayor velocidad', 'Menor costo', 'Menor peso'], 0);
+                    add('¿Qué sistemas son esenciales para la navegación aérea?', ['VOR, DME, ILS y GPS', 'Solo VOR', 'Solo GPS', 'Solo ILS'], 0);
+                },
+                // 7.4.2
+                () => {
+                    add('¿Qué simula el equipo de prueba de datos de aire?', ['Presión y altitud', 'Temperatura y humedad', 'Velocidad y aceleración', 'Rumbo y actitud'], 0);
+                    add('¿Qué sistemas verifica el Air Data Test Set?', ['Altitud, velocidad y Mach', 'Solo altitud', 'Solo velocidad', 'Solo presión'], 0);
+                    add('¿Qué presión simula el Air Data Test Set?', ['Presión estática y total', 'Presión dinámica', 'Presión de cabina', 'Presión de combustible'], 0);
+                    add('¿Qué se verifica con el Air Data Test Set?', ['Precisión de indicadores', 'Funcionamiento del motor', 'Sistema de combustible', 'Sistema hidráulico'], 0);
+                    add('¿Qué se debe seguir durante las pruebas de datos de aire?', ['Procedimientos del manual', 'Procedimientos estándar', 'Procedimientos del fabricante', 'Procedimientos generales'], 0);
+                    add('¿Qué puede dañar los sistemas de presión sensibles?', ['Procedimientos incorrectos', 'Temperatura adecuada', 'Presión controlada', 'Calibración regular'], 0);
+                    add('¿Qué condición de vuelo simula el equipo de datos de aire?', ['Altitudes y velocidades', 'Solo altitudes', 'Solo velocidades', 'Solo presiones'], 0);
+                    add('¿Qué sistema de cabina se verifica con el equipo de datos de aire?', ['Presurización', 'Climatización', 'Iluminación', 'Entretenimiento'], 0);
+                    add('¿Qué se debe hacer regularmente con el equipo de datos de aire?', ['Calibración', 'Pintura', 'Engrase', 'Desmontaje'], 0);
+                    add('¿Qué documento se debe consultar para las pruebas?', ['Manual de mantenimiento', 'Manual de vuelo', 'Manual del motor', 'Manual hidráulico'], 0);
+                },
+                // 7.4.3
+                () => {
+                    add('¿Qué sistema responde a interrogaciones de radar?', ['Transpondedor', 'DME', 'TCAS', 'VOR'], 0);
+                    add('¿Qué información transmite el transpondedor?', ['Código y altitud', 'Solo código', 'Solo altitud', 'Posición GPS'], 0);
+                    add('¿Qué sistema mide la distancia a una estación terrestre?', ['DME', 'VOR', 'TCAS', 'Transpondedor'], 0);
+                    add('¿Qué sistema previene colisiones entre aeronaves?', ['TCAS', 'DME', 'VOR', 'ILS'], 0);
+                    add('¿Qué simula el equipo de prueba de transpondedor?', ['Interrogaciones de radar', 'Señales de GPS', 'Señales de VOR', 'Señales de ILS'], 0);
+                    add('¿Qué verifica el equipo de prueba de DME?', ['Precisión de distancia', 'Precisión de rumbo', 'Precisión de altitud', 'Precisión de velocidad'], 0);
+                    add('¿Qué genera el equipo de prueba de TCAS?', ['Tráfico simulado', 'Señales de radar', 'Señales de GPS', 'Señales de VOR'], 0);
+                    add('¿Qué organización establece estándares para TCAS?', ['FAA y EASA', 'Solo FAA', 'Solo EASA', 'ISO'], 0);
+                    add('¿Qué advertencias genera el TCAS?', ['Resoluciones de conflicto', 'Advertencias de motor', 'Advertencias de combustible', 'Advertencias de presión'], 0);
+                    add('¿Qué sistema ayuda a evitar colisiones?', ['TCAS', 'DME', 'VOR', 'ILS'], 0);
+                },
+                // 7.4.4
+                () => {
+                    add('¿Qué sistema de navegación usa señales VHF?', ['VOR', 'DME', 'TCAS', 'GPS'], 0);
+                    add('¿Qué proporciona el ILS durante la aproximación?', ['Guía lateral y vertical', 'Solo lateral', 'Solo vertical', 'Información de distancia'], 0);
+                    add('¿Qué señal simula el equipo de prueba VOR?', ['Radial', 'Distancia', 'Altitud', 'Velocidad'], 0);
+                    add('¿Qué señal simula el equipo de prueba ILS?', ['Localizer y glide slope', 'Solo localizer', 'Solo glide slope', 'Solo marcadores'], 0);
+                    add('¿Qué indica el localizer en el ILS?', ['Desviación lateral', 'Desviación vertical', 'Distancia a la pista', 'Altitud'], 0);
+                    add('¿Qué indica el glide slope en el ILS?', ['Desviación vertical', 'Desviación lateral', 'Distancia a la pista', 'Rumbo'], 0);
+                    add('¿Qué información proporciona el VOR al piloto?', ['Radial y posición', 'Distancia y altitud', 'Velocidad y rumbo', 'Temperatura y presión'], 0);
+                    add('¿Qué sistema es fundamental para aterrizajes con baja visibilidad?', ['ILS', 'VOR', 'DME', 'TCAS'], 0);
+                    add('¿Qué verifica el equipo de prueba VOR/ILS?', ['Señales de navegación', 'Señales de comunicación', 'Señales de radar', 'Señales de GPS'], 0);
+                    add('¿Qué componentes del ILS se verifican?', ['Localizer, glide slope y marcadores', 'Solo localizer', 'Solo glide slope', 'Solo marcadores'], 0);
+                },
+                // 7.4.5
+                () => {
+                    add('¿Qué registra el FDR (Flight Data Recorder)?', ['Parámetros de vuelo', 'Audio de cabina', 'Comunicaciones', 'Datos de motor'], 0);
+                    add('¿Qué registra el CVR (Cockpit Voice Recorder)?', ['Audio de cabina', 'Parámetros de vuelo', 'Datos de motor', 'Datos de navegación'], 0);
+                    add('¿Qué verifican las comprobaciones operacionales del FDR?', ['Registro correcto de parámetros', 'Solo audio', 'Solo datos de motor', 'Solo datos de navegación'], 0);
+                    add('¿Qué verifican las comprobaciones operacionales del CVR?', ['Grabación de audio clara', 'Registro de parámetros', 'Sincronización de datos', 'Datos de motor'], 0);
+                    add('¿Qué documento se debe seguir para las comprobaciones FDR/CVR?', ['Manual de mantenimiento', 'Manual de vuelo', 'Manual del motor', 'Manual hidráulico'], 0);
+                    add('¿Por qué son importantes los FDR y CVR?', ['Investigación de accidentes', 'Mantenimiento rutinario', 'Eficiencia de combustible', 'Comodidad de los pasajeros'], 0);
+                    add('¿Qué se debe hacer después de las comprobaciones FDR/CVR?', ['Documentar los resultados', 'Ignorar los resultados', 'Borrar los datos', 'Reiniciar los sistemas'], 0);
+                    add('¿Qué sistema está sincronizado con el FDR?', ['Otros sistemas de la aeronave', 'Solo el GPS', 'Solo el radar', 'Solo el ILS'], 0);
+                    add('¿Qué verifica la prueba de reproducción del CVR?', ['Claridad y sin distorsiones', 'Volumen máximo', 'Duración de la grabación', 'Número de canales'], 0);
+                    add('¿Qué es obligatorio para mantener la certificación?', ['Comprobaciones FDR/CVR', 'Cambio de aceite', 'Revisión de motores', 'Pintura exterior'], 0);
+                },
+                // 7.4.6
+                () => {
+                    add('¿Qué sistema mide la cantidad de combustible en una aeronave?', ['Sistema de capacitancia', 'Sistema de presión', 'Sistema de flujo', 'Sistema de temperatura'], 0);
+                    add('¿Qué mide el sensor de combustible por capacitancia?', ['Nivel de combustible', 'Presión de combustible', 'Temperatura de combustible', 'Flujo de combustible'], 0);
+                    add('¿Qué simula el equipo de prueba de capacitancia?', ['Valores de capacitancia', 'Valores de presión', 'Valores de temperatura', 'Valores de flujo'], 0);
+                    add('¿Qué se desconecta para realizar la prueba de combustible?', ['Las sondas del indicador', 'Las bombas de combustible', 'Las válvulas de combustible', 'Los filtros de combustible'], 0);
+                    add('¿Qué valores se aplican durante la prueba de combustible?', ['Tanque vacío, lleno e intermedios', 'Solo vacío', 'Solo lleno', 'Solo intermedios'], 0);
+                    add('¿Qué se verifica en el indicador de combustible durante la prueba?', ['Lecturas correctas', 'El color del indicador', 'La posición del indicador', 'El tamaño del indicador'], 0);
+                    add('¿Cómo se calibra el equipo de prueba de combustible?', ['Regularmente para garantizar precisión', 'Una vez al año', 'Nunca', 'Solo después de reparaciones'], 0);
+                    add('¿Qué principio físico usan los sensores de combustible?', ['Capacitancia', 'Resistencia', 'Inductancia', 'Temperatura'], 0);
+                    add('¿Qué varía según el nivel de combustible en el tanque?', ['La capacitancia', 'La resistencia', 'La inductancia', 'La temperatura'], 0);
+                    add('¿Qué equipo se conecta al sistema de combustible para la prueba?', ['Equipo de prueba de capacitancia', 'Multímetro', 'Osciloscopio', 'Generador de señales'], 0);
+                },
+                // 7.4.7
+                () => {
+                    add('¿Qué sistemas de radio se verifican con el equipo de comunicaciones?', ['VHF y HF', 'Solo VHF', 'Solo HF', 'Solo UHF'], 0);
+                    add('¿Qué mide el equipo de prueba de comunicaciones?', ['Potencia y sensibilidad', 'Frecuencia y temperatura', 'Presión y humedad', 'Velocidad y altitud'], 0);
+                    add('¿Qué sistema de navegación se verifica con el equipo de prueba ADF?', ['NDB', 'VOR', 'DME', 'GPS'], 0);
+                    add('¿Qué información proporciona el ADF?', ['Dirección hacia la estación', 'Distancia a la estación', 'Altitud de la estación', 'Velocidad de la estación'], 0);
+                    add('¿Qué sistema de navegación usa señales de radio NDB?', ['ADF', 'VOR', 'DME', 'ILS'], 0);
+                    add('¿Qué verifica el equipo de prueba de DME?', ['Precisión de distancia', 'Precisión de rumbo', 'Precisión de altitud', 'Precisión de velocidad'], 0);
+                    add('¿Qué equipo debe estar calibrado para las pruebas?', ['Equipo de prueba de comunicaciones', 'Solo el avión', 'Solo el piloto', 'Solo el controlador'], 0);
+                    add('¿Qué sistema de navegación se verifica con el equipo de prueba VOR?', ['VOR', 'DME', 'ADF', 'ILS'], 0);
+                    add('¿Qué se debe seguir para las pruebas de comunicaciones?', ['Procedimientos del manual', 'Procedimientos generales', 'Procedimientos del fabricante', 'Procedimientos estándar'], 0);
+                    add('¿Qué sistema de navegación se verifica con el equipo de prueba ILS?', ['ILS', 'VOR', 'DME', 'ADF'], 0);
+                },
+                // 7.4.8
+                () => {
+                    add('¿Qué detecta el radar meteorológico?', ['Precipitaciones', 'Otras aeronaves', 'Obstáculos en tierra', 'Señales de navegación'], 0);
+                    add('¿Qué simula el equipo de prueba de radar meteorológico?', ['Ecos de precipitaciones', 'Señales de GPS', 'Señales de VOR', 'Señales de ILS'], 0);
+                    add('¿Qué verifica el equipo de prueba de radar meteorológico?', ['Potencia y sensibilidad', 'Temperatura y presión', 'Velocidad y altitud', 'Rumbo y actitud'], 0);
+                    add('¿Qué modo de operación del radar se verifica?', ['WX, WX+T, MAP', 'Solo WX', 'Solo MAP', 'Solo WX+T'], 0);
+                    add('¿Qué precaución se debe tomar con el radar meteorológico?', ['No operar cerca de reabastecimiento', 'Operar siempre en tierra', 'Apagar durante el vuelo', 'Usar solo en tormentas'], 0);
+                    add('¿Qué ayuda a evitar el radar meteorológico?', ['Tormentas y condiciones peligrosas', 'Otras aeronaves', 'Obstáculos en tierra', 'Fallos de motor'], 0);
+                    add('¿Cómo se conecta el equipo de prueba al radar?', ['A través de interfaces de RF y control', 'A través de USB', 'A través de Bluetooth', 'A través de Wi-Fi'], 0);
+                    add('¿Qué sistema se verifica con el equipo de prueba de radar?', ['Radar meteorológico', 'Radar de navegación', 'Radar de tierra', 'Radar de tráfico'], 0);
+                    add('¿Qué verifica la prueba de la antena del radar?', ['Sistema de estabilización', 'Potencia de transmisión', 'Sensibilidad del receptor', 'Modulación de la señal'], 0);
+                    add('¿Qué distancia se debe mantener durante el reabastecimiento?', ['300 pies', '100 pies', '50 pies', '500 pies'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => ({ ...t, preguntas: generarPreguntas(idx) }))
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA
+        // ============================================================
+        let state = {
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_modulo7_3_7_4_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_modulo7_3_7_4_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  DOM REFERENCES Y FUNCIONES PRINCIPALES
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo.substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            let html = '';
+            data.temas.forEach((item, idx) => {
+                const bloqueado = !state.temasDesbloqueados[idx];
+                const completado = state.temasCompletados[idx];
+                const activo = idx === state.currentTema;
+                const bookmarked = state.bookmarks[idx];
+                let cls = '';
+                if (bloqueado) cls += ' locked';
+                if (completado) cls += ' completed';
+                if (activo) cls += ' active';
+                if (bookmarked) cls += ' bookmarked';
+                const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                html += `<li class="${cls}" data-index="${idx}">
+                            <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                            <span>${item.id}. ${item.titulo}</span>
+                            <span class="badge">${badge}</span>
+                        </li>`;
+            });
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const contenido = tema.contenido;
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${tema.id}</div>
+                            <h1>${tema.titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} Marcador</button>
+                                <button id="resetTemaBtn">🔄 Reiniciar test</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            📝 Modo Examen: contenido oculto
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>📝 Notas personales</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="Escribe aquí tus notas...">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 Test de evaluación</h3>
+                            <div class="test-stats">
+                                Intentos: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${p.correcta}">
+                            <p>${i+1}. ${p.pregunta}</p>`;
+                p.opciones.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">✅ Corregir test</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">👁️ Mostrar respuestas</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">➡️ Siguiente tema</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm('¿Reiniciar el test de este tema?')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = '✅ Test superado';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ¡Correcto!';
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[correcta];
+                    expl.textContent = `❌ Respuesta correcta: ${correctaText}`;
+                } else {
+                    expl.textContent = '⚠️ Selecciona una opción';
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = `✅ ¡Excelente! Has acertado ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent =
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = `💡 Respuesta: ${correctaText}`;
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function aplicarBusqueda(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido;
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${t.id} - ${t.titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_modulo7_3_7_4_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 CSV exportado');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ ¿Reiniciar todo el progreso?')) return;
+            localStorage.removeItem('aerotraining_modulo7_3_7_4_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD, THEME, MODES
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '0':
+                    let num;
+                    if (e.key === '0') num = 9;
+                    else num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast('🚀 Temario desbloqueado');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ AeroTraining 66 - Módulo 7.3 y 7.4 cargado');
+        console.log('📊 12 temas con todas las funcionalidades.');
+    </script>
+
+</body>
+</html>
