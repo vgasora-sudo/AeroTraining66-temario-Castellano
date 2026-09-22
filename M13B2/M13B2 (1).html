@@ -1,0 +1,2995 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 13 · Aerodinámica, Estructuras y Sistemas (B2) - AeroTraining 66</title>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async>
+    </script>
+    <style>
+        /* ===== RESET Y ESTILOS GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0f0f1a;
+            --bg-sidebar: #141425;
+            --bg-card: #18182e;
+            --bg-card-hover: #1e1e3a;
+            --bg-test: #12122a;
+            --border-color: #2a2a4a;
+            --text-primary: #eaeef2;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6a8a;
+            --accent: #f97316;
+            --accent-light: #faa51a;
+            --success: #8bc34a;
+            --danger: #e57373;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --transition: 0.3s ease;
+        }
+        .light-mode {
+            --bg-body: #f5f5f7;
+            --bg-sidebar: #e8e8ec;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f0f3;
+            --bg-test: #f0f0f5;
+            --border-color: #d0d0d8;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        #sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            padding: 1.2rem 0.8rem;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--transition), border var(--transition);
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.4rem 0.8rem 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: default;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .sidebar-header .logo:hover {
+            color: var(--accent-light);
+        }
+        .sidebar-header .top-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-header .top-btns button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-header .top-btns button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        #toc li {
+            padding: 0.3rem 0.6rem 0.3rem 1.2rem;
+            margin-bottom: 0.15rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+            cursor: default;
+            color: var(--text-muted);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        #toc li.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-left-color: var(--accent);
+        }
+        #toc li.completed {
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        #toc li.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        #toc li .badge {
+            font-size: 0.5rem;
+            background: var(--border-color);
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            color: var(--text-secondary);
+        }
+        #toc li.completed .badge {
+            background: rgba(139, 195, 74, 0.2);
+            color: var(--success);
+        }
+        #toc li.active .badge {
+            background: var(--accent);
+            color: #fff;
+        }
+        #toc li .bookmark-star {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        #toc li.bookmarked .bookmark-star {
+            opacity: 1;
+        }
+        #toc li:hover .bookmark-star {
+            opacity: 0.6;
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+        .progress-wrap {
+            background: var(--bg-card);
+            border-radius: 30px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.4s;
+        }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .sidebar-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .sidebar-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .sidebar-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .sidebar-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .sidebar-actions button.danger:hover {
+            background: var(--danger);
+        }
+        #content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: padding 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .topbar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            max-width: 350px;
+        }
+        .topbar .search-wrap input {
+            width: 100%;
+            padding: 0.4rem 0.8rem 0.4rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .topbar .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .topbar .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .topbar .search-wrap .search-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .topbar .search-wrap .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .topbar .search-wrap .search-clear.show {
+            display: block;
+        }
+        .topbar .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar .topbar-right .mode-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .mode-btn:hover:not(.active) {
+            background: var(--bg-card-hover);
+        }
+        .topbar .topbar-right .theme-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .topbar .topbar-right .theme-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .topbar .topbar-right .streak-badge {
+            background: var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 14px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .topbar .topbar-right .streak-badge .fire {
+            color: var(--accent);
+        }
+        .tema {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tema.active {
+            display: block;
+        }
+        @keyframes fade {
+            from {
+                opacity: 0.4;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tema h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        .tema .parte {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .tema .tema-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .tema .tema-actions button {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.15rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .tema .tema-actions button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions button.bookmarked-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .tema .tema-actions .timer {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .tema .content {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 0.8rem 0;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .tema .content .search-highlight {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .tema .content p {
+            margin-bottom: 0.8rem;
+        }
+        .tema .content ul,
+        .tema .content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .tema .content li {
+            margin-bottom: 0.3rem;
+        }
+        .tema .content .formula {
+            background: var(--bg-body);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-light);
+            margin: 0.5rem 0;
+            display: inline-block;
+            border-left: 4px solid var(--accent);
+        }
+        .tema .content .ejemplo {
+            background: var(--bg-card-hover);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            transition: background var(--transition);
+        }
+        .tema .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+        }
+        .tema .content table td,
+        .tema .content table th {
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.6rem;
+            text-align: left;
+        }
+        .tema .content table th {
+            background: var(--bg-body);
+            color: var(--accent-light);
+        }
+        .notas-area {
+            margin: 1rem 0 0.5rem;
+            background: var(--bg-test);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .notas-area textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notas-area textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .notas-area .notas-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notas-area .notas-label .char-count {
+            color: var(--text-muted);
+        }
+        .test {
+            background: var(--bg-test);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            transition: background var(--transition), border var(--transition);
+        }
+        .test .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .test .test-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test .test-header .test-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .test .test-header .test-stats .ok {
+            color: var(--success);
+        }
+        .test .test-header .test-stats .fail {
+            color: var(--danger);
+        }
+        .pregunta {
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border var(--transition);
+        }
+        .pregunta p {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pregunta label {
+            display: block;
+            margin: 0.15rem 0;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            transition: 0.1s;
+            font-size: 0.85rem;
+        }
+        .pregunta label:hover {
+            background: var(--bg-card-hover);
+        }
+        .pregunta input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent);
+            transform: scale(0.85);
+        }
+        .pregunta.correcta label {
+            color: var(--success);
+        }
+        .pregunta.incorrecta label {
+            color: var(--danger);
+        }
+        .pregunta .explanation {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-body);
+            border-radius: 4px;
+            display: none;
+        }
+        .pregunta.incorrecta .explanation,
+        .pregunta.correcta .explanation {
+            display: block;
+        }
+        .test-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .btn-test {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-test:hover {
+            background: #e0670e;
+        }
+        .btn-test:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-test.secondary {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-test.secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        .btn-test.success {
+            background: var(--success);
+            color: #1a1a2e;
+        }
+        .btn-test.success:hover {
+            background: #7cb342;
+        }
+        .resultado-test {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .resultado-test.ok {
+            color: var(--success);
+        }
+        .resultado-test.fail {
+            color: var(--danger);
+        }
+        .btn-siguiente {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .btn-siguiente:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .stats-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .stats-panel.active {
+            display: block;
+        }
+        .stats-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-card .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stats-card .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .stats-card .num.green {
+            color: var(--success);
+        }
+        .stats-card .num.red {
+            color: var(--danger);
+        }
+        .stats-card .num.gold {
+            color: var(--accent-light);
+        }
+        .stats-chart {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats-chart h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .chart-bars {
+            display: flex;
+            gap: 0.3rem;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 0.5rem;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .chart-bar {
+            width: 100%;
+            max-width: 30px;
+            min-height: 2px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            background: var(--border-color);
+            position: relative;
+        }
+        .chart-bar.good {
+            background: var(--success);
+        }
+        .chart-bar.medium {
+            background: var(--accent);
+        }
+        .chart-bar.bad {
+            background: var(--danger);
+        }
+        .chart-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .certificate {
+            display: none;
+            animation: fade 0.5s ease;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            margin: 2rem 0;
+        }
+        .certificate.show {
+            display: block;
+        }
+        .certificate h2 {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        .certificate .sub {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        .certificate .seal {
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .certificate .date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 1.2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: opacity 0.5s;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shortcuts-hint kbd {
+            background: var(--border-color);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: var(--text-primary);
+        }
+        .shortcuts-hint .close-hint {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.6rem;
+            }
+            #content {
+                padding: 1rem;
+            }
+            .tema h1 {
+                font-size: 1.5rem;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar .search-wrap {
+                max-width: 100%;
+            }
+            .topbar .topbar-right {
+                justify-content: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-bars {
+                height: 80px;
+            }
+            .shortcuts-hint {
+                display: none;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 300px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .toast-close {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">✈ AeroTraining 66</div>
+            <div class="top-btns">
+                <button id="themeToggle" title="Modo claro/oscuro">🌓</button>
+                <button id="statsToggle" title="Estadísticas">📊</button>
+            </div>
+        </div>
+        <ul id="toc"></ul>
+        <div class="sidebar-footer">
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 27</div>
+            <div class="sidebar-stats">
+                <span>⭐ <span class="num" id="totalPoints">0</span></span>
+                <span>🔥 <span class="num" id="streakCount">0</span>d</span>
+                <span>🏆 <span class="num" id="levelDisplay">1</span></span>
+            </div>
+            <div class="sidebar-actions">
+                <button id="resetProgress" class="danger">🔄 Reiniciar</button>
+                <button id="exportCSV">📥 Exportar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar en el temario...">
+                <span class="search-clear" id="searchClear">✕</span>
+            </div>
+            <div class="topbar-right">
+                <span class="streak-badge"><span class="fire">🔥</span> <span id="streakBadge">0</span>d</span>
+                <button class="mode-btn active" data-mode="aprendizaje" title="Modo Aprendizaje">📖</button>
+                <button class="mode-btn" data-mode="examen" title="Modo Examen">📝</button>
+                <button class="mode-btn" data-mode="repaso" title="Modo Repaso">🔄</button>
+                <button class="theme-btn" id="themeToggle2">🌓</button>
+            </div>
+        </div>
+
+        <!-- Temas -->
+        <div id="temaContainer"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-panel" id="statsPanel">
+            <h2>📊 Estadísticas de progreso</h2>
+            <div class="stats-grid">
+                <div class="stats-card"><div class="num" id="statCompletados">0</div><div class="label">Temas completados</div></div>
+                <div class="stats-card"><div class="num" id="statTotalAciertos">0</div><div class="label">Total aciertos</div></div>
+                <div class="stats-card"><div class="num red" id="statTotalFallos">0</div><div class="label">Total fallos</div></div>
+                <div class="stats-card"><div class="num gold" id="statAvgScore">0%</div><div class="label">Acierto promedio</div></div>
+                <div class="stats-card"><div class="num" id="statPuntos">0</div><div class="label">Puntos totales</div></div>
+                <div class="stats-card"><div class="num" id="statRacha">0</div><div class="label">Racha (días)</div></div>
+            </div>
+            <div class="stats-chart">
+                <h4>📈 Aciertos por tema</h4>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <div class="stats-chart" style="margin-top:0.8rem;">
+                <h4>⏱️ Tiempo por tema (minutos)</h4>
+                <div class="chart-bars" id="chartTime"></div>
+            </div>
+            <button class="btn-test" onclick="document.getElementById('statsPanel').classList.remove('active'); document.querySelector('.tema.active')?.style?.display='block';">Volver al temario</button>
+        </div>
+
+        <!-- Certificado -->
+        <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h2>🎓 ¡Felicidades!</h2>
+            <div class="sub">Has completado el Módulo 13: Aerodinámica, Estructuras y Sistemas de Aeronaves (B2)</div>
+            <p style="margin:1rem 0;">Has demostrado tu conocimiento en la teoría del vuelo, la estructura, los sistemas de comunicación, navegación, eléctricos, instrumentos y aviónica modular integrada (IMA) para la especialidad de aviónica (B2).</p>
+            <div class="date" id="certDate"></div>
+            <button class="btn-test success" style="margin-top:1rem;" onclick="document.getElementById('certificate').classList.remove('show')">Cerrar</button>
+        </div>
+    </main>
+
+    <!-- Shortcuts hint -->
+    <div class="shortcuts-hint" id="shortcutsHint">
+        <span><kbd>←</kbd> <kbd>→</kbd> Navegar</span>
+        <span><kbd>T</kbd> Ir al test</span>
+        <span><kbd>B</kbd> Marcar</span>
+        <span><kbd>S</kbd> Buscar</span>
+        <span><kbd>Esc</kbd> Cerrar búsqueda</span>
+        <button class="close-hint" id="closeHint">✕</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS: 27 TEMAS - MÓDULO 13 (BASADO EN EL PDF)
+        // ============================================================
+        const temasBase = [
+            // === 13.1.A ===
+            {
+                id: '13.1.A',
+                titulo: 'Teoría del Vuelo (Controles Primarios)',
+                contenido: `<h3>Teoría del Vuelo - Controles Primarios</h3>
+                      <h4>Ejes del Avión</h4>
+                      <p>El avión se mueve alrededor de tres ejes que pasan por el centro de gravedad:</p>
+                      <ul>
+                        <li><strong>Eje Longitudinal (X):</strong> Movimiento de <strong>alanceo (roll)</strong>. Controlado por los alabes (ailerons) y, en algunos casos, por los spoilers.</li>
+                        <li><strong>Eje Lateral (Y):</strong> Movimiento de <strong>cabeceo (pitch)</strong>. Controlado por el elevador (elevator) o por un estabilizador móvil (stabilator).</li>
+                        <li><strong>Eje Vertical (Z):</strong> Movimiento de <strong>guiñada (yaw)</strong>. Controlado por el timón de dirección (rudder).</li>
+                      </ul>
+                      <h4>Controles Primarios</h4>
+                      <ul>
+                        <li><strong>Alabes (Ailerons):</strong> Controlan el alanceo. Se mueven de forma diferencial (uno sube y el otro baja). El alabe que baja aumenta la sustentación en esa ala, y el que sube la disminuye, creando un momento de alanceo.</li>
+                        <li><strong>Elevador (Elevator):</strong> Controla el cabeceo. Se mueve hacia arriba (el morro sube) o hacia abajo (el morro baja).</li>
+                        <li><strong>Timón de Dirección (Rudder):</strong> Controla la guiñada. Se mueve a la izquierda o a la derecha. Produce un movimiento de guiñada primario y un efecto secundario de alanceo (acoplamiento guiñada-alanceo).</li>
+                      </ul>
+                      <h4>Dispositivos de Ayuda y Efectos Secundarios</h4>
+                      <ul>
+                        <li><strong>Guiñada Adversa (Adverse Yaw):</strong> Cuando se aplica alanceo, el alabe que baja genera más resistencia inducida, creando un momento de guiñada en dirección opuesta al viraje. Se compensa con el timón de dirección o con alabes diferenciales.</li>
+                        <li><strong>Spoilers:</strong> Reducen la sustentación y aumentan la resistencia. Pueden usarse como ayudas al alanceo, como frenos aerodinámicos o como "lift dumpers" en tierra.</li>
+                        <li><strong>Flaps y Slats:</strong> Aumentan la sustentación a bajas velocidades.</li>
+                        <li><strong>Compensadores (Trim Tabs):</strong> Ayudan a mantener una actitud sin esfuerzo del piloto.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Para girar a la derecha, el alabe derecho sube y el izquierdo baja, creando un momento de alanceo. El timón de dirección se usa para coordinar el giro y evitar la guiñada adversa.</div>`
+            },
+            // === 13.1.B ===
+            {
+                id: '13.1.B',
+                titulo: 'Teoría del Vuelo (Vuelo de Alta Velocidad)',
+                contenido: `<h3>Vuelo de Alta Velocidad</h3>
+                      <h4>Número de Mach</h4>
+                      <p>El número de Mach es la relación entre la velocidad verdadera del avión (TAS) y la velocidad del sonido (c). \(M = \frac{TAS}{c}\). La velocidad del sonido depende de la temperatura: \(c = \sqrt{\gamma \cdot R \cdot T}\).</p>
+                      <ul>
+                        <li><strong>Vuelo Subsónico:</strong> M < 0.8. El flujo es completamente subsónico.</li>
+                        <li><strong>Vuelo Transónico:</strong> 0.8 < M < 1.2. Aparecen ondas de choque y zonas de flujo supersónico local. Es el régimen más complejo.</li>
+                        <li><strong>Vuelo Supersónico:</strong> M > 1.2. Todo el flujo es supersónico, con ondas de choque oblicuas.</li>
+                      </ul>
+                      <h4>Número Mach Crítico</h4>
+                      <p>Es el número de Mach al que el flujo local sobre el ala alcanza la velocidad del sonido (Mach 1). Las alas en flecha aumentan este número.</p>
+                      <h4>Ondas de Choque</h4>
+                      <ul>
+                        <li><strong>Normal:</strong> Perpendicular al flujo, reduce la velocidad a subsónica, aumenta la presión y la temperatura.</li>
+                        <li><strong>Oblícua:</strong> Inclinada respecto al flujo, reduce la velocidad pero sigue siendo supersónica.</li>
+                        <li><strong>Ondas de Expansión:</strong> Aumentan la velocidad y disminuyen la presión y temperatura.</li>
+                      </ul>
+                      <h4>Buffet de Compresibilidad</h4>
+                      <p>Vibración causada por la separación del flujo debido a las ondas de choque y la formación de una estela turbulenta.</p>
+                      <h4>Calentamiento Aerodinámico</h4>
+                      <p>El calentamiento por fricción y compresión del aire a altas velocidades.</p>
+                      <h4>Regla del Área (Area Rule)</h4>
+                      <p>La sección transversal del fuselaje debe ser suave para reducir la resistencia de onda.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El Concorde volaba a Mach 2.0, lo que requería un diseño especial para manejar el calentamiento aerodinámico y las ondas de choque.</div>`
+            },
+            // === 13.1.C ===
+            {
+                id: '13.1.C',
+                titulo: 'Helicópteros (Fundamentos y Controles)',
+                contenido: `<h3>Helicópteros - Fundamentos y Controles</h3>
+                      <h4>Clasificación de Aeronaves</h4>
+                      <ul>
+                        <li><strong>Aerostatos:</strong> Más ligeros que el aire (globos, dirigibles).</li>
+                        <li><strong>Aerodinos:</strong> Más pesados que el aire (aviones, helicópteros).</li>
+                      </ul>
+                      <h4>Helicóptero</h4>
+                      <p>El helicóptero es un aerodino de alas rotatorias. La sustentación y la propulsión son generadas por uno o más rotores de eje vertical.</p>
+                      <ul>
+                        <li><strong>Rotor Principal:</strong> Proporciona sustentación y permite el vuelo de traslación.</li>
+                        <li><strong>Rotor de Cola (Antitorque):</strong> Equilibra el par de reacción del rotor principal y permite el control direccional.</li>
+                      </ul>
+                      <h4>Controles del Helicóptero</h4>
+                      <ul>
+                        <li><strong>Cíclico (Cyclic):</strong> Cambia el ángulo de ataque de las palas de forma cíclica, inclinando el disco del rotor para controlar la dirección del vuelo.</li>
+                        <li><strong>Colectivo (Collective):</strong> Cambia el ángulo de ataque de todas las palas simultáneamente para controlar la sustentación y la altitud.</li>
+                        <li><strong>Pedales Antitorque:</strong> Controlan el paso del rotor de cola para controlar la guiñada.</li>
+                      </ul>
+                      <h4>Plato Oscilante (Swashplate)</h4>
+                      <p>Dispositivo que transmite los movimientos de los controles a las palas del rotor principal.</p>
+                      <h4>Efecto Suelo (Ground Effect - IGE/OGE)</h4>
+                      <p>Cuando el helicóptero está a una distancia del suelo menor que el diámetro del rotor, la sustentación es mayor (IGE). Fuera del efecto suelo (OGE), la sustentación es menor.</p>
+                      <h4>Autorrotación</h4>
+                      <p>Descenso del helicóptero con los motores apagados. El rotor gira gracias al flujo de aire ascendente, permitiendo un aterrizaje seguro.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En una autorrotación, el piloto reduce el paso colectivo para mantener las RPM del rotor y realiza una "flare" antes del aterrizaje para reducir la velocidad de descenso.</div>`
+            },
+            // === 13.2.A ===
+            {
+                id: '13.2.A',
+                titulo: 'Estructura (Conceptos Generales)',
+                contenido: `<h3>Estructura - Conceptos Generales</h3>
+                      <h4>Clasificación Estructural</h4>
+                      <ul>
+                        <li><strong>Estructura Primaria:</strong> Soportea cargas de vuelo, suelo y presurización. Su fallo compromete la integridad estructural.</li>
+                        <li><strong>Estructura Secundaria:</strong> Soporta sistemas y equipos, pero no es crítica para la integridad estructural principal.</li>
+                        <li><strong>Estructura Terciaria:</strong> Soporta cargas limitadas y no contribuye a la resistencia estructural principal.</li>
+                      </ul>
+                      <h4>Conceptos de Diseño</h4>
+                      <ul>
+                        <li><strong>Fail Safe:</strong> La estructura puede tolerar el fallo de un componente sin colapsar.</li>
+                        <li><strong>Safe Life:</strong> La estructura tiene una vida útil definida, tras la cual debe ser reemplazada.</li>
+                        <li><strong>Damage Tolerance:</strong> La estructura puede resistir daños (cracks) hasta que sean detectados en las inspecciones programadas.</li>
+                      </ul>
+                      <h4>Tipos de Esfuerzos</h4>
+                      <ul>
+                        <li><strong>Tensión (Tension):</strong> Fuerza que tiende a estirar el material.</li>
+                        <li><strong>Compresión (Compression):</strong> Fuerza que tiende a acortar el material.</li>
+                        <li><strong>Cortadura (Shear):</strong> Fuerza que tiende a deslizar una capa de material sobre otra.</li>
+                        <li><strong>Torsión (Torsion):</strong> Fuerza que tiende a torcer el material.</li>
+                        <li><strong>Flexión (Bending):</strong> Combinación de tensión y compresión.</li>
+                        <li><strong>Fatiga (Fatigue):</strong> Deterioro del material por cargas cíclicas.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Un larguero principal (spar) del ala es una estructura primaria, mientras que un carenado del tren de aterrizaje es una estructura terciaria.</div>`
+            },
+            // === 13.3.A ===
+            {
+                id: '13.3.A',
+                titulo: 'Autoflight (Sistemas de Vuelo Automático)',
+                contenido: `<h3>Autoflight - Sistemas de Vuelo Automático</h3>
+                      <h4>Piloto Automático (Autopilot)</h4>
+                      <p>El autopilot (AFCS) es un sistema diseñado para conducir el vuelo de forma automática, manteniendo la aeronave en una trayectoria preestablecida sin acción continua del piloto.</p>
+                      <h4>Componentes Principales</h4>
+                      <ul>
+                        <li><strong>Sensores:</strong> Detectan movimientos de la aeronave (giroscopios, acelerómetros).</li>
+                        <li><strong>Computadora de Control (FCC):</strong> Procesa las señales y genera comandos de control.</li>
+                        <li><strong>Actuadores (Servos):</strong> Convierten las señales eléctricas en movimientos de las superficies de control.</li>
+                        <li><strong>Panel de Control (MCP):</strong> Permite al piloto seleccionar los modos de operación.</li>
+                      </ul>
+                      <h4>Modos de Operación</h4>
+                      <ul>
+                        <li><strong>Canal de Alanceo (Roll):</strong> Mantiene el rumbo y nivela las alas.</li>
+                        <li><strong>Canal de Cabeceo (Pitch):</strong> Mantiene la altitud y la velocidad vertical.</li>
+                        <li><strong>Canal de Guiñada (Yaw):</strong> Mejora la estabilidad direccional.</li>
+                      </ul>
+                      <h4>Yaw Damper</h4>
+                      <p>Dispositivo que amortigua las oscilaciones de guiñada (Dutch roll).</p>
+                      <h4>Auto-Throttle</h4>
+                      <p>Controla automáticamente el empuje de los motores.</p>
+                      <h4>Aterrizaje Automático (Auto-Land)</h4>
+                      <p>Utiliza las señales del ILS para realizar un aterrizaje completamente automático.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El autopilot mantiene la altitud y el rumbo seleccionados, liberando al piloto de tareas rutinarias.</div>`
+            },
+            // === 13.4.A ===
+            {
+                id: '13.4.A',
+                titulo: 'Comunicación y Navegación (Fundamentos)',
+                contenido: `<h3>Comunicación y Navegación - Fundamentos</h3>
+                      <h4>Ondas Electromagnéticas</h4>
+                      <p>Las ondas electromagnéticas se propagan a la velocidad de la luz (300,000 km/s). La frecuencia y la longitud de onda están relacionadas: \(c = \lambda \cdot f\).</p>
+                      <h4>Bandas de Frecuencia</h4>
+                      <ul>
+                        <li><strong>VLF/LF:</strong> Navegación (NDB).</li>
+                        <li><strong>MF:</strong> Navegación (NDB).</li>
+                        <li><strong>HF:</strong> Comunicaciones de larga distancia.</li>
+                        <li><strong>VHF:</strong> Comunicaciones y navegación (VOR, ILS).</li>
+                        <li><strong>UHF:</strong> DME, TCAS, Transponder.</li>
+                        <li><strong>SHF:</strong> Radar, MLS.</li>
+                      </ul>
+                      <h4>Modos de Propagación</h4>
+                      <ul>
+                        <li><strong>Ondas de Superficie (Ground Waves):</strong> Siguen la curvatura de la Tierra (VLF, LF).</li>
+                        <li><strong>Ondas de Cielo (Sky Waves):</strong> Se reflejan en la ionosfera (HF, MF).</li>
+                        <li><strong>Ondas Directas (Line of Sight):</strong> Visibilidad directa (VHF, UHF, SHF).</li>
+                      </ul>
+                      <h4>Antenas</h4>
+                      <ul>
+                        <li><strong>Dipolo:</strong> Antena básica.</li>
+                        <li><strong>Vertical (Whip):</strong> Omni-direccional.</li>
+                        <li><strong>Bucle (Loop):</strong> Direccional (ADF).</li>
+                        <li><strong>Radomo (Radome):</strong> Cubierta protectora para antenas.</li>
+                      </ul>
+                      <h4>Líneas de Transmisión</h4>
+                      <ul>
+                        <li><strong>Bifilar:</strong> Dos conductores paralelos.</li>
+                        <li><strong>Coaxial:</strong> Conductor central apantallado.</li>
+                        <li><strong>Relación de Onda Estacionaria (SWR):</strong> Indica el grado de adaptación de la línea.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Las ondas VHF se propagan en línea recta, por lo que el alcance depende de la altitud de la antena.</div>`
+            },
+            // === 13.4.B ===
+            {
+                id: '13.4.B',
+                titulo: 'Comunicación y Navegación (Sistemas VHF/HF, Audio, ELT)',
+                contenido: `<h3>Comunicación y Navegación - Sistemas VHF/HF, Audio, ELT</h3>
+                      <h4>VHF Communication</h4>
+                      <p>El sistema VHF se utiliza para comunicaciones de corto y medio alcance (118-137 MHz). La modulación es en AM. El espaciado de canales es de 25 kHz o 8.33 kHz.</p>
+                      <h4>HF Communication</h4>
+                      <p>El sistema HF se utiliza para comunicaciones de larga distancia (2-30 MHz). Utiliza modulación en banda lateral única (SSB) y requiere antenas más grandes.</p>
+                      <h4>Sistema de Audio (Audio Integration System)</h4>
+                      <p>Permite a la tripulación seleccionar y controlar las comunicaciones de radio y el intercomunicador.</p>
+                      <ul>
+                        <li><strong>Intercomunicador de Vuelo:</strong> Comunicación entre pilotos.</li>
+                        <li><strong>Intercomunicador de Servicio:</strong> Comunicación con el personal en tierra.</li>
+                        <li><strong>Intercomunicador de Cabina:</strong> Comunicación con los auxiliares de vuelo.</li>
+                      </ul>
+                      <h4>ELT (Emergency Locator Transmitter)</h4>
+                      <p>Transmisor de localización de emergencia que se activa automáticamente en caso de impacto. Transmite en 121.5 MHz (analógico) y 406 MHz (digital).</p>
+                      <h4>FDR y CVR (Black Boxes)</h4>
+                      <ul>
+                        <li><strong>FDR (Flight Data Recorder):</strong> Registra parámetros de vuelo.</li>
+                        <li><strong>CVR (Cockpit Voice Recorder):</strong> Registra las comunicaciones y sonidos en la cabina.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El ELT transmite una señal de socorro en 406 MHz a los satélites, lo que permite una localización precisa.</div>`
+            },
+            // === 13.4.C ===
+            {
+                id: '13.4.C',
+                titulo: 'Comunicación y Navegación (ADF, VOR, DME, ILS, MLS)',
+                contenido: `<h3>Comunicación y Navegación - ADF, VOR, DME, ILS, MLS</h3>
+                      <h4>NDB y ADF</h4>
+                      <ul>
+                        <li><strong>NDB (Non-Directional Beacon):</strong> Estación terrestre que transmite en LF/MF.</li>
+                        <li><strong>ADF (Automatic Direction Finder):</strong> Equipo de abordo que mide el rumbo relativo a la NDB.</li>
+                      </ul>
+                      <h4>VOR (VHF Omni-directional Range)</h4>
+                      <p>Sistema de navegación que emite radiales (360). El equipo de abordo mide la fase entre la señal de referencia y la variable para determinar la radial.</p>
+                      <h4>DME (Distance Measuring Equipment)</h4>
+                      <p>Mide la distancia oblicua (slant range) a una estación terrestre. Opera en UHF (960-1215 MHz).</p>
+                      <h4>ILS (Instrument Landing System)</h4>
+                      <ul>
+                        <li><strong>Localizador (LOC):</strong> Proporciona guía lateral (desviación de la línea de centro de la pista).</li>
+                        <li><strong>Glide Slope (GS):</strong> Proporciona guía vertical (trayectoria de descenso).</li>
+                        <li><strong>Marcadores (Marker Beacons):</strong> Proporcionan información de distancia (OM, MM, IM).</li>
+                        <li><strong>Categorías:</strong> CAT I (DH 200 ft), CAT II (DH 100 ft), CAT III (DH 0-50 ft).</li>
+                      </ul>
+                      <h4>MLS (Microwave Landing System)</h4>
+                      <p>Sistema de aterrizaje por microondas (5 GHz) que ofrece una mayor flexibilidad y precisión que el ILS.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El VOR permite al piloto volar directamente hacia una estación o seguir un radial determinado.</div>`
+            },
+            // === 13.4.D ===
+            {
+                id: '13.4.D',
+                titulo: 'Comunicación y Navegación (GPS, INS, TCAS, Radar)',
+                contenido: `<h3>Comunicación y Navegación - GPS, INS, TCAS, Radar</h3>
+                      <h4>GPS (Global Positioning System)</h4>
+                      <p>Sistema de navegación por satélite. Utiliza una constelación de satélites para calcular la posición (latitud, longitud, altitud).</p>
+                      <ul>
+                        <li><strong>Segmento Espacial:</strong> Satélites en órbita.</li>
+                        <li><strong>Segmento de Control:</strong> Estaciones terrestres que monitorizan los satélites.</li>
+                        <li><strong>Segmento de Usuario:</strong> Receptores GPS.</li>
+                        <li><strong>Errores:</strong> Ionosfera, troposfera, reloj.</li>
+                        <li><strong>DGPS, WAAS, EGNOS:</strong> Sistemas de aumentación para mejorar la precisión.</li>
+                      </ul>
+                      <h4>INS (Inertial Navigation System)</h4>
+                      <p>Sistema de navegación autónomo que utiliza acelerómetros y giroscopios para calcular la posición. No depende de señales externas.</p>
+                      <h4>TCAS (Traffic Collision Avoidance System)</h4>
+                      <p>Sistema que monitoriza el tráfico aéreo cercano y emite advertencias para evitar colisiones.</p>
+                      <ul>
+                        <li><strong>TA (Traffic Advisory):</strong> Advertencia de tráfico.</li>
+                        <li><strong>RA (Resolution Advisory):</strong> Advertencia de resolución (maniobra evasiva).</li>
+                      </ul>
+                      <h4>Radar Meteorológico (Weather Radar)</h4>
+                      <p>Detecta precipitaciones y turbulencias. La intensidad se muestra en colores (verde, amarillo, rojo, magenta).</p>
+                      <h4>Radar Altímetro (Radio Altimeter)</h4>
+                      <p>Mide la altura sobre el terreno, utilizado durante la aproximación y el aterrizaje.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El GPS proporciona una precisión de 15 metros para usuarios civiles, mejorable con DGPS a 1 metro.</div>`
+            },
+            // === 13.5.A ===
+            {
+                id: '13.5.A',
+                titulo: 'Sistema Eléctrico (Baterías y Generación)',
+                contenido: `<h3>Sistema Eléctrico - Baterías y Generación</h3>
+                      <h4>Baterías</h4>
+                      <ul>
+                        <li><strong>Plomo-Ácido:</strong> Bajo coste, baja densidad de energía (35 Wh/kg).</li>
+                        <li><strong>Níquel-Cadmio (Ni-Cd):</strong> Mayor densidad de energía (60 Wh/kg), vida útil más larga.</li>
+                        <li><strong>Plata-Zinc:</strong> Alta densidad de energía (110 Wh/kg), pero caras.</li>
+                      </ul>
+                      <h4>Generación de Energía</h4>
+                      <ul>
+                        <li><strong>DC (Dínamo):</strong> Con escobillas. Usado en aviones pequeños.</li>
+                        <li><strong>AC (Alternador):</strong> Sin escobillas. Usado en aviones grandes. Tensión 115/200 V, 400 Hz.</li>
+                        <li><strong>CSD/IDG:</strong> Mantienen la frecuencia constante (400 Hz).</li>
+                        <li><strong>VSCF:</strong> Generador de frecuencia variable convertida a constante.</li>
+                      </ul>
+                      <h4>Energía de Emergencia</h4>
+                      <ul>
+                        <li><strong>RAT (Ram Air Turbine):</strong> Turbina accionada por el flujo de aire.</li>
+                        <li><strong>EPU (Emergency Power Unit):</strong> Turbina de hidracina (uso militar).</li>
+                        <li><strong>APU (Auxiliary Power Unit):</strong> Proporciona energía en tierra y en vuelo.</li>
+                      </ul>
+                      <h4>Distribución</h4>
+                      <ul>
+                        <li><strong>Bus-bars:</strong> Distribuyen la energía a los sistemas.</li>
+                        <li><strong>Protección:</strong> Fusibles y disyuntores (circuit breakers).</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Un IDG (Integrated Drive Generator) combina el CSD y el generador AC en una sola unidad.</div>`
+            },
+            // === 13.6.A ===
+            {
+                id: '13.6.A',
+                titulo: 'Equipos y Mobiliario (Emergencia y Entretenimiento)',
+                contenido: `<h3>Equipos y Mobiliario - Emergencia y Entretenimiento</h3>
+                      <h4>Equipo de Emergencia</h4>
+                      <ul>
+                        <li><strong>Chalecos Salvavidas:</strong> Para todos los pasajeros.</li>
+                        <li><strong>Balsas Salvavidas:</strong> Para vuelos sobre agua.</li>
+                        <li><strong>Botiquín de Primeros Auxilios:</strong> Material médico.</li>
+                        <li><strong>Extintores Portátiles:</strong> Halon.</li>
+                        <li><strong>Rampas de Evacuación (Slides):</strong> Se inflan automáticamente.</li>
+                        <li><strong>ELT (Emergency Locator Transmitter):</strong> Transmite señal de socorro.</li>
+                      </ul>
+                      <h4>Sistema de Entretenimiento (IFE)</h4>
+                      <ul>
+                        <li><strong>Audio:</strong> Música y anuncios.</li>
+                        <li><strong>Video:</strong> PTVs (Personal Televisions) y AVOD (Audio-Video on Demand).</li>
+                        <li><strong>Conectividad:</strong> Internet, correo electrónico, teléfono.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Las rampas de evacuación se despliegan automáticamente cuando la puerta se abre en modo armado.</div>`
+            },
+            // === 13.7.A ===
+            {
+                id: '13.7.A',
+                titulo: 'Controles de Vuelo (Sistemas Mecánico, Hidráulico, FBW)',
+                contenido: `<h3>Controles de Vuelo - Sistemas Mecánico, Hidráulico, FBW</h3>
+                      <h4>Sistemas de Accionamiento</h4>
+                      <ul>
+                        <li><strong>Manual (Mecánico):</strong> Cables, poleas y varillas (aviones ligeros).</li>
+                        <li><strong>Hidráulico:</strong> Actuadores hidráulicos (servo-mecanismos).</li>
+                        <li><strong>Eléctrico:</strong> Motores eléctricos.</li>
+                        <li><strong>Fly-by-Wire (FBW):</strong> Señales eléctricas procesadas por computadoras.</li>
+                      </ul>
+                      <h4>Dispositivos de Ayuda</h4>
+                      <ul>
+                        <li><strong>Compensadores (Trim):</strong> De fricción, de resorte, servo-compensadores.</li>
+                        <li><strong>Yaw Damper:</strong> Amortigua las oscilaciones de guiñada (Dutch roll).</li>
+                        <li><strong>Mach Trim:</strong> Compensa el cambio de centro de presión a altas velocidades.</li>
+                        <li><strong>Limitador de Timón:</strong> Reduce la deflexión del timón a altas velocidades.</li>
+                      </ul>
+                      <h4>Sistemas de Advertencia de Pérdida</h4>
+                      <ul>
+                        <li><strong>Stick Shaker:</strong> Vibra la columna de control para avisar de una pérdida inminente.</li>
+                        <li><strong>Stick Pusher:</strong> Empuja la columna de control para evitar la pérdida.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En el Airbus A320, el sistema Fly-by-Wire (FBW) evita que el piloto entre en pérdida, limitando el ángulo de ataque.</div>`
+            },
+            // === 13.8.A ===
+            {
+                id: '13.8.A',
+                titulo: 'Sistemas de Instrumentos (Pitot-Estáticos y Giróscopos)',
+                contenido: `<h3>Sistemas de Instrumentos - Pitot-Estáticos y Giróscopos</h3>
+                      <h4>Instrumentos Pitot-Estáticos</h4>
+                      <ul>
+                        <li><strong>Altímetro:</strong> Mide la altitud utilizando la presión estática.</li>
+                        <li><strong>Indicador de Velocidad (ASI):</strong> Mide la velocidad utilizando la presión dinámica.</li>
+                        <li><strong>Variómetro (VSI):</strong> Mide la velocidad vertical.</li>
+                      </ul>
+                      <h4>Instrumentos Giróscopos</h4>
+                      <ul>
+                        <li><strong>Horizonte Artificial (ADI):</strong> Indica la actitud del avión (balance y cabeceo).</li>
+                        <li><strong>Indicador de Dirección (DG):</strong> Indica el rumbo (requiere realineación con la brújula).</li>
+                        <li><strong>Indicador de Viraje y Resbalamiento:</strong> Indica la calidad del viraje.</li>
+                      </ul>
+                      <h4>Brújula Magnética</h4>
+                      <p>Instrumento que utiliza el campo magnético terrestre para indicar la dirección. Errores: variación, desviación, inclinación magnética y aceleración.</p>
+                      <h4>EFIS (Electronic Flight Instrument System)</h4>
+                      <ul>
+                        <li><strong>PFD (Primary Flight Display):</strong> Muestra la información de vuelo principal.</li>
+                        <li><strong>ND (Navigation Display):</strong> Muestra la información de navegación.</li>
+                        <li><strong>EICAS/ECAM:</strong> Muestra los parámetros de los motores y sistemas.</li>
+                      </ul>
+                      <h4>GPWS (Ground Proximity Warning System)</h4>
+                      <p>Sistema que advierte de la proximidad al terreno.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En un glass cockpit, el piloto ve el horizonte artificial en el PFD y la ruta de vuelo en el ND.</div>`
+            },
+            // === 13.9.A ===
+            {
+                id: '13.9.A',
+                titulo: 'Iluminación (Externa e Interna)',
+                contenido: `<h3>Iluminación - Externa e Interna</h3>
+                      <h4>Luces Externas</h4>
+                      <ul>
+                        <li><strong>Luces de Navegación (Position Lights):</strong> Roja (izquierda), verde (derecha) y blanca (cola).</li>
+                        <li><strong>Luces Anticolisión:</strong> Rojas (beacons) y blancas (strobe).</li>
+                        <li><strong>Luces de Aterrizaje:</strong> Potentes para iluminar la pista.</li>
+                        <li><strong>Luces de Rodaje (Taxi Lights):</strong> Para iluminar la pista durante el rodaje.</li>
+                        <li><strong>Luces de Inspección de Alas (Wing Inspection Lights):</strong> Para verificar la formación de hielo.</li>
+                      </ul>
+                      <h4>Luces Internas</h4>
+                      <ul>
+                        <li><strong>Luces de Cabina:</strong> Generales y de lectura.</li>
+                        <li><strong>Luces de Emergencia:</strong> Señalización de salidas y pasillos.</li>
+                        <li><strong>Luces del Cockpit:</strong> Iluminación de instrumentos y paneles.</li>
+                      </ul>
+                      <h4>Tipos de Lámparas</h4>
+                      <ul>
+                        <li><strong>Incandescentes:</strong> Filamento de tungsteno.</li>
+                        <li><strong>Halógenas:</strong> Mayor duración y brillo.</li>
+                        <li><strong>Fluorescentes:</strong> Mayor eficiencia.</li>
+                        <li><strong>LEDs:</strong> Alta eficiencia y duración.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Las luces de navegación permiten a otros pilotos determinar la dirección de vuelo de una aeronave por la noche.</div>`
+            },
+            // === 13.10.A ===
+            {
+                id: '13.10.A',
+                titulo: 'Sistemas de Mantenimiento a Bordo (CMC)',
+                contenido: `<h3>Sistemas de Mantenimiento a Bordo - CMC</h3>
+                      <h4>Computadora Central de Mantenimiento (CMC)</h4>
+                      <p>Monitorea la integridad de los sistemas de la aeronave y almacena información de fallos.</p>
+                      <ul>
+                        <li><strong>BITE (Built-In Test Equipment):</strong> Pruebas integradas en los equipos.</li>
+                        <li><strong>Mensajes de Mantenimiento:</strong> Códigos que indican fallos específicos.</li>
+                        <li><strong>MCDU (Multipurpose Control Display Unit):</strong> Interfaz para acceder a la información de mantenimiento.</li>
+                        <li><strong>Fases de Vuelo:</strong> El CMC divide el vuelo en fases para filtrar fallos inducidos en tierra.</li>
+                      </ul>
+                      <h4>Sistema de Carga de Datos (Data Loading)</h4>
+                      <p>Permite cargar software y bases de datos en los sistemas de la aeronave.</p>
+                      <h4>Sistema de Biblioteca Electrónica (Electronic Library)</h4>
+                      <p>Proporciona acceso a manuales y procedimientos en formato digital.</p>
+                      <h4>Impresora ACARS</h4>
+                      <p>Imprime informes de mantenimiento y mensajes de despacho.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El CMC almacena los fallos ocurridos durante el vuelo. En tierra, el técnico puede acceder a estos fallos a través del MCDU.</div>`
+            },
+            // === 13.11.A ===
+            {
+                id: '13.11.A',
+                titulo: 'Aire Acondicionado y Presurización',
+                contenido: `<h3>Aire Acondicionado y Presurización</h3>
+                      <h4>Fuentes de Aire</h4>
+                      <ul>
+                        <li><strong>Sangrado del Motor (Engine Bleed):</strong> Aire tomado del compresor (8ª y 14ª etapa).</li>
+                        <li><strong>APU:</strong> Proporciona aire en tierra.</li>
+                        <li><strong>Unidad de Aire de Tierra (ASU):</strong> Para arranque de motores en tierra.</li>
+                      </ul>
+                      <h4>Sistema de Aire Acondicionado</h4>
+                      <ul>
+                        <li><strong>Máquinas de Ciclo de Aire (Air Cycle Machines):</strong> Utilizan el ciclo de Bootstrap (compresión y expansión) para enfriar el aire.</li>
+                        <li><strong>Máquinas de Ciclo de Vapor (Vapor Cycle):</strong> Utilizan un refrigerante para enfriar el aire.</li>
+                      </ul>
+                      <h4>Presurización</h4>
+                      <ul>
+                        <li><strong>Altitud de Cabina:</strong> Presión equivalente en el interior de la cabina (ej. 8000 ft).</li>
+                        <li><strong>Válvula de Salida (Outflow Valve):</strong> Controla la cantidad de aire que sale, regulando la presión.</li>
+                        <li><strong>Válvula de Seguridad (Safety Valve):</strong> Se abre si la presión diferencial es excesiva.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> A 35,000 ft, la presión exterior es muy baja. La presurización mantiene la cabina a una presión equivalente a 8,000 ft.</div>`
+            },
+            // === 13.12.A ===
+            {
+                id: '13.12.A',
+                titulo: 'Protección contra Incendios',
+                contenido: `<h3>Protección contra Incendios</h3>
+                      <h4>Detección de Incendios y Humo</h4>
+                      <ul>
+                        <li><strong>Detectores Térmicos:</strong> Detectan aumentos de temperatura.</li>
+                        <li><strong>Detectores de Humo:</strong> Detectan partículas de humo (tipo fotoeléctrico o de ionización).</li>
+                        <li><strong>Detectores de Sobrecarga (Overheat):</strong> Detectan temperaturas excesivas en áreas como los motores.</li>
+                      </ul>
+                      <h4>Sistemas de Extinción</h4>
+                      <ul>
+                        <li><strong>Halon (BFC):</strong> Interfiere en la reacción química del fuego.</li>
+                        <li><strong>Gases Inertes:</strong> Desplazan el oxígeno.</li>
+                      </ul>
+                      <h4>Áreas Protegidas</h4>
+                      <ul>
+                        <li><strong>Motores y APU:</strong> Detectores de sobrecalentamiento y extintores fijos.</li>
+                        <li><strong>Bodegas de Carga:</strong> Detectores de humo y extintores.</li>
+                        <li><strong>Baños:</strong> Detectores de humo y extintores en los contenedores de toallas.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En caso de incendio en un motor, el piloto activa el extintor desde la cabina, descargando Halon en el compartimento del motor.</div>`
+            },
+            // === 13.13.A ===
+            {
+                id: '13.13.A',
+                titulo: 'Sistema de Combustible',
+                contenido: `<h3>Sistema de Combustible</h3>
+                      <h4>Tipos de Tanques</h4>
+                      <ul>
+                        <li><strong>Tanques Integrales:</strong> Parte de la estructura del ala.</li>
+                        <li><strong>Tanques Flexibles (Bag Tanks):</strong> Bolsas de goma/nylon.</li>
+                        <li><strong>Tanques Rígidos:</strong> Depósitos independientes.</li>
+                      </ul>
+                      <h4>Componentes del Sistema</h4>
+                      <ul>
+                        <li><strong>Bombas de Combustible:</strong> Bombas centrífugas (impulsoras y de transferencia).</li>
+                        <li><strong>Válvulas:</strong> De cierre, de transferencia, de cruce (cross-feed).</li>
+                        <li><strong>Filtros:</strong> Eliminan impurezas del combustible.</li>
+                        <li><strong>Ventilación:</strong> Equilibra la presión de los tanques.</li>
+                      </ul>
+                      <h4>Reabastecimiento (Refueling)</h4>
+                      <ul>
+                        <li><strong>Reabastecimiento Presurizado:</strong> A través de un panel de servicio único.</li>
+                        <li><strong>Reabastecimiento por Gravedad:</strong> En aviones pequeños.</li>
+                      </ul>
+                      <h4>Drenaje y Vaciado</h4>
+                      <ul>
+                        <li><strong>Drenaje de Agua:</strong> Se drena el agua acumulada en el fondo de los tanques.</li>
+                        <li><strong>Vaciado en Vuelo (Dumping):</strong> Se utiliza para reducir el peso en caso de emergencia.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Los tanques integrales de las alas están sellados con un compuesto de polisulfuro para evitar fugas.</div>`
+            },
+            // === 13.14.A ===
+            {
+                id: '13.14.A',
+                titulo: 'Sistema Hidráulico',
+                contenido: `<h3>Sistema Hidráulico</h3>
+                      <h4>Componentes Principales</h4>
+                      <ul>
+                        <li><strong>Bombas:</strong> Hidráulicas de pistones axiales (desplazamiento variable).</li>
+                        <li><strong>Fluidos:</strong> Skydrol (fosfato de éster) o mineral.</li>
+                        <li><strong>Acumuladores:</strong> Almacenan energía hidráulica.</li>
+                        <li><strong>Filtros:</strong> Eliminan impurezas del fluido.</li>
+                      </ul>
+                      <h4>Sistemas de Control</h4>
+                      <ul>
+                        <li><strong>Válvulas Selectoras:</strong> Dirigen el flujo de fluido a los actuadores.</li>
+                        <li><strong>Válvulas de Alivio (Relief Valves):</strong> Protegen contra sobrepresión.</li>
+                        <li><strong>Actuadores (Jacks):</strong> Convierten la presión hidráulica en movimiento.</li>
+                      </ul>
+                      <h4>Energía de Emergencia</h4>
+                      <ul>
+                        <li><strong>RAT:</strong> Turbina accionada por el flujo de aire.</li>
+                        <li><strong>EPU:</strong> Turbina de hidracina.</li>
+                      </ul>
+                      <h4>Indicaciones y Advertencias</h4>
+                      <ul>
+                        <li>Manómetros de presión, indicadores de nivel, luces de baja presión y alta temperatura.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El fluido hidráulico Skydrol es resistente al fuego pero muy corrosivo.</div>`
+            },
+            // === 13.15.A ===
+            {
+                id: '13.15.A',
+                titulo: 'Protección contra Hielo y Lluvia',
+                contenido: `<h3>Protección contra Hielo y Lluvia</h3>
+                      <h4>Tipos de Hielo</h4>
+                      <ul>
+                        <li><strong>Hielo Escarcha (Rime Ice):</strong> Blanco, opaco, fácil de eliminar.</li>
+                        <li><strong>Hielo Claro (Clear Ice):</strong> Transparente, denso, difícil de eliminar.</li>
+                      </ul>
+                      <h4>Sistemas Anti-Hielo (Prevención)</h4>
+                      <ul>
+                        <li><strong>Aire Caliente (Bleed Air):</strong> Para bordes de ataque de alas y motores.</li>
+                        <li><strong>Eléctricos:</strong> Para sondas, parabrisas y pequeños componentes.</li>
+                        <li><strong>Químicos:</strong> En tierra para prevenir la formación de hielo.</li>
+                      </ul>
+                      <h4>Sistemas Deshielo (Eliminación)</h4>
+                      <ul>
+                        <li><strong>Neumáticos (Boots):</strong> Se inflan para romper el hielo.</li>
+                        <li><strong>Eléctricos:</strong> Calientan la superficie para desprender el hielo.</li>
+                        <li><strong>Químicos (Weeping Wing):</strong> Fluido que impide la adhesión del hielo.</li>
+                      </ul>
+                      <h4>Protección contra la Lluvia</h4>
+                      <ul>
+                        <li><strong>Limpiaparabrisas (Wipers):</strong> Eliminan el agua del parabrisas.</li>
+                        <li><strong>Repelente de Lluvia:</strong> Fluido químico que hace que el agua se desprenda.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Los "boots" neumáticos en el borde de ataque de las alas se inflan y desinflan cíclicamente para romper y desprender el hielo.</div>`
+            },
+            // === 13.16.A ===
+            {
+                id: '13.16.A',
+                titulo: 'Tren de Aterrizaje',
+                contenido: `<h3>Tren de Aterrizaje</h3>
+                      <h4>Tipos de Tren</h4>
+                      <ul>
+                        <li><strong>Triciclo:</strong> Una rueda delantera y dos principales.</li>
+                        <li><strong>Con Rueda de Cola (Taildragger):</strong> Dos principales y una trasera.</li>
+                      </ul>
+                      <h4>Amortiguadores (Shock Absorbers)</h4>
+                      <ul>
+                        <li><strong>Oleo-Neumáticos:</strong> Utilizan aceite y gas (nitrógeno) para absorber la energía.</li>
+                      </ul>
+                      <h4>Extensión y Retracción</h4>
+                      <ul>
+                        <li><strong>Normal:</strong> Accionamiento hidráulico.</li>
+                        <li><strong>Emergencia:</strong> Caída libre por gravedad o accionamiento neumático.</li>
+                      </ul>
+                      <h4>Frenos</h4>
+                      <ul>
+                        <li><strong>De Disco:</strong> Rotores y estatores.</li>
+                        <li><strong>Anti-Skid:</strong> Evita el bloqueo de las ruedas.</li>
+                        <li><strong>Autobrake:</strong> Aplica los frenos automáticamente en el aterrizaje.</li>
+                      </ul>
+                      <h4>Dirección (Steering)</h4>
+                      <ul>
+                        <li><strong>Mecánica:</strong> En aviones pequeños.</li>
+                        <li><strong>Hidráulica:</strong> En aviones grandes.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Los frenos de disco de carbono son más ligeros y resisten mejor las altas temperaturas que los de acero.</div>`
+            },
+            // === 13.17.A ===
+            {
+                id: '13.17.A',
+                titulo: 'Oxígeno',
+                contenido: `<h3>Oxígeno</h3>
+                      <h4>Necesidad de Oxígeno</h4>
+                      <p>A altas altitudes (>10,000 ft), la presión parcial de oxígeno disminuye, lo que puede causar hipoxia.</p>
+                      <h4>Sistemas de Oxígeno</h4>
+                      <ul>
+                        <li><strong>Gaseoso:</strong> Almacenado en botellas a alta presión (1850 psi).</li>
+                        <li><strong>Generadores Químicos:</strong> Producen oxígeno por reacción química.</li>
+                      </ul>
+                      <h4>Máscaras de Oxígeno</h4>
+                      <ul>
+                        <li><strong>Tripulación:</strong> Máscaras de demanda (diluter-demand o pressure-demand).</li>
+                        <li><strong>Pasajeros:</strong> Máscaras que caen automáticamente cuando la altitud de cabina supera los 14,000 ft.</li>
+                      </ul>
+                      <h4>Indicaciones y Advertencias</h4>
+                      <ul>
+                        <li>Manómetros de presión, indicadores de flujo y luces de advertencia de baja presión.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> Si la cabina se despresuriza, las máscaras de oxígeno caen automáticamente para los pasajeros.</div>`
+            },
+            // === 13.18.A ===
+            {
+                id: '13.18.A',
+                titulo: 'Sistema Neumático y de Vacío',
+                contenido: `<h3>Sistema Neumático y de Vacío</h3>
+                      <h4>Sistema Neumático</h4>
+                      <p>Utiliza aire comprimido para alimentar sistemas como el aire acondicionado, la presurización, el arranque de motores y la protección contra hielo.</p>
+                      <ul>
+                        <li><strong>Fuentes:</strong> Sangrado del motor, APU, unidad de tierra (ASU).</li>
+                        <li><strong>Componentes:</strong> Válvulas de sangrado, válvulas de aislamiento, tuberías.</li>
+                        <li><strong>Control:</strong> Válvulas de regulación de presión y temperatura.</li>
+                      </ul>
+                      <h4>Sistema de Vacío</h4>
+                      <ul>
+                        <li><strong>Fuente:</strong> Bomba de vacío accionada por el motor.</li>
+                        <li><strong>Uso:</strong> Alimenta instrumentos giróscopos en aviones ligeros.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El sistema neumático de un avión a reacción utiliza aire sangrado del compresor del motor para presurizar la cabina y arrancar los motores.</div>`
+            },
+            // === 13.19.A ===
+            {
+                id: '13.19.A',
+                titulo: 'Agua y Residuos',
+                contenido: `<h3>Agua y Residuos</h3>
+                      <h4>Sistema de Agua Potable (Potable Water)</h4>
+                      <ul>
+                        <li><strong>Almacenamiento:</strong> Tanques presurizados (40 psi).</li>
+                        <li><strong>Distribución:</strong> Tuberías que alimentan galleys y lavabos.</li>
+                        <li><strong>Calentamiento:</strong> Calentadores de agua eléctricos.</li>
+                      </ul>
+                      <h4>Sistema de Residuos (Toilets)</h4>
+                      <ul>
+                        <li><strong>Recirculación:</strong> El líquido azul se recircula para la descarga.</li>
+                        <li><strong>Vacío:</strong> Utiliza la diferencia de presión entre la cabina y el exterior para la descarga.</li>
+                      </ul>
+                      <h4>Corrosión</h4>
+                      <ul>
+                        <li>El agua y los productos químicos pueden causar corrosión, especialmente en los pisos de los baños.</li>
+                        <li>Se utilizan medidas de protección como selladores, barreras de humedad y fluidos anticorrosión.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El sistema de vacío de los inodoros utiliza la diferencia de presión entre la cabina (presurizada) y el exterior para succionar los residuos.</div>`
+            },
+            // === 13.20.A ===
+            {
+                id: '13.20.A',
+                titulo: 'Aviónica Modular Integrada (IMA)',
+                contenido: `<h3>Aviónica Modular Integrada (IMA)</h3>
+                      <h4>Concepto IMA</h4>
+                      <p>IMA es un concepto de aviónica que integra múltiples funciones de software en un mismo hardware, reduciendo peso, volumen y costes.</p>
+                      <ul>
+                        <li><strong>Arquitectura Federada:</strong> Cada función tiene su propio computador. IMA centraliza varias funciones en un solo módulo.</li>
+                        <li><strong>Particionamiento (Partitioning):</strong> Permite que diferentes funciones de software con distintos niveles de criticidad funcionen en el mismo hardware sin interferir.</li>
+                      </ul>
+                      <h4>Open IMA (Airbus A380)</h4>
+                      <ul>
+                        <li><strong>CPIOM (Core Processor Input/Output Module):</strong> Módulo de procesamiento estándar.</li>
+                        <li><strong>ADCN (Aircraft Data Communication Network):</strong> Red de comunicación basada en AFDX.</li>
+                        <li><strong>ARINC 653:</strong> Estándar para el particionamiento de software.</li>
+                      </ul>
+                      <h4>AFDX (Avionics Full Duplex Switched Ethernet)</h4>
+                      <p>Red de comunicación de alta velocidad (100 Mbit/s) que utiliza Ethernet conmutado.</p>
+                      <h4>CRDC (Common Remote Data Concentrator)</h4>
+                      <p>Concentra datos de señales analógicas y discretas en ubicaciones remotas.</p>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> En el A380, un solo CPIOM puede albergar funciones de varios sistemas (ej. gestión de combustible, frenos, aire acondicionado).</div>`
+            },
+            // === 13.21.A ===
+            {
+                id: '13.21.A',
+                titulo: 'Sistemas de Cabina (CIDS y CNS)',
+                contenido: `<h3>Sistemas de Cabina - CIDS y CNS</h3>
+                      <h4>CIDS (Cabin Intercommunication Data System)</h4>
+                      <p>Gestiona la comunicación entre la tripulación y los pasajeros, y controla funciones como:</p>
+                      <ul>
+                        <li>Control de temperatura de cabina.</li>
+                        <li>Iluminación de cabina.</li>
+                        <li>Sistema de megafonía (PA).</li>
+                        <li>Indicación de nivel de agua/residuos.</li>
+                        <li>Advertencias de humo en los baños.</li>
+                      </ul>
+                      <h4>CNS (Cabin Network Service)</h4>
+                      <p>Proporciona conectividad de red en la cabina, permitiendo:</p>
+                      <ul>
+                        <li>Acceso a Internet y correo electrónico (Wi-Fi).</li>
+                        <li>Entretenimiento a la carta (AVOD).</li>
+                        <li>Comunicación por satélite (SATCOM).</li>
+                        <li>Monitoreo de datos de vuelo en tiempo real.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El CIDS permite a la tripulación de cabina controlar la temperatura e iluminación de cada zona de la cabina a través de paneles táctiles.</div>`
+            },
+            // === 13.22.A ===
+            {
+                id: '13.22.A',
+                titulo: 'Sistema de Información',
+                contenido: `<h3>Sistema de Información</h3>
+                      <h4>Flight Deck Information System</h4>
+                      <p>Proporciona información al piloto a través de pantallas LCD de alta resolución. Integra sistemas como:</p>
+                      <ul>
+                        <li><strong>GMCS (Ground Maneuver Camera System):</strong> Cámaras para maniobras en tierra.</li>
+                        <li><strong>EGPWS (Enhanced Ground Proximity Warning System):</strong> Advertencia de proximidad al terreno.</li>
+                        <li><strong>AIMS (Airplane Information Management System):</strong> Gestiona la información de vuelo y mantenimiento.</li>
+                      </ul>
+                      <h4>ARINC 629</h4>
+                      <p>Bus de datos digital bidireccional que permite la comunicación entre sistemas.</p>
+                      <h4>Aircraft Maintenance Information System (AMIS)</h4>
+                      <p>Sistema que registra y monitoriza las acciones de mantenimiento.</p>
+                      <h4>Passenger Cabin Information System (PCIS)</h4>
+                      <p>Proporciona información de vuelo a los pasajeros (mapas, velocidad, altitud).</p>
+                      <h4>Medios de Almacenamiento</h4>
+                      <ul>
+                        <li><strong>SSD (Solid State Drive):</strong> Mayor fiabilidad y rapidez que los HDD.</li>
+                        <li><strong>Flash Memory:</strong> Almacenamiento no volátil.</li>
+                      </ul>
+                      <div class="ejemplo"><strong>Ejemplo:</strong> El sistema ARINC 629 permite que los diferentes computadores de la aeronave se comuniquen entre sí a través de un par de cables trenzados.</div>`
+            }
+        ];
+
+        // ============================================================
+        //  GENERACIÓN DE PREGUNTAS (10 por tema)
+        // ============================================================
+        function generarPreguntas(temaIndex) {
+            const preguntas = [];
+
+            function add(pregunta, opciones, correcta) {
+                preguntas.push({ pregunta, opciones, correcta });
+            }
+
+            const generadores = [
+                // 13.1.A
+                () => {
+                    add('¿Qué control primario se utiliza para el alanceo (roll)?',
+                        ['Alabes (Ailerons)', 'Elevador (Elevator)', 'Timón de Dirección (Rudder)', 'Spoilers'], 0);
+                    add('¿Qué control primario se utiliza para el cabeceo (pitch)?',
+                        ['Elevador (Elevator)', 'Alabes (Ailerons)', 'Timón de Dirección (Rudder)', 'Flaps'], 0);
+                    add('¿Qué control primario se utiliza para la guiñada (yaw)?',
+                        ['Timón de Dirección (Rudder)', 'Alabes (Ailerons)', 'Elevador (Elevator)', 'Spoilers'], 0);
+                    add('¿Qué hacen los spoilers cuando se extienden simétricamente?',
+                        ['Reducen la sustentación y aumentan la resistencia', 'Aumentan la sustentación', 'Controlan el cabeceo', 'Controlan la guiñada'], 0);
+                    add('¿Para qué sirven los compensadores (trim tabs)?',
+                        ['Ayudar a mantener una actitud sin esfuerzo del piloto', 'Aumentar la sustentación', 'Controlar el alanceo', 'Controlar la guiñada'], 0);
+                    add('¿Qué es el "adverse yaw"?',
+                        ['Un movimiento de guiñada en dirección opuesta al alanceo', 'Un movimiento de alanceo en dirección opuesta a la guiñada', 'Un movimiento de cabeceo', 'Un movimiento de guiñada en la misma dirección que el alanceo'], 0);
+                    add('¿Qué hace el elevador cuando el piloto tira de la palanca de control hacia atrás?',
+                        ['El elevador sube y el morro sube', 'El elevador sube y el morro baja', 'El elevador baja y el morro sube', 'El elevador baja y el morro baja'], 0);
+                    add('¿Qué control se utiliza para coordinar un viraje y evitar el "adverse yaw"?',
+                        ['Timón de Dirección (Rudder)', 'Alabes (Ailerons)', 'Elevador (Elevator)', 'Spoilers'], 0);
+                    add('¿Qué es un alabe diferencial?',
+                        ['El alabe que sube se deflecta más que el que baja', 'El alabe que baja se deflecta más que el que sube', 'Los dos alabes se deflectan lo mismo', 'Los alabes se mueven en la misma dirección'], 0);
+                    add('¿Qué es un "stabliator"?',
+                        ['Una superficie de control que combina estabilizador y elevador', 'Un tipo de alabe', 'Un tipo de timón', 'Un tipo de spoiler'], 0);
+                },
+                // 13.1.B
+                () => {
+                    add('¿Qué es el número de Mach?',
+                        ['La relación entre la velocidad verdadera y la velocidad del sonido', 'La relación entre la velocidad verdadera y la velocidad del viento', 'La relación entre la velocidad del sonido y la velocidad verdadera', 'La velocidad del sonido'], 0);
+                    add('¿Qué rango de Mach corresponde al vuelo transónico?',
+                        ['0.8 a 1.2', '0 a 0.8', '1.2 a 2.0', '2.0 a 5.0'], 0);
+                    add('¿Qué es el número Mach crítico?',
+                        ['El Mach al que el flujo local sobre el ala alcanza Mach 1', 'El Mach al que el avión alcanza la velocidad del sonido', 'El Mach máximo de operación', 'El Mach mínimo de operación'], 0);
+                    add('¿Qué efecto tiene el barrido (sweepback) del ala sobre el Mach crítico?',
+                        ['Lo aumenta', 'Lo disminuye', 'No tiene efecto', 'Lo duplica'], 0);
+                    add('¿Qué es una onda de choque normal?',
+                        ['Perpendicular al flujo, reduce la velocidad a subsónica', 'Inclinada respecto al flujo', 'Paralela al flujo', 'No afecta al flujo'], 0);
+                    add('¿Qué es el buffet de compresibilidad?',
+                        ['Vibración causada por la separación del flujo debido a ondas de choque', 'Un aumento de la sustentación', 'Una disminución de la resistencia', 'Un tipo de calentamiento aerodinámico'], 0);
+                    add('¿Qué causa el calentamiento aerodinámico?',
+                        ['La fricción y compresión del aire a altas velocidades', 'La radiación solar', 'La combustión en los motores', 'La electricidad estática'], 0);
+                    add('¿Cuál es el propósito de la regla del área (Area Rule)?',
+                        ['Reducir la resistencia de onda', 'Aumentar la sustentación', 'Mejorar la estabilidad', 'Reducir el peso'], 0);
+                    add('¿Qué es una onda de choque oblicua?',
+                        ['Inclinada respecto al flujo', 'Perpendicular al flujo', 'Paralela al flujo', 'No afecta al flujo'], 0);
+                    add('¿Qué sucede con la velocidad del flujo al pasar a través de una onda de choque normal?',
+                        ['Disminuye a subsónica', 'Aumenta a supersónica', 'Permanece constante', 'Se invierte'], 0);
+                },
+                // 13.1.C
+                () => {
+                    add('¿Qué control del helicóptero cambia el ángulo de ataque de las palas de forma cíclica?',
+                        ['Cíclico (Cyclic)', 'Colectivo (Collective)', 'Pedales Antitorque', 'Acelerador'], 0);
+                    add('¿Qué control del helicóptero cambia el ángulo de ataque de todas las palas simultáneamente?',
+                        ['Colectivo (Collective)', 'Cíclico (Cyclic)', 'Pedales Antitorque', 'Acelerador'], 0);
+                    add('¿Cuál es la función del rotor de cola (antitorque)?',
+                        ['Equilibrar el par de reacción del rotor principal', 'Proporcionar sustentación', 'Controlar el cabeceo', 'Controlar el alanceo'], 0);
+                    add('¿Qué es el plato oscilante (swashplate)?',
+                        ['Un dispositivo que transmite los movimientos de los controles a las palas', 'Un componente del motor', 'Un tipo de rotor', 'Un sistema de combustible'], 0);
+                    add('¿Qué es el efecto suelo (ground effect) en un helicóptero?',
+                        ['Un aumento de la sustentación cuando el helicóptero está cerca del suelo', 'Una disminución de la sustentación cuando el helicóptero está cerca del suelo', 'Un efecto que solo ocurre en vuelo estacionario', 'Un efecto que solo ocurre en vuelo de traslación'], 0);
+                    add('¿Qué es la autorrotación en un helicóptero?',
+                        ['Un descenso con los motores apagados', 'Un ascenso con los motores apagados', 'Un vuelo estacionario', 'Un vuelo de traslación'], 0);
+                    add('¿Qué es la disimetría de sustentación?',
+                        ['La diferencia de sustentación entre la pala que avanza y la que retrocede', 'La diferencia de sustentación entre el rotor principal y el de cola', 'La diferencia de sustentación entre el helicóptero y un avión', 'La diferencia de sustentación entre el extradós y el intradós'], 0);
+                    add('¿Qué es el "flapping" de las palas del rotor?',
+                        ['El movimiento vertical de las palas', 'El movimiento horizontal de las palas', 'El movimiento de torsión de las palas', 'El movimiento de balanceo de las palas'], 0);
+                    add('¿Qué es el estado de vórtice anular (VRS)?',
+                        ['Una condición peligrosa en descenso donde el rotor entra en su propia estela', 'Una condición de vuelo estacionario', 'Una condición de vuelo de traslación', 'Una condición de autorrotación'], 0);
+                    add('¿Qué es el "droop" transitorio?',
+                        ['La caída inicial de las RPM del rotor al aumentar el paso colectivo', 'La caída de las RPM del rotor al disminuir el paso colectivo', 'El aumento de las RPM del rotor al aumentar el paso colectivo', 'La estabilización de las RPM del rotor'], 0);
+                },
+                // 13.2.A
+                () => {
+                    add('¿Qué es una estructura primaria?',
+                        ['Soporta cargas de vuelo, suelo y presurización', 'Soporta sistemas y equipos', 'Soporta cargas limitadas', 'No soporta cargas'], 0);
+                    add('¿Qué es una estructura secundaria?',
+                        ['Soporta sistemas y equipos', 'Soporta cargas de vuelo', 'Soporta cargas limitadas', 'No soporta cargas'], 0);
+                    add('¿Qué significa el concepto "Fail Safe"?',
+                        ['La estructura puede tolerar el fallo de un componente', 'La estructura tiene una vida útil definida', 'La estructura puede resistir daños hasta su detección', 'La estructura no puede fallar'], 0);
+                    add('¿Qué significa el concepto "Safe Life"?',
+                        ['La estructura tiene una vida útil definida', 'La estructura puede tolerar el fallo de un componente', 'La estructura puede resistir daños hasta su detección', 'La estructura no tiene límite de vida'], 0);
+                    add('¿Qué significa el concepto "Damage Tolerance"?',
+                        ['La estructura puede resistir daños hasta que sean detectados', 'La estructura tiene una vida útil definida', 'La estructura puede tolerar el fallo de un componente', 'La estructura no puede dañarse'], 0);
+                    add('¿Qué tipo de esfuerzo es una combinación de tensión y compresión?',
+                        ['Flexión (Bending)', 'Torsión (Torsion)', 'Cortadura (Shear)', 'Fatiga'], 0);
+                    add('¿Qué es la fatiga en un material?',
+                        ['Deterioro por cargas cíclicas', 'Deformación permanente', 'Rotura por una sola carga', 'Deformación elástica'], 0);
+                    add('¿Qué es una "Station Line" (STA)?',
+                        ['Medida longitudinal desde un punto de referencia', 'Medida lateral desde la línea central', 'Medida vertical desde un punto de referencia', 'Un código de zona'], 0);
+                    add('¿Qué es una "Buttock Line" (BL)?',
+                        ['Medida lateral desde la línea central', 'Medida longitudinal desde un punto de referencia', 'Medida vertical desde un punto de referencia', 'Un código de zona'], 0);
+                    add('¿Qué es una "Water Line" (WL)?',
+                        ['Medida vertical desde un punto de referencia', 'Medida longitudinal desde un punto de referencia', 'Medida lateral desde la línea central', 'Un código de zona'], 0);
+                },
+                // 13.3.A
+                () => {
+                    add('¿Qué es un autopilot (AFCS)?',
+                        ['Un sistema que conduce el vuelo de forma automática', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de combustible'], 0);
+                    add('¿Qué componente del autopilot procesa las señales y genera comandos?',
+                        ['FCC (Flight Control Computer)', 'Actuadores (Servos)', 'Sensores', 'Panel de Control (MCP)'], 0);
+                    add('¿Qué canal del autopilot controla el alanceo?',
+                        ['Canal de Roll', 'Canal de Pitch', 'Canal de Yaw', 'Canal de Thrust'], 0);
+                    add('¿Qué canal del autopilot controla el cabeceo?',
+                        ['Canal de Pitch', 'Canal de Roll', 'Canal de Yaw', 'Canal de Thrust'], 0);
+                    add('¿Qué es un Yaw Damper?',
+                        ['Amortigua las oscilaciones de guiñada (Dutch roll)', 'Controla la altitud', 'Controla la velocidad', 'Controla el rumbo'], 0);
+                    add('¿Qué es el Auto-Throttle?',
+                        ['Controla automáticamente el empuje de los motores', 'Controla la altitud', 'Controla el rumbo', 'Controla el alanceo'], 0);
+                    add('¿Qué sistema se utiliza para un aterrizaje automático?',
+                        ['ILS (Instrument Landing System)', 'VOR', 'DME', 'GPS'], 0);
+                    add('¿Qué es el panel MCP (Mode Control Panel)?',
+                        ['El panel donde el piloto selecciona los modos del autopilot', 'El panel de control de los motores', 'El panel de control de la iluminación', 'El panel de control de la navegación'], 0);
+                    add('¿Qué es un sistema fail-passive?',
+                        ['Un sistema que puede fallar sin comprometer la seguridad', 'Un sistema que sigue funcionando tras un fallo', 'Un sistema que no puede fallar', 'Un sistema que requiere intervención del piloto'], 0);
+                    add('¿Qué es un sistema fail-operational?',
+                        ['Un sistema que sigue funcionando tras un fallo', 'Un sistema que puede fallar sin comprometer la seguridad', 'Un sistema que no puede fallar', 'Un sistema que requiere intervención del piloto'], 0);
+                },
+                // 13.4.A
+                () => {
+                    add('¿Cuál es la velocidad de propagación de las ondas electromagnéticas?',
+                        ['300,000 km/s', '340 m/s', '1,000 km/s', '150,000 km/s'], 0);
+                    add('¿Qué banda de frecuencia se utiliza para las comunicaciones VHF?',
+                        ['30-300 MHz', '3-30 MHz', '300-3000 MHz', '3-30 GHz'], 0);
+                    add('¿Qué tipo de ondas se propagan siguiendo la curvatura de la Tierra?',
+                        ['Ondas de Superficie (Ground Waves)', 'Ondas de Cielo (Sky Waves)', 'Ondas Directas (Line of Sight)', 'Ondas de Radio'], 0);
+                    add('¿Qué tipo de antena es omni-direccional?',
+                        ['Vertical (Whip)', 'Dipolo', 'Bucle (Loop)', 'Yagi'], 0);
+                    add('¿Qué es un radomo?',
+                        ['Una cubierta protectora para antenas', 'Un tipo de antena', 'Una línea de transmisión', 'Un amplificador'], 0);
+                    add('¿Qué tipo de línea de transmisión utiliza un conductor central apantallado?',
+                        ['Coaxial', 'Bifilar', 'Microstrip', 'Stripline'], 0);
+                    add('¿Qué es la Relación de Onda Estacionaria (SWR)?',
+                        ['Indica el grado de adaptación de la línea', 'Indica la potencia transmitida', 'Indica la frecuencia de la señal', 'Indica la ganancia de la antena'], 0);
+                    add('¿Qué banda de frecuencia se utiliza para el radar y el MLS?',
+                        ['SHF (3-30 GHz)', 'VHF (30-300 MHz)', 'UHF (300-3000 MHz)', 'HF (3-30 MHz)'], 0);
+                    add('¿Qué es la modulación AM?',
+                        ['Modulación de amplitud', 'Modulación de frecuencia', 'Modulación de fase', 'Modulación de pulso'], 0);
+                    add('¿Qué es la modulación FM?',
+                        ['Modulación de frecuencia', 'Modulación de amplitud', 'Modulación de fase', 'Modulación de pulso'], 0);
+                },
+                // 13.4.B
+                () => {
+                    add('¿Qué banda de frecuencia utiliza el sistema VHF para comunicaciones?',
+                        ['118-137 MHz', '2-30 MHz', '960-1215 MHz', '108-112 MHz'], 0);
+                    add('¿Qué tipo de modulación se utiliza en las comunicaciones VHF?',
+                        ['AM', 'FM', 'SSB', 'PCM'], 0);
+                    add('¿Qué sistema se utiliza para comunicaciones de larga distancia?',
+                        ['HF', 'VHF', 'UHF', 'SHF'], 0);
+                    add('¿Qué tipo de modulación se utiliza en HF?',
+                        ['SSB (Banda Lateral Única)', 'AM', 'FM', 'PCM'], 0);
+                    add('¿Qué es el ELT (Emergency Locator Transmitter)?',
+                        ['Un transmisor de localización de emergencia', 'Un sistema de comunicación', 'Un sistema de navegación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué frecuencia utiliza el ELT para la señal de socorro analógica?',
+                        ['121.5 MHz', '406 MHz', '243 MHz', '1090 MHz'], 0);
+                    add('¿Qué es el FDR (Flight Data Recorder)?',
+                        ['Registra parámetros de vuelo', 'Registra las comunicaciones de la cabina', 'Registra los datos de mantenimiento', 'Registra los datos de navegación'], 0);
+                    add('¿Qué es el CVR (Cockpit Voice Recorder)?',
+                        ['Registra las comunicaciones y sonidos en la cabina', 'Registra los parámetros de vuelo', 'Registra los datos de mantenimiento', 'Registra los datos de navegación'], 0);
+                    add('¿Qué es el sistema de audio (Audio Integration System)?',
+                        ['Permite a la tripulación seleccionar y controlar las comunicaciones', 'Un sistema de entretenimiento', 'Un sistema de navegación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es el SELCAL?',
+                        ['Un sistema de llamada selectiva', 'Un sistema de comunicación VHF', 'Un sistema de navegación', 'Un sistema de mantenimiento'], 0);
+                },
+                // 13.4.C
+                () => {
+                    add('¿Qué es el NDB (Non-Directional Beacon)?',
+                        ['Una estación terrestre que transmite en LF/MF', 'Un equipo de abordo para medir el rumbo', 'Un sistema de navegación por satélite', 'Un sistema de aterrizaje'], 0);
+                    add('¿Qué es el ADF (Automatic Direction Finder)?',
+                        ['Un equipo de abordo que mide el rumbo relativo a una NDB', 'Una estación terrestre', 'Un sistema de navegación por satélite', 'Un sistema de aterrizaje'], 0);
+                    add('¿Qué es el VOR (VHF Omni-directional Range)?',
+                        ['Un sistema de navegación que emite radiales', 'Un sistema de medición de distancia', 'Un sistema de aterrizaje', 'Un sistema de comunicación'], 0);
+                    add('¿Qué es el DME (Distance Measuring Equipment)?',
+                        ['Mide la distancia oblicua a una estación', 'Un sistema de navegación que emite radiales', 'Un sistema de aterrizaje', 'Un sistema de comunicación'], 0);
+                    add('¿Qué proporciona el Localizador (LOC) del ILS?',
+                        ['Guía lateral (desviación de la línea de centro)', 'Guía vertical (trayectoria de descenso)', 'Información de distancia', 'Información meteorológica'], 0);
+                    add('¿Qué proporciona el Glide Slope (GS) del ILS?',
+                        ['Guía vertical (trayectoria de descenso)', 'Guía lateral (desviación de la línea de centro)', 'Información de distancia', 'Información meteorológica'], 0);
+                    add('¿Cuál es la altura de decisión (DH) para un ILS CAT I?',
+                        ['200 ft', '100 ft', '50 ft', '0 ft'], 0);
+                    add('¿Qué es el MLS (Microwave Landing System)?',
+                        ['Un sistema de aterrizaje por microondas', 'Un sistema de navegación por satélite', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué son los marcadores (Marker Beacons) del ILS?',
+                        ['Proporcionan información de distancia durante la aproximación', 'Proporcionan guía lateral', 'Proporcionan guía vertical', 'Proporcionan información meteorológica'], 0);
+                    add('¿Qué es el "back course" en el ILS?',
+                        ['La aproximación en dirección opuesta a la normal', 'La trayectoria de descenso', 'La línea de centro de la pista', 'El marcador exterior'], 0);
+                },
+                // 13.4.D
+                () => {
+                    add('¿Qué es el GPS (Global Positioning System)?',
+                        ['Un sistema de navegación por satélite', 'Un sistema de comunicación', 'Un sistema de aterrizaje', 'Un sistema de mantenimiento'], 0);
+                    add('¿Cuántos satélites se necesitan para calcular una posición 3D en GPS?',
+                        ['4', '3', '2', '1'], 0);
+                    add('¿Qué es el INS (Inertial Navigation System)?',
+                        ['Un sistema de navegación autónomo', 'Un sistema de navegación por satélite', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es el TCAS (Traffic Collision Avoidance System)?',
+                        ['Un sistema para evitar colisiones con otras aeronaves', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es una TA (Traffic Advisory) en el TCAS?',
+                        ['Advertencia de tráfico', 'Advertencia de resolución (maniobra evasiva)', 'Advertencia de colisión', 'Advertencia de proximidad al terreno'], 0);
+                    add('¿Qué es una RA (Resolution Advisory) en el TCAS?',
+                        ['Advertencia de resolución (maniobra evasiva)', 'Advertencia de tráfico', 'Advertencia de colisión', 'Advertencia de proximidad al terreno'], 0);
+                    add('¿Qué detecta el radar meteorológico (Weather Radar)?',
+                        ['Precipitaciones y turbulencias', 'Otras aeronaves', 'El terreno', 'Las balizas de navegación'], 0);
+                    add('¿Qué mide el radio altímetro (Radio Altimeter)?',
+                        ['La altura sobre el terreno', 'La altitud barométrica', 'La velocidad vertical', 'La velocidad horizontal'], 0);
+                    add('¿Qué es el DGPS?',
+                        ['Un sistema de aumentación que mejora la precisión del GPS', 'Un sistema de navegación autónomo', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es el WAAS?',
+                        ['Un sistema de aumentación para GPS en Norteamérica', 'Un sistema de navegación autónomo', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                },
+                // 13.5.A
+                () => {
+                    add('¿Qué tipo de batería tiene la mayor densidad de energía?',
+                        ['Plata-Zinc', 'Plomo-Ácido', 'Níquel-Cadmio', 'Litio-Ion'], 0);
+                    add('¿Qué es un IDG (Integrated Drive Generator)?',
+                        ['Un generador AC con CSD integrado', 'Un generador DC', 'Una batería', 'Un inversor'], 0);
+                    add('¿Qué es un RAT (Ram Air Turbine)?',
+                        ['Una turbina accionada por el flujo de aire', 'Un generador accionado por el motor', 'Una batería', 'Un inversor'], 0);
+                    add('¿Qué es un disyuntor (circuit breaker)?',
+                        ['Un dispositivo de protección que se puede restablecer', 'Un fusible que se quema', 'Un interruptor manual', 'Un relé'], 0);
+                    add('¿Cuál es la frecuencia estándar de la AC en un avión?',
+                        ['400 Hz', '50 Hz', '60 Hz', '100 Hz'], 0);
+                    add('¿Qué es un CSD (Constant Speed Drive)?',
+                        ['Mantiene la velocidad del generador constante', 'Convierte DC a AC', 'Rectifica AC a DC', 'Regula el voltaje'], 0);
+                    add('¿Qué es una EPU (Emergency Power Unit)?',
+                        ['Una turbina de hidracina para emergencias', 'Una batería de emergencia', 'Un generador accionado por el motor', 'Un inversor'], 0);
+                    add('¿Qué tipo de generador se utiliza para producir AC?',
+                        ['Alternador', 'Dínamo', 'Batería', 'Inversor'], 0);
+                    add('¿Qué tipo de generador se utiliza para producir DC?',
+                        ['Dínamo', 'Alternador', 'Batería', 'Inversor'], 0);
+                    add('¿Qué es un bus-bar?',
+                        ['Una barra de cobre que distribuye la energía eléctrica', 'Un cable de alimentación', 'Un disyuntor', 'Un generador'], 0);
+                },
+                // 13.6.A
+                () => {
+                    add('¿Qué es un chaleco salvavidas?',
+                        ['Un dispositivo de flotación para cada pasajero', 'Un extintor', 'Una rampa de evacuación', 'Un botiquín'], 0);
+                    add('¿Qué es una rampa de evacuación (escape slide)?',
+                        ['Una rampa que se infla al abrir la puerta en modo armado', 'Un dispositivo de flotación', 'Un extintor', 'Un chaleco salvavidas'], 0);
+                    add('¿Qué tipo de extintor se utiliza generalmente en la cabina?',
+                        ['Halon', 'Agua', 'CO2', 'Polvo Químico'], 0);
+                    add('¿Qué es un botiquín de primeros auxilios?',
+                        ['Un kit de material médico', 'Un extintor', 'Un chaleco salvavidas', 'Una rampa de evacuación'], 0);
+                    add('¿Qué es el IFE (In-Flight Entertainment)?',
+                        ['El sistema de entretenimiento a bordo', 'El sistema de comunicación', 'El sistema de navegación', 'El sistema de mantenimiento'], 0);
+                    add('¿Qué es el AVOD (Audio-Video on Demand)?',
+                        ['Un sistema que permite seleccionar contenidos de audio y vídeo', 'Un sistema de comunicación', 'Un sistema de navegación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es un PTV (Personal Television)?',
+                        ['Una televisión personal en cada asiento', 'Un sistema de comunicación', 'Un sistema de navegación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es un arnés de seguridad de 5 puntos?',
+                        ['Un arnés con dos hombros, dos caderas y entrepierna', 'Un arnés de 2 puntos', 'Un arnés de 3 puntos', 'Un arnés de 4 puntos'], 0);
+                    add('¿Qué es una balsa salvavidas?',
+                        ['Una balsa para emergencias sobre agua', 'Un chaleco salvavidas', 'Una rampa de evacuación', 'Un botiquín'], 0);
+                    add('¿Qué es un ELT (Emergency Locator Transmitter)?',
+                        ['Un transmisor de localización de emergencia', 'Un extintor', 'Un chaleco salvavidas', 'Una rampa de evacuación'], 0);
+                },
+                // 13.7.A
+                () => {
+                    add('¿Qué sistema de control de vuelo utiliza cables y poleas?',
+                        ['Manual (Mecánico)', 'Hidráulico', 'Eléctrico', 'Fly-by-Wire'], 0);
+                    add('¿Qué sistema de control de vuelo utiliza actuadores hidráulicos?',
+                        ['Hidráulico', 'Manual (Mecánico)', 'Eléctrico', 'Fly-by-Wire'], 0);
+                    add('¿Qué sistema de control de vuelo utiliza señales eléctricas procesadas por computadoras?',
+                        ['Fly-by-Wire (FBW)', 'Hidráulico', 'Manual (Mecánico)', 'Eléctrico'], 0);
+                    add('¿Qué es un "Yaw Damper"?',
+                        ['Amortigua las oscilaciones de guiñada (Dutch roll)', 'Amortigua las oscilaciones de cabeceo', 'Amortigua las oscilaciones de alanceo', 'Controla la dirección en tierra'], 0);
+                    add('¿Qué es un "Mach Trim"?',
+                        ['Compensa el cambio de centro de presión a altas velocidades', 'Compensa el cambio de centro de gravedad', 'Controla la velocidad del motor', 'Amortigua las oscilaciones de guiñada'], 0);
+                    add('¿Qué es un "Stick Shaker"?',
+                        ['Vibra la columna para avisar de una pérdida inminente', 'Empuja la columna para evitar la pérdida', 'Indica la velocidad', 'Indica el ángulo de ataque'], 0);
+                    add('¿Qué es un "Stick Pusher"?',
+                        ['Empuja la columna para evitar la pérdida', 'Vibra la columna para avisar de una pérdida inminente', 'Indica la velocidad', 'Indica el ángulo de ataque'], 0);
+                    add('¿Qué es un limitador de timón (rudder limiter)?',
+                        ['Reduce la deflexión del timón a altas velocidades', 'Aumenta la deflexión del timón a altas velocidades', 'Bloquea el timón en tierra', 'Controla la dirección en tierra'], 0);
+                    add('¿Qué es un compensador (trim tab)?',
+                        ['Ayuda a mantener una actitud sin esfuerzo del piloto', 'Aumenta la sustentación', 'Controla el alanceo', 'Controla la guiñada'], 0);
+                    add('¿Qué es un servo-compensador?',
+                        ['Ayuda a mover la superficie de control', 'Ayuda a mantener una actitud sin esfuerzo', 'Aumenta la sustentación', 'Controla el alanceo'], 0);
+                },
+                // 13.8.A
+                () => {
+                    add('¿Qué instrumento utiliza la presión estática para medir la altitud?',
+                        ['Altímetro', 'Indicador de Velocidad (ASI)', 'Variómetro (VSI)', 'Horizonte Artificial'], 0);
+                    add('¿Qué instrumento utiliza la presión dinámica para medir la velocidad?',
+                        ['Indicador de Velocidad (ASI)', 'Altímetro', 'Variómetro (VSI)', 'Horizonte Artificial'], 0);
+                    add('¿Qué instrumento mide la velocidad vertical?',
+                        ['Variómetro (VSI)', 'Altímetro', 'Indicador de Velocidad (ASI)', 'Horizonte Artificial'], 0);
+                    add('¿Qué es un horizonte artificial (ADI)?',
+                        ['Indica la actitud del avión', 'Indica el rumbo', 'Indica la velocidad', 'Indica la altitud'], 0);
+                    add('¿Qué es un PFD (Primary Flight Display)?',
+                        ['Muestra la información de vuelo principal', 'Muestra la información de navegación', 'Muestra los parámetros del motor', 'Muestra los sistemas de la aeronave'], 0);
+                    add('¿Qué es un ND (Navigation Display)?',
+                        ['Muestra la información de navegación', 'Muestra la información de vuelo principal', 'Muestra los parámetros del motor', 'Muestra los sistemas de la aeronave'], 0);
+                    add('¿Qué es el GPWS?',
+                        ['Un sistema que advierte de la proximidad al terreno', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es la brújula magnética?',
+                        ['Un instrumento que utiliza el campo magnético terrestre', 'Un instrumento giróscopo', 'Un instrumento pitot-estático', 'Un instrumento de navegación por satélite'], 0);
+                    add('¿Qué es el EGPWS?',
+                        ['Un GPWS mejorado con base de datos de terreno', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es un giróscopo?',
+                        ['Un dispositivo que mantiene su eje de rotación fijo en el espacio', 'Un instrumento de presión', 'Un instrumento de temperatura', 'Un instrumento de navegación por satélite'], 0);
+                },
+                // 13.9.A
+                () => {
+                    add('¿De qué color es la luz de navegación del lado izquierdo (babor)?',
+                        ['Roja', 'Verde', 'Blanca', 'Ámbar'], 0);
+                    add('¿De qué color es la luz de navegación del lado derecho (estribor)?',
+                        ['Verde', 'Roja', 'Blanca', 'Ámbar'], 0);
+                    add('¿Qué tipo de luz es un "strobe"?',
+                        ['Una luz blanca intermitente', 'Una luz roja intermitente', 'Una luz fija blanca', 'Una luz fija roja'], 0);
+                    add('¿Qué es una luz de aterrizaje?',
+                        ['Una luz potente para iluminar la pista', 'Una luz para rodar', 'Una luz de inspección de alas', 'Una luz de logotipo'], 0);
+                    add('¿Qué es una luz de rodaje (taxi light)?',
+                        ['Una luz para iluminar la pista durante el rodaje', 'Una luz potente para aterrizar', 'Una luz de inspección de alas', 'Una luz de logotipo'], 0);
+                    add('¿Qué son las luces de emergencia en la cabina?',
+                        ['Señalización de salidas y pasillos', 'Luces de lectura', 'Luces generales', 'Luces de la tripulación'], 0);
+                    add('¿Qué tipo de lámpara utiliza un filamento de tungsteno?',
+                        ['Incandescente', 'Halógena', 'Fluorescente', 'LED'], 0);
+                    add('¿Qué tipo de lámpara es más eficiente y duradera?',
+                        ['LED', 'Incandescente', 'Halógena', 'Fluorescente'], 0);
+                    add('¿Qué es una luz de logotipo?',
+                        ['Ilumina el logotipo de la aerolínea en el estabilizador vertical', 'Ilumina la pista', 'Ilumina las alas', 'Ilumina la cabina'], 0);
+                    add('¿Qué color se utiliza para las luces de advertencia de peligro?',
+                        ['Rojo', 'Ámbar', 'Verde', 'Blanco'], 0);
+                },
+                // 13.10.A
+                () => {
+                    add('¿Qué es una CMC (Central Maintenance Computer)?',
+                        ['Una computadora central de mantenimiento', 'Una computadora de vuelo', 'Una computadora de navegación', 'Una computadora de entretenimiento'], 0);
+                    add('¿Qué es el BITE (Built-In Test Equipment)?',
+                        ['Pruebas integradas en los equipos', 'Un software de mantenimiento', 'Un hardware de mantenimiento', 'Un manual de mantenimiento'], 0);
+                    add('¿Qué es un mensaje de mantenimiento?',
+                        ['Un código que indica un fallo específico', 'Un mensaje para el piloto', 'Un mensaje para los pasajeros', 'Un mensaje para el control de tráfico'], 0);
+                    add('¿Qué es un MCDU (Multipurpose Control Display Unit)?',
+                        ['Una unidad de control y visualización multipropósito', 'Una pantalla de vuelo', 'Un teclado', 'Una impresora'], 0);
+                    add('¿Qué es un sistema de carga de datos?',
+                        ['Permite cargar software y bases de datos', 'Permite cargar combustible', 'Permite cargar pasajeros', 'Permite cargar carga'], 0);
+                    add('¿Qué es un sistema de biblioteca electrónica?',
+                        ['Proporciona acceso a manuales y procedimientos en formato digital', 'Proporciona acceso a libros de entretenimiento', 'Proporciona acceso a mapas', 'Proporciona acceso a datos de vuelo'], 0);
+                    add('¿Qué es una impresora ACARS?',
+                        ['Imprime informes de mantenimiento y mensajes ACARS', 'Imprime los mapas de vuelo', 'Imprime los boletos de los pasajeros', 'Imprime los manifiestos de carga'], 0);
+                    add('¿Qué es un Flight Data Recorder (FDR)?',
+                        ['Registra los parámetros de vuelo', 'Registra las conversaciones de la cabina', 'Registra los datos de mantenimiento', 'Registra los datos de navegación'], 0);
+                    add('¿Qué es un Cockpit Voice Recorder (CVR)?',
+                        ['Registra las conversaciones de la cabina', 'Registra los parámetros de vuelo', 'Registra los datos de mantenimiento', 'Registra los datos de navegación'], 0);
+                    add('¿Qué es el sistema de gestión de fallos (Fault Management)?',
+                        ['Gestiona los fallos para ayudar en el diagnóstico', 'Registra los fallos', 'Muestra los fallos', 'Repara los fallos'], 0);
+                },
+                // 13.11.A
+                () => {
+                    add('¿De dónde se obtiene el aire para el sistema de aire acondicionado en vuelo?',
+                        ['Del sangrado del compresor del motor', 'Del aire exterior (ram air)', 'De la APU', 'De una unidad de tierra'], 0);
+                    add('¿Qué es una máquina de ciclo de aire (Air Cycle Machine)?',
+                        ['Un sistema que utiliza el ciclo de Bootstrap para enfriar el aire', 'Un sistema que utiliza un refrigerante', 'Un compresor de aire', 'Un ventilador'], 0);
+                    add('¿Qué es la altitud de cabina (cabin altitude)?',
+                        ['La presión equivalente en el interior de la cabina', 'La altitud real del avión', 'La presión exterior', 'La temperatura de la cabina'], 0);
+                    add('¿Qué controla la presión de la cabina?',
+                        ['La válvula de salida (Outflow Valve)', 'La válvula de seguridad (Safety Valve)', 'El compresor del motor', 'El sistema de aire acondicionado'], 0);
+                    add('¿Qué es una válvula de seguridad (Safety Valve)?',
+                        ['Se abre si la presión diferencial es excesiva', 'Controla la presión de la cabina', 'Proporciona aire a la cabina', 'Drena el agua de los tanques'], 0);
+                    add('¿Qué es el ciclo de Bootstrap?',
+                        ['Un ciclo de refrigeración con dos compresiones y dos expansiones', 'Un ciclo de refrigeración simple', 'Un ciclo de calentamiento', 'Un ciclo de presión constante'], 0);
+                    add('¿Cuál es la presión diferencial máxima típica en un avión comercial?',
+                        ['6-9 psi', '1-2 psi', '15-20 psi', '30-40 psi'], 0);
+                    add('¿Qué es una máquina de ciclo de vapor (Vapor Cycle)?',
+                        ['Un sistema que utiliza un refrigerante para enfriar el aire', 'Un sistema que utiliza el ciclo de Bootstrap', 'Un compresor de aire', 'Un ventilador'], 0);
+                    add('¿Qué es el sangrado de motor (engine bleed)?',
+                        ['Aire tomado del compresor para otros sistemas', 'Aire tomado del escape del motor', 'Aire tomado del exterior', 'Aire tomado de la APU'], 0);
+                    add('¿Qué es una APU (Auxiliary Power Unit)?',
+                        ['Una unidad de potencia auxiliar que proporciona energía en tierra', 'Un motor principal', 'Un compresor de aire', 'Un generador eléctrico'], 0);
+                },
+                // 13.12.A
+                () => {
+                    add('¿Qué tipo de detector se utiliza para detectar humo?',
+                        ['Detector de humo (fotoeléctrico o de ionización)', 'Detector térmico', 'Detector de sobrecalentamiento', 'Detector de llama'], 0);
+                    add('¿Qué tipo de detector se utiliza para detectar temperaturas excesivas?',
+                        ['Detector térmico', 'Detector de humo', 'Detector de sobrecalentamiento', 'Detector de llama'], 0);
+                    add('¿Qué extintor se utiliza generalmente en los motores?',
+                        ['Sistema fijo de Halon', 'Extintor portátil de agua', 'Extintor portátil de CO2', 'Extintor portátil de polvo'], 0);
+                    add('¿Qué es un detector de sobrecalentamiento (overheat)?',
+                        ['Detecta temperaturas excesivas en los motores', 'Detecta humo', 'Detecta fuego', 'Detecta gases tóxicos'], 0);
+                    add('¿Qué es el Halon?',
+                        ['Un agente extintor que interfiere en la reacción química del fuego', 'Un agente extintor que enfría', 'Un agente extintor que sofoca', 'Un agente extintor a base de agua'], 0);
+                    add('¿Qué áreas del avión están protegidas con detectores de incendios?',
+                        ['Motores, APU, bodegas de carga y baños', 'Solo los motores', 'Solo las bodegas de carga', 'Solo los baños'], 0);
+                    add('¿Qué es un detector de humo de tipo fotoeléctrico?',
+                        ['Detecta partículas de humo mediante un haz de luz', 'Detecta partículas de humo mediante ionización', 'Detecta un aumento de temperatura', 'Detecta una llama'], 0);
+                    add('¿Qué es un detector de humo de tipo iónico?',
+                        ['Detecta partículas de humo mediante ionización', 'Detecta partículas de humo mediante un haz de luz', 'Detecta un aumento de temperatura', 'Detecta una llama'], 0);
+                    add('¿Cuál es la función de los detectores de incendios en los baños?',
+                        ['Detectar humo en los contenedores de toallas', 'Detectar sobrecalentamiento', 'Detectar fugas de agua', 'Detectar incendios en el motor'], 0);
+                    add('¿Qué es un detector de sobrecalentamiento en el tren de aterrizaje?',
+                        ['Detecta sobrecalentamiento de los frenos', 'Detecta humo', 'Detecta incendios', 'Detecta fugas de fluido hidráulico'], 0);
+                },
+                // 13.13.A
+                () => {
+                    add('¿Qué tipo de tanque de combustible es parte de la estructura del ala?',
+                        ['Tanque Integral', 'Tanque Flexible', 'Tanque Rígido', 'Tanque Externo'], 0);
+                    add('¿Qué tipo de tanque de combustible es una bolsa de goma/nylon?',
+                        ['Tanque Flexible', 'Tanque Integral', 'Tanque Rígido', 'Tanque Externo'], 0);
+                    add('¿Qué es una bomba de combustible de transferencia?',
+                        ['Transfiere combustible entre tanques', 'Alimenta el motor', 'Aumenta la presión del combustible', 'Filtra el combustible'], 0);
+                    add('¿Qué es una válvula de cruce (cross-feed)?',
+                        ['Permite alimentar cualquier motor desde cualquier tanque', 'Permite transferir combustible entre tanques', 'Aísla un tanque', 'Corta el flujo de combustible'], 0);
+                    add('¿Qué es el reabastecimiento presurizado?',
+                        ['A través de un panel de servicio único', 'A través de la boca del tanque', 'Por gravedad', 'Con una bomba manual'], 0);
+                    add('¿Qué es el vaciado de combustible en vuelo (dumping)?',
+                        ['Se utiliza para reducir el peso en caso de emergencia', 'Se utiliza para transferir combustible', 'Se utiliza para reabastecer', 'Se utiliza para ventilar los tanques'], 0);
+                    add('¿Qué es la ventilación de los tanques de combustible?',
+                        ['Equilibra la presión de los tanques', 'Elimina el combustible', 'Añade combustible', 'Filtra el combustible'], 0);
+                    add('¿Qué es un filtro de combustible?',
+                        ['Elimina impurezas del combustible', 'Aumenta la presión del combustible', 'Regula el flujo de combustible', 'Almacena el combustible'], 0);
+                    add('¿Qué es el drenaje de agua de los tanques?',
+                        ['Se drena el agua acumulada en el fondo de los tanques', 'Se drena el combustible', 'Se ventila el tanque', 'Se filtra el combustible'], 0);
+                    add('¿Qué es una bomba de combustible impulsora (boost pump)?',
+                        ['Alimenta el motor con combustible a presión', 'Transfiere combustible entre tanques', 'Aumenta la presión del combustible', 'Filtra el combustible'], 0);
+                },
+                // 13.14.A
+                () => {
+                    add('¿Qué fluido hidráulico es resistente al fuego pero muy corrosivo?',
+                        ['Skydrol', 'Aceite mineral', 'Agua', 'Fluido de frenos'], 0);
+                    add('¿Qué es un acumulador hidráulico?',
+                        ['Almacena energía hidráulica', 'Filtra el fluido hidráulico', 'Regula la presión hidráulica', 'Distribuye el fluido hidráulico'], 0);
+                    add('¿Qué es una bomba hidráulica de pistones axiales?',
+                        ['Una bomba de desplazamiento variable', 'Una bomba de engranajes', 'Una bomba de paletas', 'Una bomba centrífuga'], 0);
+                    add('¿Qué es una válvula de alivio (relief valve)?',
+                        ['Protege contra sobrepresión', 'Controla la dirección del fluido', 'Aísla un componente', 'Regula el flujo'], 0);
+                    add('¿Qué es un actuador hidráulico (jack)?',
+                        ['Convierte la presión hidráulica en movimiento mecánico', 'Almacena energía hidráulica', 'Filtra el fluido hidráulico', 'Regula la presión hidráulica'], 0);
+                    add('¿Qué es un filtro hidráulico?',
+                        ['Elimina impurezas del fluido', 'Almacena energía hidráulica', 'Regula la presión hidráulica', 'Controla la dirección del fluido'], 0);
+                    add('¿Qué es una RAT en el sistema hidráulico?',
+                        ['Una turbina accionada por el flujo de aire para emergencias', 'Un generador hidráulico', 'Una bomba hidráulica', 'Un acumulador'], 0);
+                    add('¿Qué es una válvula selectora?',
+                        ['Dirige el flujo de fluido a los actuadores', 'Protege contra sobrepresión', 'Filtra el fluido', 'Almacena energía'], 0);
+                    add('¿Cuál es la presión típica de un sistema hidráulico de avión comercial?',
+                        ['3000 psi', '1000 psi', '5000 psi', '100 psi'], 0);
+                    add('¿Qué es un manómetro de presión hidráulica?',
+                        ['Mide la presión del fluido', 'Mide la temperatura del fluido', 'Mide el nivel del fluido', 'Mide el flujo del fluido'], 0);
+                },
+                // 13.15.A
+                () => {
+                    add('¿Qué tipo de hielo es transparente y difícil de eliminar?',
+                        ['Hielo Claro (Clear Ice)', 'Hielo Escarcha (Rime Ice)', 'Hielo Mixto', 'Escarcha'], 0);
+                    add('¿Qué tipo de hielo es blanco y opaco?',
+                        ['Hielo Escarcha (Rime Ice)', 'Hielo Claro (Clear Ice)', 'Hielo Mixto', 'Escarcha'], 0);
+                    add('¿Qué sistema anti-hielo utiliza aire caliente del motor?',
+                        ['Sangrado de aire (Bleed Air)', 'Eléctrico', 'Químico', 'Neumático'], 0);
+                    add('¿Qué sistema deshielo utiliza "boots" que se inflan?',
+                        ['Neumático', 'Eléctrico', 'Químico', 'Aire Caliente'], 0);
+                    add('¿Qué es un "weeping wing"?',
+                        ['Un sistema químico que impide la adhesión del hielo', 'Un sistema neumático', 'Un sistema eléctrico', 'Un sistema de aire caliente'], 0);
+                    add('¿Qué es un limpiaparabrisas (wiper)?',
+                        ['Elimina el agua del parabrisas', 'Elimina el hielo del parabrisas', 'Aplica repelente de lluvia', 'Calienta el parabrisas'], 0);
+                    add('¿Qué es un repelente de lluvia?',
+                        ['Un fluido químico que hace que el agua se desprenda', 'Un limpiaparabrisas', 'Un calentador de parabrisas', 'Un sistema de aire'], 0);
+                    add('¿Qué es la protección de sondas (probe heating)?',
+                        ['Calienta las sondas para evitar la formación de hielo', 'Limpia las sondas', 'Repara las sondas', 'Aísla las sondas'], 0);
+                    add('¿Qué es el sistema anti-hielo de los motores?',
+                        ['Calienta el borde de ataque del motor con aire caliente', 'Calienta el motor con electricidad', 'Aplica un fluido químico', 'Utiliza "boots" neumáticos'], 0);
+                    add('¿Qué es el sistema anti-hielo de las alas?',
+                        ['Calienta el borde de ataque del ala con aire caliente', 'Calienta el ala con electricidad', 'Aplica un fluido químico', 'Utiliza "boots" neumáticos'], 0);
+                },
+                // 13.16.A
+                () => {
+                    add('¿Cuál es el tipo de tren de aterrizaje más común en aviones comerciales?',
+                        ['Triciclo', 'Con Rueda de Cola', 'Tándem', 'Biciclo'], 0);
+                    add('¿Qué tipo de amortiguador utiliza aceite y gas (nitrógeno)?',
+                        ['Oleo-Neumático', 'Muelle', 'Fricción', 'Líquido'], 0);
+                    add('¿Cómo se extiende el tren de aterrizaje en caso de emergencia?',
+                        ['Por caída libre por gravedad', 'Por accionamiento hidráulico', 'Por accionamiento eléctrico', 'Por accionamiento manual'], 0);
+                    add('¿Qué tipo de freno se utiliza en la mayoría de los aviones comerciales?',
+                        ['De Disco', 'De Tambor', 'De Banda', 'De Fricción'], 0);
+                    add('¿Qué es el sistema Anti-Skid?',
+                        ['Evita el bloqueo de las ruedas', 'Aplica los frenos automáticamente', 'Controla la dirección', 'Mide la velocidad'], 0);
+                    add('¿Qué es el sistema Autobrake?',
+                        ['Aplica los frenos automáticamente en el aterrizaje', 'Evita el bloqueo de las ruedas', 'Controla la dirección', 'Mide la velocidad'], 0);
+                    add('¿Qué es el sistema de dirección (steering) en aviones grandes?',
+                        ['Hidráulico', 'Mecánico', 'Eléctrico', 'Neumático'], 0);
+                    add('¿Qué es el "shimmy" en el tren de aterrizaje?',
+                        ['Una vibración de las ruedas', 'Un bloqueo de las ruedas', 'Un frenado brusco', 'Un golpe en el aterrizaje'], 0);
+                    add('¿Qué es un amortiguador de shimmy?',
+                        ['Reduce las vibraciones de las ruedas', 'Aplica los frenos', 'Controla la dirección', 'Extiende el tren'], 0);
+                    add('¿Qué es un sensor de peso en rueda (WOW)?',
+                        ['Detecta cuando el avión está en tierra', 'Mide la velocidad de las ruedas', 'Controla los frenos', 'Controla la dirección'], 0);
+                },
+                // 13.17.A
+                () => {
+                    add('¿Por qué es necesario el oxígeno a altas altitudes?',
+                        ['La presión parcial de oxígeno disminuye', 'El aire es más denso', 'La temperatura es más baja', 'La presión es mayor'], 0);
+                    add('¿Qué tipo de máscara de oxígeno se utiliza en la cabina de pasajeros?',
+                        ['Máscaras que caen automáticamente', 'Máscaras de demanda', 'Máscaras de presión', 'Máscaras de piloto'], 0);
+                    add('¿Qué es un generador químico de oxígeno?',
+                        ['Produce oxígeno por reacción química', 'Almacena oxígeno a alta presión', 'Filtra el oxígeno del aire', 'Enfría el oxígeno'], 0);
+                    add('¿Qué es una máscara de demanda?',
+                        ['Proporciona oxígeno solo cuando el usuario inhala', 'Proporciona oxígeno continuamente', 'Proporciona oxígeno bajo presión', 'Proporciona una mezcla de oxígeno y aire'], 0);
+                    add('¿Cuál es la presión típica de una botella de oxígeno?',
+                        ['1850 psi', '100 psi', '3000 psi', '500 psi'], 0);
+                    add('¿Qué es un regulador de oxígeno?',
+                        ['Controla el flujo de oxígeno', 'Almacena oxígeno', 'Filtra el oxígeno', 'Produce oxígeno'], 0);
+                    add('¿Qué es la hipoxia?',
+                        ['Falta de oxígeno en los tejidos', 'Exceso de oxígeno', 'Falta de aire', 'Exceso de CO2'], 0);
+                    add('¿Qué es una máscara de oxígeno de presión?',
+                        ['Proporciona oxígeno a presión positiva', 'Proporciona oxígeno a demanda', 'Proporciona oxígeno continuo', 'Proporciona una mezcla de oxígeno y aire'], 0);
+                    add('¿Qué es un manómetro de oxígeno?',
+                        ['Mide la presión del oxígeno', 'Mide la temperatura del oxígeno', 'Mide el flujo del oxígeno', 'Mide el nivel del oxígeno'], 0);
+                    add('¿A qué altitud se activa automáticamente el despliegue de las máscaras de oxígeno para pasajeros?',
+                        ['14,000 ft', '10,000 ft', '8,000 ft', '18,000 ft'], 0);
+                },
+                // 13.18.A
+                () => {
+                    add('¿Qué sistema utiliza aire comprimido para alimentar otros sistemas?',
+                        ['Sistema Neumático', 'Sistema Hidráulico', 'Sistema Eléctrico', 'Sistema de Combustible'], 0);
+                    add('¿De dónde se obtiene el aire para el sistema neumático?',
+                        ['Sangrado del motor, APU o unidad de tierra', 'De los tanques de combustible', 'Del sistema hidráulico', 'Del sistema eléctrico'], 0);
+                    add('¿Qué es una válvula de sangrado (bleed valve)?',
+                        ['Controla el flujo de aire sangrado del motor', 'Controla la presión del aire', 'Controla la temperatura del aire', 'Aísla el sistema'], 0);
+                    add('¿Qué es una válvula de aislamiento (isolation valve)?',
+                        ['Aísla secciones del sistema neumático', 'Controla el flujo de aire', 'Controla la presión del aire', 'Controla la temperatura del aire'], 0);
+                    add('¿Qué es el sistema de vacío?',
+                        ['Un sistema que produce una presión negativa', 'Un sistema que produce aire comprimido', 'Un sistema que produce electricidad', 'Un sistema que produce hidráulica'], 0);
+                    add('¿Qué instrumentos utiliza el sistema de vacío en aviones ligeros?',
+                        ['Giróscopos (horizonte artificial, indicador de dirección)', 'Altímetro', 'Indicador de velocidad', 'Variómetro'], 0);
+                    add('¿Qué es una bomba de vacío?',
+                        ['Una bomba accionada por el motor que produce vacío', 'Una bomba de aire comprimido', 'Una bomba hidráulica', 'Una bomba de combustible'], 0);
+                    add('¿Qué es un sistema de detección de fugas (leak detection) en el sistema neumático?',
+                        ['Detecta fugas de aire caliente', 'Detecta fugas de combustible', 'Detecta fugas de fluido hidráulico', 'Detecta fugas de oxígeno'], 0);
+                    add('¿Qué es el aire sangrado (bleed air)?',
+                        ['Aire tomado del compresor del motor', 'Aire tomado del exterior', 'Aire de la APU', 'Aire de la unidad de tierra'], 0);
+                    add('¿Qué es una unidad de arranque de aire (ASU)?',
+                        ['Una unidad de tierra que proporciona aire para arrancar los motores', 'Una unidad de aire acondicionado', 'Una unidad de potencia auxiliar', 'Una unidad de vacío'], 0);
+                },
+                // 13.19.A
+                () => {
+                    add('¿Cómo se presuriza el sistema de agua potable?',
+                        ['Con aire comprimido del sistema neumático', 'Con una bomba', 'Por gravedad', 'Con un acumulador'], 0);
+                    add('¿Qué es el sistema de residuos de tipo vacío?',
+                        ['Utiliza la diferencia de presión para la descarga', 'Utiliza una bomba eléctrica', 'Utiliza una bomba manual', 'Utiliza un acumulador'], 0);
+                    add('¿Qué es un calentador de agua en el avión?',
+                        ['Calienta el agua para los lavabos', 'Calienta el agua para los motores', 'Calienta el agua para el sistema de aire acondicionado', 'Calienta el agua para el sistema hidráulico'], 0);
+                    add('¿Qué es un drenaje de agua de la cabina?',
+                        ['Drena el agua de los lavabos y galleys', 'Drena el agua del sistema hidráulico', 'Drena el agua del sistema de combustible', 'Drena el agua del sistema de aire acondicionado'], 0);
+                    add('¿Qué es el fluido "azul" en el sistema de residuos?',
+                        ['Un producto químico para el inodoro', 'Un producto de limpieza', 'Un producto de desinfección', 'Un producto de corrosión'], 0);
+                    add('¿Qué es un tanque de agua potable?',
+                        ['Almacena agua para beber y para los lavabos', 'Almacena agua para los motores', 'Almacena agua para el sistema hidráulico', 'Almacena agua para el sistema de aire acondicionado'], 0);
+                    add('¿Qué es un panel de servicio de agua (water service panel)?',
+                        ['Un panel en el exterior para llenar y vaciar el agua', 'Un panel en el interior para controlar el agua', 'Un panel en el exterior para controlar el agua', 'Un panel en el interior para llenar y vaciar el agua'], 0);
+                    add('¿Qué es el "grey water"?',
+                        ['Agua residual de los lavabos', 'Agua residual de los inodoros', 'Agua potable', 'Agua de lluvia'], 0);
+                    add('¿Qué es el "black water"?',
+                        ['Agua residual de los inodoros', 'Agua residual de los lavabos', 'Agua potable', 'Agua de lluvia'], 0);
+                    add('¿Qué es un inodoro de vacío?',
+                        ['Un inodoro que utiliza la diferencia de presión para la descarga', 'Un inodoro que utiliza agua a presión', 'Un inodoro que utiliza un sistema de recirculación', 'Un inodoro que utiliza un sistema de vacío'], 0);
+                },
+                // 13.20.A
+                () => {
+                    add('¿Qué es el concepto IMA (Integrated Modular Avionics)?',
+                        ['Integra múltiples funciones de software en un mismo hardware', 'Una arquitectura donde cada función tiene su propio computador', 'Un sistema de navegación', 'Un sistema de comunicación'], 0);
+                    add('¿Qué es el particionamiento (partitioning) en IMA?',
+                        ['Permite que diferentes funciones funcionen en el mismo hardware sin interferir', 'Divide el hardware en módulos', 'Divide el software en módulos', 'Divide el sistema en subsistemas'], 0);
+                    add('¿Qué es un CPIOM en el sistema Open IMA de Airbus?',
+                        ['Un módulo de procesamiento estándar', 'Un módulo de entrada/salida', 'Un módulo de comunicación', 'Un módulo de potencia'], 0);
+                    add('¿Qué es AFDX (Avionics Full Duplex Switched Ethernet)?',
+                        ['Una red de comunicación basada en Ethernet', 'Un módulo de procesamiento', 'Un sistema de navegación', 'Un sistema de comunicación'], 0);
+                    add('¿Qué es ARINC 653 en el contexto de IMA?',
+                        ['Un estándar para el particionamiento de software', 'Un estándar de comunicación', 'Un estándar de hardware', 'Un estándar de navegación'], 0);
+                    add('¿Qué es una arquitectura federada en aviónica?',
+                        ['Cada función tiene su propio computador', 'Todas las funciones están integradas en un solo computador', 'Las funciones están distribuidas en varios computadores', 'Las funciones están centralizadas en un solo punto'], 0);
+                    add('¿Qué es el ADCN (Aircraft Data Communication Network)?',
+                        ['La red de comunicación de datos del avión', 'Un módulo de procesamiento', 'Un sistema de navegación', 'Un sistema de comunicación'], 0);
+                    add('¿Qué es el Open IMA?',
+                        ['Un concepto IMA con estándares abiertos', 'Un concepto IMA propietario', 'Un concepto IMA para aviones militares', 'Un concepto IMA para aviones pequeños'], 0);
+                    add('¿Qué es un IMA rack?',
+                        ['Un bastidor para alojar los módulos IMA', 'Un módulo IMA', 'Un sistema de refrigeración', 'Un sistema de alimentación'], 0);
+                    add('¿Qué es un CRDC (Common Remote Data Concentrator)?',
+                        ['Un concentrador de datos en ubicaciones remotas', 'Un módulo de procesamiento', 'Un sistema de navegación', 'Un sistema de comunicación'], 0);
+                },
+                // 13.21.A
+                () => {
+                    add('¿Qué es el CIDS (Cabin Intercommunication Data System)?',
+                        ['Gestiona la comunicación y control de cabina', 'Gestiona el entretenimiento de los pasajeros', 'Gestiona la navegación', 'Gestiona el sistema eléctrico'], 0);
+                    add('¿Qué funciones controla el CIDS?',
+                        ['Temperatura, iluminación, megafonía, advertencias', 'Solo la temperatura', 'Solo la iluminación', 'Solo la megafonía'], 0);
+                    add('¿Qué es el CNS (Cabin Network Service)?',
+                        ['Proporciona conectividad de red en la cabina', 'Controla la temperatura de la cabina', 'Controla la iluminación de la cabina', 'Controla el sistema de megafonía'], 0);
+                    add('¿Qué servicios proporciona el CNS?',
+                        ['Internet, correo, entretenimiento a la carta', 'Solo Internet', 'Solo correo', 'Solo entretenimiento'], 0);
+                    add('¿Qué es SATCOM?',
+                        ['Comunicación por satélite', 'Comunicación por radio', 'Comunicación por cable', 'Comunicación por fibra óptica'], 0);
+                    add('¿Qué es un panel de control de cabina (Cabin Attendant Panel)?',
+                        ['Un panel táctil para controlar las funciones de cabina', 'Un panel de control de vuelo', 'Un panel de control de motores', 'Un panel de control de navegación'], 0);
+                    add('¿Qué es el sistema de entretenimiento a la carta (AVOD)?',
+                        ['Permite a los pasajeros seleccionar el contenido que desean ver', 'Una selección de canales de televisión', 'Una selección de películas', 'Una selección de música'], 0);
+                    add('¿Qué es un PCU (Personal Control Unit)?',
+                        ['Unidad de control personal en el asiento', 'Unidad de control de la cabina', 'Unidad de control de vuelo', 'Unidad de control de navegación'], 0);
+                    add('¿Qué es el sistema de comunicación entre la tripulación?',
+                        ['Permite la comunicación entre la tripulación y el cockpit', 'Permite la comunicación con los pasajeros', 'Permite la comunicación con tierra', 'Permite la comunicación con otros aviones'], 0);
+                    add('¿Qué es el sistema de monitoreo de cabina?',
+                        ['Monitorea las diferentes áreas de la cabina', 'Monitorea los sistemas de la aeronave', 'Monitorea el vuelo', 'Monitorea el tráfico aéreo'], 0);
+                },
+                // 13.22.A
+                () => {
+                    add('¿Qué es el GMCS (Ground Maneuver Camera System)?',
+                        ['Un sistema de cámaras para maniobras en tierra', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es el EGPWS?',
+                        ['Un sistema de advertencia de proximidad al terreno mejorado', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es el AIMS (Airplane Information Management System)?',
+                        ['Un sistema que gestiona la información de vuelo y mantenimiento', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de entretenimiento'], 0);
+                    add('¿Qué es el bus de datos ARINC 629?',
+                        ['Un bus de datos digital bidireccional', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué es el AMIS (Aircraft Maintenance Information System)?',
+                        ['Un sistema que registra y monitoriza las acciones de mantenimiento', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de entretenimiento'], 0);
+                    add('¿Qué es el PCIS (Passenger Cabin Information System)?',
+                        ['Un sistema que proporciona información de vuelo a los pasajeros', 'Un sistema de entretenimiento', 'Un sistema de navegación', 'Un sistema de comunicación'], 0);
+                    add('¿Qué ventaja tiene un SSD (Solid State Drive) frente a un HDD?',
+                        ['Mayor fiabilidad y rapidez', 'Menor coste', 'Mayor capacidad', 'Menor consumo'], 0);
+                    add('¿Qué es el ADS-B (Automatic Dependent Surveillance-Broadcast)?',
+                        ['Un sistema que transmite la posición de la aeronave automáticamente', 'Un sistema de navegación', 'Un sistema de comunicación', 'Un sistema de mantenimiento'], 0);
+                    add('¿Qué tipo de memoria se utiliza en los sistemas de almacenamiento modernos?',
+                        ['SSD (Solid State Drive)', 'HDD (Hard Disk Drive)', 'Cinta magnética', 'Disco óptico'], 0);
+                    add('¿Qué es el sistema de información de vuelo (Flight Deck Information System)?',
+                        ['Un sistema que proporciona información al piloto a través de pantallas', 'Un sistema de entretenimiento', 'Un sistema de navegación', 'Un sistema de comunicación'], 0);
+                }
+            ];
+
+            if (temaIndex < generadores.length) {
+                generadores[temaIndex]();
+            }
+            while (preguntas.length < 10) {
+                add('Pregunta adicional', ['A', 'B', 'C', 'D'], 0);
+            }
+            return preguntas;
+        }
+
+        // ============================================================
+        //  CONSTRUIR DATA COMPLETA
+        // ============================================================
+        const data = {
+            temas: temasBase.map((t, idx) => ({ ...t, preguntas: generarPreguntas(idx) }))
+        };
+
+        // ============================================================
+        //  ESTADO Y PERSISTENCIA
+        // ============================================================
+        let state = {
+            currentTema: 0,
+            temasCompletados: new Array(data.temas.length).fill(false),
+            temasDesbloqueados: new Array(data.temas.length).fill(false),
+            bookmarks: new Array(data.temas.length).fill(false),
+            notas: new Array(data.temas.length).fill(''),
+            intentos: new Array(data.temas.length).fill(0),
+            aciertos: new Array(data.temas.length).fill(0),
+            fallos: new Array(data.temas.length).fill(0),
+            tiempo: new Array(data.temas.length).fill(0),
+            puntos: 0,
+            streak: 0,
+            lastStudyDate: null,
+            modo: 'aprendizaje',
+            darkMode: true,
+            statsVisible: false
+        };
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('aerotraining_modulo13_state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state, parsed);
+                    state.temasCompletados = parsed.temasCompletados || new Array(data.temas.length).fill(false);
+                    state.temasDesbloqueados = parsed.temasDesbloqueados || new Array(data.temas.length).fill(false);
+                    state.bookmarks = parsed.bookmarks || new Array(data.temas.length).fill(false);
+                    state.notas = parsed.notas || new Array(data.temas.length).fill('');
+                    state.intentos = parsed.intentos || new Array(data.temas.length).fill(0);
+                    state.aciertos = parsed.aciertos || new Array(data.temas.length).fill(0);
+                    state.fallos = parsed.fallos || new Array(data.temas.length).fill(0);
+                    state.tiempo = parsed.tiempo || new Array(data.temas.length).fill(0);
+                    if (!state.temasDesbloqueados[0]) state.temasDesbloqueados[0] = true;
+                } else {
+                    state.temasDesbloqueados[0] = true;
+                }
+            } catch (e) {
+                state.temasDesbloqueados[0] = true;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('aerotraining_modulo13_state', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  DOM REFERENCES Y FUNCIONES PRINCIPALES
+        // ============================================================
+        const sidebarEl = document.getElementById('toc');
+        const contentEl = document.getElementById('temaContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressLabel = document.getElementById('progressLabel');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const streakCountEl = document.getElementById('streakCount');
+        const levelDisplayEl = document.getElementById('levelDisplay');
+        const streakBadgeEl = document.getElementById('streakBadge');
+
+        function getPuntosNivel() {
+            const p = state.puntos;
+            if (p < 100) return { nivel: 1, max: 100 };
+            if (p < 300) return { nivel: 2, max: 300 };
+            if (p < 600) return { nivel: 3, max: 600 };
+            if (p < 1000) return { nivel: 4, max: 1000 };
+            if (p < 1500) return { nivel: 5, max: 1500 };
+            return { nivel: Math.floor(p / 500) + 5, max: (Math.floor(p / 500) + 5) * 500 };
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastStudyDate === today) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastStudyDate === yesterday.toDateString()) {
+                state.streak += 1;
+            } else if (state.lastStudyDate !== null && state.lastStudyDate !== today) {
+                state.streak = 0;
+            }
+            state.lastStudyDate = today;
+            saveState();
+            updateUIStats();
+        }
+
+        function updateUIStats() {
+            const completados = state.temasCompletados.filter(v => v).length;
+            const total = data.temas.length;
+            const pct = Math.round((completados / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `${completados} / ${total}`;
+            totalPointsEl.textContent = state.puntos;
+            streakCountEl.textContent = state.streak;
+            streakBadgeEl.textContent = state.streak;
+            const nivel = getPuntosNivel();
+            levelDisplayEl.textContent = nivel.nivel;
+            document.getElementById('statCompletados').textContent = completados;
+            let totalAciertos = state.aciertos.reduce((a, b) => a + b, 0);
+            let totalFallos = state.fallos.reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalAciertos').textContent = totalAciertos;
+            document.getElementById('statTotalFallos').textContent = totalFallos;
+            document.getElementById('statAvgScore').textContent = (totalAciertos + totalFallos > 0) ?
+                Math.round((totalAciertos / (totalAciertos + totalFallos)) * 100) + '%' : '0%';
+            document.getElementById('statPuntos').textContent = state.puntos;
+            document.getElementById('statRacha').textContent = state.streak;
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const container = document.getElementById('chartBars');
+            const container2 = document.getElementById('chartTime');
+            const temas = data.temas;
+            const maxAciertos = Math.max(...state.aciertos, 1);
+            const maxTiempo = Math.max(...state.tiempo, 1);
+            let html = '',
+                html2 = '';
+            const labels = temas.map((t, i) => t.titulo.substring(0, 4));
+            for (let i = 0; i < temas.length; i++) {
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const total = aciertos + fallos;
+                const pct = total > 0 ? (aciertos / total) : 0;
+                const height = total > 0 ? Math.max(4, (aciertos / maxAciertos) * 100) : 4;
+                const cls = pct >= 0.8 ? 'good' : (pct >= 0.5 ? 'medium' : 'bad');
+                html += `<div class="chart-bar-wrap">
+                            <div class="chart-bar ${cls}" style="height:${height}px;"></div>
+                            <div class="chart-bar-label">${labels[i]}</div>
+                        </div>`;
+                const timeMin = Math.round((state.tiempo[i] || 0) / 60);
+                const tHeight = Math.max(4, ((state.tiempo[i] || 0) / maxTiempo) * 100);
+                html2 += `<div class="chart-bar-wrap">
+                            <div class="chart-bar medium" style="height:${tHeight}px;"></div>
+                            <div class="chart-bar-label">${timeMin}m</div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+            container2.innerHTML = html2;
+        }
+
+        function renderToc() {
+            let html = '';
+            data.temas.forEach((item, idx) => {
+                const bloqueado = !state.temasDesbloqueados[idx];
+                const completado = state.temasCompletados[idx];
+                const activo = idx === state.currentTema;
+                const bookmarked = state.bookmarks[idx];
+                let cls = '';
+                if (bloqueado) cls += ' locked';
+                if (completado) cls += ' completed';
+                if (activo) cls += ' active';
+                if (bookmarked) cls += ' bookmarked';
+                const badge = completado ? '✓' : (bloqueado ? '🔒' : '');
+                html += `<li class="${cls}" data-index="${idx}">
+                            <span class="bookmark-star" data-index="${idx}">${bookmarked ? '⭐' : '☆'}</span>
+                            <span>${item.id}. ${item.titulo}</span>
+                            <span class="badge">${badge}</span>
+                        </li>`;
+            });
+            sidebarEl.innerHTML = html;
+            document.querySelectorAll('#toc li').forEach(li => {
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-star')) return;
+                    const idx = parseInt(this.dataset.index);
+                    if (state.temasDesbloqueados[idx]) irATema(idx);
+                });
+                const star = li.querySelector('.bookmark-star');
+                if (star) {
+                    star.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        state.bookmarks[idx] = !state.bookmarks[idx];
+                        saveState();
+                        renderToc();
+                        renderTema(state.currentTema);
+                    });
+                }
+            });
+            updateUIStats();
+        }
+
+        function renderTema(idx) {
+            const tema = data.temas[idx];
+            const contenido = tema.contenido;
+            const preguntas = tema.preguntas;
+            const nota = state.notas[idx] || '';
+            const bookmarked = state.bookmarks[idx];
+            const completado = state.temasCompletados[idx];
+            const modo = state.modo;
+            const ocultarContenido = (modo === 'examen');
+
+            let html = `<div class="tema active">
+                            <div class="parte">${tema.id}</div>
+                            <h1>${tema.titulo}</h1>
+                            <div class="tema-actions">
+                                <button class="bookmarked-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn">${bookmarked ? '⭐' : '☆'} Marcador</button>
+                                <button id="resetTemaBtn">🔄 Reiniciar test</button>
+                                <span class="timer" id="timerDisplay">⏱️ ${formatTime(state.tiempo[idx] || 0)}</span>
+                            </div>`;
+            if (!ocultarContenido) {
+                html += `<div class="content" id="temaContent">${contenido}</div>`;
+            } else {
+                html += `<div class="content" style="background:var(--bg-test);text-align:center;padding:1rem;font-style:italic;color:var(--text-secondary);">
+                            📝 Modo Examen: contenido oculto
+                        </div>`;
+            }
+            html += `<div class="notas-area">
+                        <div class="notas-label">
+                            <span>📝 Notas personales</span>
+                            <span class="char-count">${nota.length} / 500</span>
+                        </div>
+                        <textarea id="notasTextarea" maxlength="500" placeholder="Escribe aquí tus notas...">${nota}</textarea>
+                    </div>`;
+            html += `<div class="test" id="test-${idx}">
+                        <div class="test-header">
+                            <h3>📝 Test de evaluación</h3>
+                            <div class="test-stats">
+                                Intentos: <span id="intentosCount">${state.intentos[idx]||0}</span> |
+                                ✅ <span class="ok">${state.aciertos[idx]||0}</span> |
+                                ❌ <span class="fail">${state.fallos[idx]||0}</span>
+                            </div>
+                        </div>`;
+            preguntas.forEach((p, i) => {
+                html += `<div class="pregunta" id="preg-${idx}-${i}" data-correcta="${p.correcta}">
+                            <p>${i+1}. ${p.pregunta}</p>`;
+                p.opciones.forEach((opt, j) => {
+                    html += `<label><input type="radio" name="q${idx}-${i}" value="${j}"> ${opt}</label>`;
+                });
+                html += `<div class="explanation" id="expl-${idx}-${i}"></div>`;
+                html += `</div>`;
+            });
+            html += `<div class="test-actions">
+                            <button class="btn-test" id="btn-test-${idx}">✅ Corregir test</button>
+                            <button class="btn-test secondary" id="btn-reveal-${idx}">👁️ Mostrar respuestas</button>
+                        </div>
+                        <div class="resultado-test" id="result-${idx}"></div>
+                        <button class="btn-siguiente" id="btn-sig-${idx}">➡️ Siguiente tema</button>
+                    </div>`;
+            contentEl.innerHTML = html;
+
+            document.getElementById('bookmarkBtn').addEventListener('click', function() {
+                state.bookmarks[idx] = !state.bookmarks[idx];
+                saveState();
+                renderToc();
+                renderTema(idx);
+            });
+            document.getElementById('resetTemaBtn').addEventListener('click', function() {
+                if (confirm('¿Reiniciar el test de este tema?')) {
+                    state.aciertos[idx] = 0;
+                    state.fallos[idx] = 0;
+                    state.intentos[idx] = 0;
+                    state.temasCompletados[idx] = false;
+                    state.puntos = Math.max(0, state.puntos - 50);
+                    saveState();
+                    renderToc();
+                    renderTema(idx);
+                }
+            });
+            const textarea = document.getElementById('notasTextarea');
+            textarea.addEventListener('input', function() {
+                state.notas[idx] = this.value;
+                saveState();
+                const charCount = this.parentElement.querySelector('.char-count');
+                if (charCount) charCount.textContent = `${this.value.length} / 500`;
+            });
+            document.getElementById(`btn-test-${idx}`).addEventListener('click', function() {
+                corregirTest(idx);
+            });
+            document.getElementById(`btn-reveal-${idx}`).addEventListener('click', function() {
+                mostrarRespuestas(idx);
+            });
+            document.getElementById(`btn-sig-${idx}`).addEventListener('click', function() {
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                    saveState();
+                    irATema(idx + 1);
+                }
+            });
+            if (completado) {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                const resultDiv = document.getElementById(`result-${idx}`);
+                resultDiv.textContent = '✅ Test superado';
+                resultDiv.className = 'resultado-test ok';
+            } else {
+                document.getElementById(`btn-sig-${idx}`).style.display = 'none';
+                document.getElementById(`btn-test-${idx}`).disabled = false;
+            }
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            let segundos = state.tiempo[idx] || 0;
+            const timerDisplay = document.getElementById('timerDisplay');
+            window._timerInterval = setInterval(() => {
+                segundos++;
+                state.tiempo[idx] = segundos;
+                timerDisplay.textContent = `⏱️ ${formatTime(segundos)}`;
+                if (segundos % 10 === 0) saveState();
+            }, 1000);
+            renderToc();
+            updateUIStats();
+            const searchTerm = document.getElementById('searchInput')?.value?.trim();
+            if (searchTerm) aplicarBusqueda(searchTerm);
+        }
+
+        function formatTime(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function corregirTest(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            let aciertos = 0;
+            const total = preguntas.length;
+            let fallosLocal = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`q${idx}-${i}`);
+                let seleccionado = null;
+                for (let r of radios) {
+                    if (r.checked) {
+                        seleccionado = parseInt(r.value);
+                        break;
+                    }
+                }
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = parseInt(divPreg.dataset.correcta);
+                divPreg.classList.remove('correcta', 'incorrecta');
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                if (seleccionado === correcta) {
+                    aciertos++;
+                    divPreg.classList.add('correcta');
+                    expl.textContent = '✅ ¡Correcto!';
+                } else if (seleccionado !== null) {
+                    fallosLocal++;
+                    divPreg.classList.add('incorrecta');
+                    const correctaText = preguntas[i].opciones[correcta];
+                    expl.textContent = `❌ Respuesta correcta: ${correctaText}`;
+                } else {
+                    expl.textContent = '⚠️ Selecciona una opción';
+                }
+            }
+            const resultDiv = document.getElementById(`result-${idx}`);
+            state.intentos[idx] = (state.intentos[idx] || 0) + 1;
+            state.aciertos[idx] = (state.aciertos[idx] || 0) + aciertos;
+            state.fallos[idx] = (state.fallos[idx] || 0) + fallosLocal;
+            if (aciertos === total) {
+                resultDiv.textContent = `✅ ¡Excelente! Has acertado ${aciertos}/${total}`;
+                resultDiv.className = 'resultado-test ok';
+                state.temasCompletados[idx] = true;
+                state.puntos += 100;
+                document.getElementById(`btn-sig-${idx}`).style.display = 'inline-block';
+                document.getElementById(`btn-test-${idx}`).disabled = true;
+                if (idx + 1 < data.temas.length) {
+                    state.temasDesbloqueados[idx + 1] = true;
+                }
+                updateStreak();
+                if (state.temasCompletados.every(v => v)) {
+                    document.getElementById('certificate').classList.add('show');
+                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                }
+            } else {
+                const faltan = total - aciertos;
+                resultDiv.textContent =
+                    `❌ Has acertado ${aciertos}/${total}. Revisa los fallos (${faltan} error${faltan>1?'es':''}).`;
+                resultDiv.className = 'resultado-test fail';
+                state.puntos = Math.max(0, state.puntos - 10);
+            }
+            saveState();
+            renderToc();
+            updateUIStats();
+        }
+
+        function mostrarRespuestas(idx) {
+            const preguntas = data.temas[idx].preguntas;
+            preguntas.forEach((p, i) => {
+                const divPreg = document.getElementById(`preg-${idx}-${i}`);
+                const correcta = p.correcta;
+                const correctaText = p.opciones[correcta];
+                const expl = document.getElementById(`expl-${idx}-${i}`);
+                expl.textContent = `💡 Respuesta: ${correctaText}`;
+                const labels = divPreg.querySelectorAll('label');
+                labels.forEach((label, j) => {
+                    if (j === correcta) {
+                        label.style.color = 'var(--success)';
+                    }
+                });
+            });
+        }
+
+        function irATema(idx) {
+            if (idx < 0 || idx >= data.temas.length) return;
+            if (!state.temasDesbloqueados[idx]) return;
+            if (window._timerInterval) clearInterval(window._timerInterval);
+            state.currentTema = idx;
+            saveState();
+            renderToc();
+            renderTema(idx);
+            document.getElementById('statsPanel').classList.remove('active');
+            document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            document.getElementById('content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function aplicarBusqueda(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const contentDiv = document.getElementById('temaContent');
+            if (!contentDiv) return;
+            const html = contentDiv.innerHTML;
+            if (searchTerm && html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    if (node.textContent.toLowerCase().includes(searchTerm)) {
+                        const parent = node.parentNode;
+                        const span = document.createElement('span');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        span.innerHTML = node.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                        parent.replaceChild(span, node);
+                    }
+                });
+                contentDiv.innerHTML = temp.innerHTML;
+            } else {
+                const tema = data.temas[state.currentTema];
+                contentDiv.innerHTML = tema.contenido;
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Tema,Completado,Aciertos,Fallos,Intentos,Tiempo(min),Notas\n';
+            data.temas.forEach((t, i) => {
+                const completado = state.temasCompletados[i] ? 'Sí' : 'No';
+                const aciertos = state.aciertos[i] || 0;
+                const fallos = state.fallos[i] || 0;
+                const intentos = state.intentos[i] || 0;
+                const tiempo = Math.round((state.tiempo[i] || 0) / 60);
+                const notas = (state.notas[i] || '').replace(/,/g, ';');
+                csv +=
+                    `"${t.id} - ${t.titulo}",${completado},${aciertos},${fallos},${intentos},${tiempo},"${notas}"\n`;
+            });
+            const totalCompletados = state.temasCompletados.filter(v => v).length;
+            const totalPuntos = state.puntos;
+            const racha = state.streak;
+            csv += `\n"TOTAL",${totalCompletados}/${data.temas.length},${state.aciertos.reduce((a,b)=>a+b,0)},${state.fallos.reduce((a,b)=>a+b,0)},,,"Puntos: ${totalPuntos}, Racha: ${racha}"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progreso_modulo13_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 CSV exportado');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `${msg} <button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ ¿Reiniciar todo el progreso?')) return;
+            localStorage.removeItem('aerotraining_modulo13_state');
+            location.reload();
+        }
+
+        // ============================================================
+        //  KEYBOARD, THEME, MODES
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                }
+                return;
+            }
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (state.currentTema > 0 && state.temasDesbloqueados[state.currentTema - 1]) irATema(state
+                        .currentTema - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    if (state.currentTema < data.temas.length - 1 && state.temasDesbloqueados[state.currentTema +
+                        1]) irATema(state.currentTema + 1);
+                    e.preventDefault();
+                    break;
+                case 't':
+                case 'T':
+                    const test = document.querySelector('.test');
+                    if (test) test.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    const bookmarkBtn = document.getElementById('bookmarkBtn');
+                    if (bookmarkBtn) bookmarkBtn.click();
+                    e.preventDefault();
+                    break;
+                case 's':
+                case 'S':
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) { searchInput.focus();
+                        searchInput.select(); }
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('searchClear').classList.remove('show');
+                    aplicarBusqueda('');
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '0':
+                    let num;
+                    if (e.key === '0') num = 9;
+                    else num = parseInt(e.key) - 1;
+                    if (num < data.temas.length && state.temasDesbloqueados[num]) irATema(num);
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        loadState();
+        if (!state.darkMode) document.body.classList.add('light-mode');
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggle2').addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            state.darkMode = !state.darkMode;
+            document.body.classList.toggle('light-mode');
+            saveState();
+        }
+
+        document.getElementById('statsToggle').addEventListener('click', function() {
+            const panel = document.getElementById('statsPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'none');
+                updateUIStats();
+            } else {
+                document.querySelector('.tema.active')?.style?.setProperty('display', 'block');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                state.modo = this.dataset.mode;
+                saveState();
+                renderTema(state.currentTema);
+            });
+        });
+        document.querySelector(`.mode-btn[data-mode="${state.modo}"]`)?.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            document.getElementById('searchClear').classList.toggle('show', val.length > 0);
+            aplicarBusqueda(val);
+        });
+        document.getElementById('searchClear').addEventListener('click', function() {
+            searchInput.value = '';
+            this.classList.remove('show');
+            aplicarBusqueda('');
+            searchInput.focus();
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        document.getElementById('closeHint').addEventListener('click', function() {
+            document.getElementById('shortcutsHint').style.opacity = '0';
+            setTimeout(() => document.getElementById('shortcutsHint').style.display = 'none', 500);
+        });
+
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            for (let i = 0; i < data.temas.length; i++) {
+                state.temasDesbloqueados[i] = true;
+                state.temasCompletados[i] = true;
+            }
+            state.puntos += 500;
+            saveState();
+            renderToc();
+            updateUIStats();
+            renderTema(state.currentTema);
+            showToast('🚀 Temario desbloqueado');
+        });
+
+        updateStreak();
+        renderToc();
+        renderTema(state.currentTema);
+
+        console.log('✈ AeroTraining 66 - Módulo 13 cargado');
+        console.log('📊 27 temas con todas las funcionalidades.');
+    </script>
+
+</body>
+</html>
